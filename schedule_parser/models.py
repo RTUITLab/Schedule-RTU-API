@@ -39,6 +39,12 @@ class LessonType(db.Model):
         return '<Lesson_Type %r>' % self.lesson_type
 
 ###########
+
+lessons_weeks = db.Table('tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+    db.Column('page_id', db.Integer, db.ForeignKey('page.id'))
+)
+
 class Week(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     week_num = db.Column(db.String(20), unique=True, nullable=False)
@@ -47,6 +53,10 @@ class Week(db.Model):
     def __repr__(self):
         return '<Week %r>' % self.week_num
 
+lessons_subgroups = db.Table('tags',
+    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
+    db.Column('page_id', db.Integer, db.ForeignKey('page.id'))
+)
 
 class Subgroup(db.Model):
     id = db.Column(db.Integer, primary_key=True)
