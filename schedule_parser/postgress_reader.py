@@ -1,55 +1,27 @@
 import re
 import json
-import csv
-import sqlite3
 import os.path
 import subprocess
 import datetime
 from itertools import cycle
-from sqlite3.dbapi2 import Connection
 import traceback
 import xlrd
 
 
 class Reader:
     """Класс для парсинга расписания MIREA из xlsx файлов"""
-    connect_to_old_db: Connection
-    connect_to_db: Connection
+
 
     def __init__(self, path_to_json=None, path_to_csv=None, path_to_db=None, path_to_new_db=None):
         """Инициализация клсса
             src(str): Абсолютный путь к XLS файлу
         """
 
-        try:
-            import xlrd
-        except ImportError:
-            exit_code = self.install("xlrd")
-            if exit_code == 0:
-                import xlrd
-            else:
-                print("При установке пакета возникла ошибка! {}".format(exit_code))
-                exit(0)
-
         self.result_dir = 'output'
         if not os.path.exists(self.result_dir):
             os.makedirs(self.result_dir)
 
-        # Имя файла, в который записывается расписание групп в JSON формате
-        if path_to_json is not None:
-            self.json_file = path_to_json
-        else:
-            self.json_file = "table.json"
-        self.json_file = os.path.join(self.result_dir, self.json_file)
-
-        # Имя файла, в который записывается расписание групп в CSV формате
-        if path_to_csv is not None:
-            self.csv_file = path_to_csv
-        else:
-            self.csv_file = "table.csv"
-        self.csv_file = os.path.join(self.result_dir, self.csv_file)
-
-        # Путь к файлу базы данных
+        #########TODO Путь к файлу базы данных
         if path_to_db is not None:
             self.db_old_file = path_to_db
         else:
@@ -111,20 +83,6 @@ class Reader:
             "20:10": 8
         }
 
-    @staticmethod
-    def install(package):
-        """
-        Устанавливает пакет
-        :param package: название пакета (str)
-        :return: код завершения процесса (int) или текст ошибки (str)
-        """
-        try:
-            result = subprocess.check_call(['pip', 'install', package])
-        except subprocess.CalledProcessError as result:
-            return result
-
-        return result
-
     def run(self, xlsx_dir, write_to_json_file=False, write_to_csv_file=False, write_to_db=False, write_to_new_db=False):
         """
         Выполнение парсинга данных
@@ -134,14 +92,6 @@ class Reader:
         :type xlsx_dir: str
         """
 
-        def remove_old_file(path_to_file):
-            """
-            Удаление старых файлов (DB, JSON, CSV)
-            :param path_to_file:
-            """
-            if os.path.isfile(path_to_file):
-                os.remove(path_to_file)
-
         def get_doc_type_code(doc_type_str):
             """
             Получение типа документа, для каждого типа документа
@@ -150,12 +100,9 @@ class Reader:
             """
             return self.doc_type_list[doc_type_str]
 
-        remove_old_file(self.db_old_file)
-        remove_old_file(self.json_file)
-        remove_old_file(self.csv_file)
-
-        self.connect_to_old_db = sqlite3.connect(self.db_old_file)
-        self.connect_to_db = sqlite3.connect(self.db_file)
+        ######TODO connect
+        # self.connect_to_old_db = sqlite3.connect(self.db_old_file)
+        # self.connect_to_db = sqlite3.connect(self.db_file)
 
         for path, dirs, files in os.walk(xlsx_dir):
             
@@ -164,7 +111,7 @@ class Reader:
                     continue
                 path_to_xlsx_file = os.path.join(path, file_name)
                 print(path_to_xlsx_file)
-                if("ИКиб_маг_2к" in path_to_xlsx_file or ".DS_Store" in path_to_xlsx_file):
+                if("ИКиб_маг_2к" in path_to_xlsx_file):
                     continue
                 xlsx_doc_type = get_doc_type_code(os.path.dirname(os.path.relpath(path_to_xlsx_file, start='xls')))
 
@@ -343,7 +290,7 @@ class Reader:
                 date_range_dict[this_row_date.strftime("%d.%m")].append(date_item[2])
 
             return date_range_dict
-            
+
         book = xlrd.open_workbook(xlsx_path, on_demand = True)
         sheet = book.sheet_by_index(0)
         DOC_TYPE_EXAM = 2
@@ -392,13 +339,9 @@ class Reader:
 
                 for key in one_time_table.keys():
                     timetable[key] = one_time_table[key]  # Добавление в общий словарь
-        if write_to_json_file is not False:  # Запись в JSON файл
-            self.write_to_json(timetable, doc_type)
-        if write_to_csv_file is not False or write_to_db is not False:  # Запись в CSV файл, Запись в базу данных
-            self.write_to_csv_and_old_db(doc_type, timetable, write_to_csv_file, write_to_db)
+
         if write_to_new_db is not False:
             self.write_to_db(doc_type, timetable, write_to_db)
-        print(timetable)
         book.release_resources()
         del book
         return group_list
@@ -482,80 +425,7 @@ class Reader:
         else:
             return 0
 
-    def write_to_csv_and_old_db(self, doc_type, timetable, write_to_csv=False, write_to_db=False):
-        """Запись словаря 'timetable' в CSV файл или в базу данных
-            - путь к файлу базы данных
-        """
 
-        def create_table(group):
-            """Если Таблица не создана, создать таблицу
-                table_name - Название таблицы
-            """
-            db_cursor.execute("""SELECT count(*) FROM sqlite_master WHERE type='table' AND name='{}';""".format(group))
-
-            is_create = db_cursor.fetchall()[0][0]
-
-            if is_create != 1:
-                db_cursor.execute("""CREATE TABLE {} (doc_type NUMERIC, date TEXT, day NUMERIC, lesson NUMERIC, time DATE,
-                          week NUMERIC, name TEXT, type TEXT, room TEXT, teacher TEXT, include TEXT, exception TEXT)""".format(
-                    group))
-
-        def data_append(group, doc_type, date, day_num, lesson_num, lesson_time, parity, discipline, lesson_type,
-                        room, teacher, include_week, exception_week):
-            """Добавление данных в базу данных"""
-            db_cursor.execute("""INSERT INTO {} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""".format(group),
-                              (doc_type, date, day_num, lesson_num, lesson_time, parity, discipline,
-                               lesson_type, room, teacher, include_week, exception_week))
-
-        db_cursor = self.connect_to_old_db.cursor()
-
-        with open(self.csv_file, "a", encoding="utf-8", newline="") as fh:
-            if write_to_csv is not False:
-                writer = csv.DictWriter(fh,
-                                        fieldnames=["doc_type", "group_name", "day", "lesson", "time", "week", "name",
-                                                    "type", "room", "teacher", "include",
-                                                    "exception"], quoting=csv.QUOTE_ALL)
-                writer.writeheader()
-            for group_name, value in sorted(timetable.items()):
-
-                if write_to_db is not False:
-                    group_name = re.findall(r"([А-Я]+-\w+-\w+)", group_name, re.I)
-                    if len(group_name) > 0:
-                        group_name = group_name[0]
-                        table_name = group_name.replace('-', '_').replace(' ', '_').replace('(', '_') \
-                                         .replace(')', '_').replace('.', '_').replace(',', '_')[0:10]
-
-                    create_table(table_name)
-                    for n_day, day_item in sorted(value.items()):
-                        for n_lesson, lesson_item in sorted(day_item.items()):
-                            for n_week, item in sorted(lesson_item.items()):
-                                day = n_day.split("_")[1]
-                                lesson = n_lesson.split("_")[1]
-                                week = n_week.split("_")[1]
-                                for dist in item:
-                                    date = dist['date']
-                                    time = dist['time']
-                                    if "include" in dist:
-                                        include = str(dist["include"])[1:-1]
-                                    else:
-                                        include = ""
-                                    if "exception" in dist:
-                                        exception = str(dist["exception"])[1:-1]
-                                    else:
-                                        exception = ""
-                                    if write_to_csv is not False:
-                                        writer.writerow(dict(group_name=group_name, day=day, lesson=lesson,
-                                                             time=time, week=week, name=dist["name"], type=dist["type"],
-                                                             room=dist["room"], teacher=dist["teacher"],
-                                                             include=include,
-                                                             exception=exception))
-                                    if write_to_db is not False:
-                                        data_append(table_name, doc_type, date, day, lesson, time, week,
-                                                    dist["name"], dist["type"],
-                                                    dist["room"], dist["teacher"],
-                                                    include, exception)
-            self.connect_to_old_db.commit()
-            db_cursor.close()
 
     def write_to_db(self, doc_type, timetable, write_to_db=False):
         """

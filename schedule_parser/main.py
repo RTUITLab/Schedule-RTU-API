@@ -9,8 +9,8 @@ import json
 def parse_schedule():
     global Downloader
     try:
-        Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
-        Download.download()
+        # Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
+        # Download.download()
         # os.remove("xls/semester/.DS_Store")
         # os.remove("xls/.DS_Store")
         print("downloaded")
