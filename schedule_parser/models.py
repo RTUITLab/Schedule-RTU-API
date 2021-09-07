@@ -38,7 +38,6 @@ class LessonType(db.Model):
     def __repr__(self):
         return '<Lesson_Type %r>' % self.lesson_type
 
-###########
 
 lessons_weeks = db.Table('tags',
     db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
@@ -48,24 +47,10 @@ lessons_weeks = db.Table('tags',
 class Week(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     week_num = db.Column(db.String(20), unique=True, nullable=False)
-    lessons = db.relationship('Lesson', backref='week', lazy='dynamic')
 
     def __repr__(self):
         return '<Week %r>' % self.week_num
 
-lessons_subgroups = db.Table('tags',
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
-    db.Column('page_id', db.Integer, db.ForeignKey('page.id'))
-)
-
-class Subgroup(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    subgroup = db.Column(db.String(20), unique=True, nullable=False)
-    lessons = db.relationship('Lesson', backref='subgroup', lazy='dynamic')
-
-    def __repr__(self):
-        return '<Subgroup %r>' % self.subgroup
-###########
 
 class Discipline(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -98,14 +83,14 @@ class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
     call_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
-    period_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
-    teacher_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
-    lesson_type_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
-    # week_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
-    # subgroup_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
-    discipline_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
-    room_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
-    group_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
+    period_id = db.Column(db.Integer, db.ForeignKey('period.id'), nullable=False)
+    teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'), nullable=False)
+    lesson_type_id = db.Column(db.Integer, db.ForeignKey('lesson_type.id'), nullable=False)
+    week_id = db.Column(db.Integer, secondary=lessons_weeks,  lazy='subquery', backref=db.backref('lessons', lazy=True), nullable='dynamic')
+    subgroup_id = db.Column(db.Integer, nullable=True)
+    discipline_id = db.Column(db.Integer, db.ForeignKey('discipline.id'), nullable=False)
+    room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
+    group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
 
     def __repr__(self):
         return '<Post %r>' % self.title

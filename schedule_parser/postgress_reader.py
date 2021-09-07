@@ -425,103 +425,7 @@ class Reader:
         else:
             return 0
 
-
-
     def write_to_db(self, doc_type, timetable, write_to_db=False):
-        """
-        Запись словаря 'timetable' в базу данных по новой схеме
-        :param doc_type:
-        :param timetable:
-        :param write_to_db:
-        """
-
-        def create_tables():
-            """Если Таблица не создана, создать таблицу
-                table_name - Название таблицы
-            """
-            schema = {
-                "groups": """CREATE TABLE groups
-                            (
-                                group_id   INTEGER primary key autoincrement,
-                                group_name TEXT
-                            );""",
-                "teachers": """CREATE TABLE teachers
-                            (
-                                teacher_id      INTEGER primary key autoincrement,
-                                teacher_name    TEXT
-                            );""",
-                "rooms": """CREATE TABLE rooms
-                        (
-                            room_id  INTEGER primary key autoincrement,
-                            room_num TEXT
-                        );""",
-                "lesson_types": """CREATE TABLE lesson_types
-                                (
-                                    lesson_type_id   INTEGER primary key autoincrement,
-                                    lesson_type_name TEXT
-                                );""",
-                "occupations": """CREATE TABLE occupations
-                                    (
-                                        occupation_id INTEGER primary key,
-                                        occupation    TEXT
-                                    );""",
-                "disciplines": """CREATE TABLE disciplines
-                                    (
-                                        discipline_id   INTEGER primary key autoincrement,
-                                        discipline_name TEXT
-                                    );""",
-                "schedule_calls": """CREATE TABLE schedule_calls
-                                    (
-                                        call_id     INTEGER primary key,
-                                        call_time   TIME
-                                    );""",
-                "lessons": """CREATE TABLE lessons
-                                (
-                                    lesson_id   INTEGER primary key autoincrement,
-                                    group_num   INTEGER,
-                                    occupation  INTEGER,
-                                    discipline  INTEGER,
-                                    teacher     INTEGER,
-                                    date        TEXT,
-                                    day         INTEGER,
-                                    call_time   TIME,
-                                    call_num    INTEGER,
-                                    week        INTEGER,
-                                    lesson_type INTEGER,
-                                    room        INTEGER,
-                                    include     TEXT,
-                                    exception   TEXT,
-                                    FOREIGN KEY (group_num) REFERENCES groups(group_id),
-                                    FOREIGN KEY (occupation) REFERENCES occupations (occupation_id),
-                                    FOREIGN KEY (discipline) REFERENCES disciplines (discipline_id),
-                                    FOREIGN KEY (teacher) REFERENCES teachers (teacher_id),
-                                    FOREIGN KEY (lesson_type) REFERENCES lesson_types (lesson_type_id),
-                                    FOREIGN KEY (room) REFERENCES rooms(room_id),
-                                    FOREIGN KEY (call_num) REFERENCES schedule_calls(call_id)
-                                );"""
-            }
-            indexes = {
-                "groups": """CREATE INDEX groups_group_id_index ON groups (group_id);""",
-                "teachers": """CREATE INDEX teachers_teacher_id_index ON teachers (teacher_id);""",
-                "rooms": """CREATE INDEX rooms_room_id_index ON rooms (room_id);""",
-                "lesson_types": """CREATE INDEX lesson_types_lesson_type_id_index ON lesson_types (lesson_type_id);""",
-                "occupations": """CREATE INDEX occupations_occupation_id_index ON occupations (occupation_id);""",
-                "disciplines": """CREATE INDEX disciplines_discipline_id_index ON disciplines (discipline_id)""",
-                "schedule_calls": """CREATE INDEX schedule_calls_call_id_index ON schedule_calls (call_id);""",
-                "lessons": """CREATE INDEX lessons_lesson_id_index ON lessons (lesson_id);"""
-            }
-
-            db_cursor.execute("""SELECT tbl_name FROM sqlite_master WHERE type='table'""")
-
-            table_list = db_cursor.fetchall()
-            tables = []
-            for tab_name in table_list:
-                tables.append(tab_name[0])
-
-            for tab_name in schema:
-                if tab_name not in tables:
-                    db_cursor.execute(schema[tab_name])
-                    db_cursor.execute(indexes[tab_name])
 
         def data_append_to_groups(group_name):
             db_cursor.execute("""INSERT INTO groups(group_name) SELECT '{}' 
@@ -602,7 +506,6 @@ class Reader:
 
         db_cursor = self.connect_to_db.cursor()
 
-        create_tables()
         data_append_to_schedule_calls(self.time_dict)
         data_append_to_occupation(doc_type)
         for group_name, value in sorted(timetable.items()):
