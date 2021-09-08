@@ -12,29 +12,10 @@ class Reader:
     """Класс для парсинга расписания MIREA из xlsx файлов"""
 
 
-    def __init__(self, path_to_json=None, path_to_csv=None, path_to_db=None, path_to_new_db=None):
+    def __init__(self):
         """Инициализация клсса
             src(str): Абсолютный путь к XLS файлу
         """
-
-        self.result_dir = 'output'
-        if not os.path.exists(self.result_dir):
-            os.makedirs(self.result_dir)
-
-        #########TODO Путь к файлу базы данных
-        if path_to_db is not None:
-            self.db_old_file = path_to_db
-        else:
-            self.db_old_file = 'table.db'
-        self.db_old_file = os.path.join(self.result_dir, self.db_old_file)
-
-        if path_to_new_db is not None:
-            self.db_file = path_to_new_db
-        else:
-            self.db_file = 'timetable.db'
-        self.db_file = os.path.join(self.result_dir, self.db_file)
-
-        self.log_file_path = 'logs/ErrorLog.txt'
 
         self.notes_dict = {
             'МП-1': "ул. Малая Пироговская, д.1",
@@ -83,14 +64,7 @@ class Reader:
             "20:10": 8
         }
 
-    def run(self, xlsx_dir, write_to_json_file=False, write_to_csv_file=False, write_to_db=False, write_to_new_db=False):
-        """
-        Выполнение парсинга данных
-        :param write_to_db:
-        :param write_to_csv_file:
-        :param write_to_json_file:
-        :type xlsx_dir: str
-        """
+    def run(self, xlsx_dir,):
 
         def get_doc_type_code(doc_type_str):
             """
@@ -111,27 +85,21 @@ class Reader:
                     continue
                 path_to_xlsx_file = os.path.join(path, file_name)
                 print(path_to_xlsx_file)
-                if("ИКиб_маг_2к" in path_to_xlsx_file):
-                    continue
+                # if("ИКиб_маг_2к" in path_to_xlsx_file):
+                #     continue
                 xlsx_doc_type = get_doc_type_code(os.path.dirname(os.path.relpath(path_to_xlsx_file, start='xls')))
 
                 try:
                     
-                    self.read(path_to_xlsx_file, xlsx_doc_type, write_to_json_file=write_to_json_file,
-                              write_to_csv_file=write_to_csv_file, write_to_db=write_to_db,
-                              write_to_new_db=write_to_new_db)
+                    self.read(path_to_xlsx_file, xlsx_doc_type)
                 except Exception as err:
                     print(err, traceback.format_exc(), "in", file_name)
                     continue
 
-    def read(self, xlsx_path, doc_type, write_to_json_file=False, write_to_csv_file=False, write_to_db=False,
-             write_to_new_db=False):
+    def read(self, xlsx_path, doc_type):
         """Объединяет расписания отдельных групп и записывает в файлы
             :param xlsx_path:
             :param doc_type:
-            :param write_to_json_file: Записывать ли в JSON файл (bool)
-            :param write_to_csv_file: Записывать ли в CSV файл (bool)
-            :param write_to_db:
             :return:
         """
 
@@ -159,7 +127,7 @@ class Reader:
             :param group_name_cell:
             :return:
             """
-            # инициализация списка диапазонов пар
+
             week_range = {
                 1: [],
                 2: [],
@@ -174,8 +142,6 @@ class Reader:
             # Перебор столбца с номерами пар и вычисление на основании количества пар в день диапазона выбора ячеек
             day_num_val, lesson_num_val, lesson_time_val, lesson_week_num_val = 0, 0, 0, 0
             row_s = len(xlsx_sheet.col(group_name_row.index(group_name_cell)))
-            if row_s >= 200:
-                row_s = 122
                 
             for lesson_num in range(initial_row_num, row_s):
 
@@ -215,82 +181,7 @@ class Reader:
                     week_range[day_num_val].append(lesson_range)
             return week_range
 
-        def get_column_range_for_type_eq_exam(xlsx_sheet, group_name_cell, group_name_row_index):
-            """
-            Получение диапазона ячеек недели для типа расписания = экзамен
-            :param group_name_row_index: 
-            :param xlsx_sheet:
-            :param group_name_cell:
-            :return:
-            """
-
-            def fix_date_range(date_range_list):
-                """
-                На случай, если в шаблоне есть незаполненные ячейки
-                :param date_range_list:
-                :return:
-                """
-                is_fuck = False
-                this_index, this_date = 0, 0
-                for date_item in date_range_list:
-                    if None in date_item:
-                        is_fuck = True
-                    elif is_fuck is True:
-                        this_date = datetime.date(datetime.datetime.now().year, date_item[1], date_item[0])
-                        this_index = date_range.index(date_item)
-                        break
-
-                for range_index in range(this_index, 0, -1):
-                    if date_range_list[range_index - 1][0] != date_range_list[range_index][0]:
-                        this_date = this_date - datetime.timedelta(1)
-                    date_range_list[range_index - 1][0] = this_date.day
-                    date_range_list[range_index - 1][1] = this_date.month
-
-                return date_range_list
-
-            initial_row_nam = group_name_row_index + 1  # Номер строки, с которой начинается отсчет пар
-
-            date_range = []
-            # Перебор столбца с номерами пар и вычисление на основании количества пар в день диапазона выбора ячеек
-            date_num_val, month_num_val = None, None
-            row_s = len(xlsx_sheet.col(group_name_row.index(group_name_cell)))
-            if row_s >= 200:
-                row_s = 122
-                
-            for day_num in range(initial_row_nam, row_s):
-
-                month_num_col = xlsx_sheet.cell(day_num, group_name_row.index(group_name_cell) - 2)
-                if month_num_col.value != '':
-                    month_num_val = get_month_num(month_num_col.value)
-
-                date_num_col = xlsx_sheet.cell(day_num, group_name_row.index(group_name_cell) - 1)
-                if date_num_col.value != '':
-                    if isinstance(date_num_col.value, float):
-                        temp_date_num_val = str(round(date_num_col.value))
-                    else:
-                        temp_date_num_val = str(date_num_col.value)
-
-                    date_num_val = re.findall(r'\d+', temp_date_num_val)
-
-                    if date_num_val:
-                        date_num_val = int(date_num_val[0])
-                    else:
-                        break
-
-                date_range.append([date_num_val, month_num_val, day_num])
-
-            date_range = fix_date_range(date_range)
-
-            date_range_dict = {}
-            for date_item in date_range:
-                this_row_date = datetime.date(datetime.datetime.now().year, date_item[1], date_item[0])
-                if this_row_date.strftime("%d.%m") not in date_range_dict:
-                    date_range_dict[this_row_date.strftime("%d.%m")] = []
-
-                date_range_dict[this_row_date.strftime("%d.%m")].append(date_item[2])
-
-            return date_range_dict
-
+        
         book = xlrd.open_workbook(xlsx_path, on_demand = True)
         sheet = book.sheet_by_index(0)
         DOC_TYPE_EXAM = 2
@@ -323,38 +214,23 @@ class Reader:
                 # обновляем column_range, если левее группы нет разметки с неделями, используем старый
                 if not group_list and doc_type != DOC_TYPE_EXAM:
                     column_range = get_column_range_for_type_eq_semester(sheet, group_cell, group_name_row_num)
-                elif not group_list and doc_type == DOC_TYPE_EXAM:
-                    column_range = get_column_range_for_type_eq_exam(sheet, group_cell, group_name_row_num)
+
 
                 group_list.append(group.group(0))
 
                 if doc_type != DOC_TYPE_EXAM:
                     one_time_table = self.read_one_group_for_semester(
                         sheet, group_name_row.index(group_cell), group_name_row_num, column_range)  # По номеру столбца
-                else:
-                    one_time_table = self.read_one_group_for_exam(
-                        sheet, group_name_row.index(group_cell), group_name_row_num, column_range)  # По номеру столбца
-
+               
                 # print(one_time_table)
 
                 for key in one_time_table.keys():
                     timetable[key] = one_time_table[key]  # Добавление в общий словарь
 
-        if write_to_new_db is not False:
-            self.write_to_db(doc_type, timetable, write_to_db)
+        write_to_db(doc_type, timetable)
         book.release_resources()
         del book
         return group_list
-
-    @staticmethod
-    def format_other_cells(cell):
-        """
-        Разделение строки по "\n"
-        :param cell:
-        :return:
-        """
-        cell = cell.split("\n")
-        return cell
 
     @staticmethod
     def format_teacher_name(cell):
@@ -425,7 +301,7 @@ class Reader:
         else:
             return 0
 
-    def write_to_db(self, doc_type, timetable, write_to_db=False):
+    def write_to_db(self, doc_type, timetable):
 
         def data_append_to_groups(group_name):
             db_cursor.execute("""INSERT INTO groups(group_name) SELECT '{}' 
@@ -498,12 +374,6 @@ class Reader:
                               """, (group_id, occupation_id, discipline_id, teacher_id, lesson_type_id, room_id,
                                     date, day_num, call_time, call_num, week, include, exception))
 
-        def remove_old_schedule_from_lessons(group_name):
-            db_cursor.execute("""SELECT group_id FROM groups WHERE group_name = '{}'""".format(group_name))
-            group_id = db_cursor.fetchall()[0][0]
-            if group_id is not None:
-                db_cursor.execute("""DELETE FROM lessons WHERE group_num = '{}'""".format(group_id))
-
         db_cursor = self.connect_to_db.cursor()
 
         data_append_to_schedule_calls(self.time_dict)
@@ -516,7 +386,6 @@ class Reader:
                 if len(group_name) > 0:
                     group_name = group_name[0]
                     data_append_to_groups(group_name)
-                    remove_old_schedule_from_lessons(group_name)
 
                 for n_day, day_item in sorted(value.items()):
                     for n_lesson, lesson_item in sorted(day_item.items()):
@@ -552,11 +421,6 @@ class Reader:
 
         self.connect_to_db.commit()
         db_cursor.close()
-
-    def write_to_json(self, timetable, doc_type):
-        """Запись словаря 'timetable' в JSON файл
-            timetable(dict)
-        """
 
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
@@ -630,60 +494,6 @@ class Reader:
                     one_group[group_name]["day_{}".format(day_num)] = one_day
 
         return one_group
-
-    def read_one_group_for_exam(self, sheet, discipline_col_num, group_name_row_num, cell_range):
-        """
-            Получение расписания одной группы для формы экзаменационной сессии
-            discipline_col_num(int): Номер столбца колонки 'Предмет'
-            range(dict): Диапазон выбора ячеек
-        """
-        EXAM_PASS_INDEX = 0
-        one_group = {}
-        group_name = sheet.cell(group_name_row_num, discipline_col_num).value  # Название группы
-        one_group[group_name] = {}
-
-        for date in cell_range:
-            string_index = cell_range[date][0]
-            lesson_type, dist_name, teacher = None, None, None
-            if len(cell_range[date]) > 1:
-                lesson_type_index = cell_range[date][0]
-                dist_name_index = cell_range[date][1]
-                teacher_name_index = cell_range[date][2]
-
-                lesson_type = sheet.cell(lesson_type_index, discipline_col_num).value
-                dist_name = sheet.cell(dist_name_index, discipline_col_num).value
-                teacher = self.format_teacher_name(sheet.cell(teacher_name_index, discipline_col_num).value)
-
-            time = sheet.cell(string_index, discipline_col_num + 1).value
-            if isinstance(time, str):
-                time = time.replace("-", ":")
-            if isinstance(time, float):
-                time = xlrd.xldate.xldate_as_datetime(time, 0).strftime("%H:%M")
-
-            lesson_num = self.get_lesson_num_from_time(time)
-
-            room = self.format_room_name(sheet.cell(string_index, discipline_col_num + 2).value)
-            if isinstance(room, float):
-                room = int(room)
-
-            one_day = {"lesson_{}".format(lesson_num): {}}
-
-            if dist_name is not None:
-                one_lesson = {"date": date, "time": time, "name": dist_name, "type": lesson_type, "teacher": teacher,
-                              "room": room, "include": '', "exception": ''}
-
-                if dist_name and room:
-                    if "week_{}".format(EXAM_PASS_INDEX) not in one_day["lesson_{}".format(lesson_num)]:
-                        one_day["lesson_{}".format(lesson_num)][
-                            "week_{}".format(EXAM_PASS_INDEX)] = []  # Инициализация списка
-
-                    one_day["lesson_{}".format(lesson_num)]["week_{}".format(EXAM_PASS_INDEX)].append(one_lesson)
-
-            # Объединение расписания
-            one_group[group_name]["day_{}".format(date)] = one_day
-
-        return one_group
-
 
 if __name__ == "__main__":
 

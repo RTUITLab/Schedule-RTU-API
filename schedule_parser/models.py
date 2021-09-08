@@ -39,9 +39,9 @@ class LessonType(db.Model):
         return '<Lesson_Type %r>' % self.lesson_type
 
 
-lessons_weeks = db.Table('tags',
-    db.Column('tag_id', db.Integer, db.ForeignKey('tag.id')),
-    db.Column('page_id', db.Integer, db.ForeignKey('page.id'))
+lesson_week = db.Table('lesson_week',
+    db.Column('lesson_id', db.Integer, db.ForeignKey('lesson.id')),
+    db.Column('week_id', db.Integer, db.ForeignKey('week.id'))
 )
 
 class Week(db.Model):
@@ -86,7 +86,7 @@ class Lesson(db.Model):
     period_id = db.Column(db.Integer, db.ForeignKey('period.id'), nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'), nullable=False)
     lesson_type_id = db.Column(db.Integer, db.ForeignKey('lesson_type.id'), nullable=False)
-    week_id = db.Column(db.Integer, secondary=lessons_weeks,  lazy='subquery', backref=db.backref('lessons', lazy=True), nullable='dynamic')
+    week_id = db.relationship('Week', secondary=lesson_week, lazy='subquery', backref=db.backref('lessons', lazy=True))
     subgroup_id = db.Column(db.Integer, nullable=True)
     discipline_id = db.Column(db.Integer, db.ForeignKey('discipline.id'), nullable=False)
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)

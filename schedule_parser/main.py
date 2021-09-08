@@ -1,6 +1,5 @@
 from .reader import Reader
 from .downloader import Downloader
-from .writer import New_to_old_table
 import sys
 import os.path
 import json

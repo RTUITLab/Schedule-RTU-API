@@ -1,6 +1,8 @@
+import config
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import config
+from flask_migrate import Migrate
 from os import environ 
 from flasgger import Swagger, swag_from
 
@@ -9,7 +11,7 @@ template = {
   "info": {
     "title": "SCHEDULE-RTU",
     "description": "API for getting schedule for RTU MIREA",
-    "version": "0.1.1",
+    "version": "1.1.1",
     "contact": {
       "name": "Olya",
       "url": "https://vk.com/id196529353",
@@ -33,6 +35,7 @@ template = {
 
 app = Flask(__name__)
 
+
 app.config['SWAGGER'] = {
     'title': 'SHEDULE API',
     'uiversion': 3,
@@ -43,6 +46,9 @@ app.config.from_object(config.Config)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('CONNECTION_STRING')
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 from app import views
-
+from schedule_parser import models
