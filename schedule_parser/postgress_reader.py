@@ -3,10 +3,13 @@ import json
 import os.path
 import subprocess
 import datetime
-from itertools import cycle
 import traceback
 import xlrd
 
+from itertools import cycle
+from app import db
+from . import get_or_create
+from . import models
 
 class Reader:
     """Класс для парсинга расписания MIREA из xlsx файлов"""
@@ -62,6 +65,19 @@ class Reader:
             "18:00": 6,
             "18:30": 7,
             "20:10": 8
+        }
+        
+        self.lesson_types = {
+            "лк": 1,
+            "пр": 2,
+            "лаб": 3,
+            "": 4,
+        }
+        
+        self.periods = {
+            "semestr": 1,
+            "credits": 2,
+            "exams": 3
         }
 
     def run(self, xlsx_dir,):
@@ -302,122 +318,70 @@ class Reader:
             return 0
 
     def write_to_db(self, doc_type, timetable):
+        
+        def append_from_dict(diction, session, model):
+            for key, value in diction.items():
+                instanse = model(value, key)
+                session.add(instance)
+                session.commit()
 
-        def data_append_to_groups(group_name):
-            db_cursor.execute("""INSERT INTO groups(group_name) SELECT '{}' 
-                                    WHERE NOT EXISTS(SELECT group_id FROM groups WHERE group_name = '{}')""".format(
-                group_name, group_name))
-
-        def data_append_to_occupation(occupation_id):
-            occupation = list(self.doc_type_list.keys())[list(self.doc_type_list.values()).index(occupation_id)]
-
-            db_cursor.execute(
-                """INSERT INTO occupations(occupation_id, occupation) SELECT '{}', '{}'
-                        WHERE NOT EXISTS(SELECT occupation_id FROM occupations WHERE occupation = '{}');""".format(
-                    occupation_id, occupation, occupation))
-
-        def data_append_to_disciplines(discipline_name):
-            db_cursor.execute(
-                """INSERT INTO disciplines(discipline_name) SELECT '{}'
-                        WHERE NOT EXISTS(SELECT discipline_id FROM disciplines WHERE discipline_name = '{}');""".format(
-                    discipline_name, discipline_name))
-
-        def data_append_to_lesson_types(lesson_type):
-            db_cursor.execute(
-                """INSERT INTO lesson_types(lesson_type_name) SELECT '{}'
-                        WHERE NOT EXISTS(SELECT lesson_type_id FROM lesson_types WHERE lesson_type_name = '{}');""".format(
-                    lesson_type, lesson_type))
-
-        def data_append_to_rooms(room_num):
-            db_cursor.execute(
-                """INSERT INTO rooms(room_num) SELECT '{}'
-                        WHERE NOT EXISTS(SELECT room_id FROM rooms WHERE room_num = '{}');""".format(
-                    room_num, room_num))
-
-        def data_append_to_teachers(teacher_name):
-            db_cursor.execute(
-                """INSERT INTO teachers(teacher_name) SELECT '{}'
-                        WHERE NOT EXISTS(SELECT teacher_id FROM teachers WHERE teacher_name = '{}');""".format(
-                    teacher_name, teacher_name))
-
-        def data_append_to_schedule_calls(call_dict):
-            for call_time in call_dict:
-                call_id = list(call_dict.values())[list(call_dict.keys()).index(call_time)]
-
-                db_cursor.execute(
-                    """INSERT INTO schedule_calls(call_id, call_time) SELECT '{}', '{}'
-                            WHERE NOT EXISTS(SELECT call_id FROM schedule_calls WHERE call_time = '{}');""".format(
-                        call_id, call_time, call_time))
-
-        def data_append_to_lesson(group_name, occupation, discipline_name, teacher_name, date, day_num, call_time,
+        def data_append_to_lesson(group_name, occupation, discipline_name, teacher_name, date, day_num,
                                   call_num,
                                   week, lesson_type, room_num, include, exception):
-
-            db_cursor.execute("""SELECT group_id FROM groups WHERE group_name = '{}'""".format(group_name))
-            group_id = db_cursor.fetchall()[0][0]
-            db_cursor.execute("""SELECT occupation_id FROM occupations WHERE occupation = '{}'""".format(occupation))
-            occupation_id = db_cursor.fetchall()[0][0]
-            db_cursor.execute(
-                """SELECT discipline_id FROM disciplines WHERE discipline_name = '{}'""".format(discipline_name))
-            discipline_id = db_cursor.fetchall()[0][0]
-            db_cursor.execute("""SELECT teacher_id FROM teachers WHERE teacher_name = '{}'""".format(teacher_name))
-            teacher_id = db_cursor.fetchall()[0][0]
-            db_cursor.execute(
-                """SELECT lesson_type_id FROM lesson_types WHERE lesson_type_name = '{}'""".format(lesson_type))
-            lesson_type_id = db_cursor.fetchall()[0][0]
-            db_cursor.execute("""SELECT room_id FROM rooms WHERE room_num = '{}'""".format(room_num))
-            room_id = db_cursor.fetchall()[0][0]
-
-            db_cursor.execute("""INSERT INTO lessons(group_num, occupation, discipline, teacher, lesson_type, room,
-                                                     date, day, call_time, call_num, week, include, exception) 
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                              """, (group_id, occupation_id, discipline_id, teacher_id, lesson_type_id, room_id,
-                                    date, day_num, call_time, call_num, week, include, exception))
-
+            
+            call = 
+            group = models.Grpup.query.filter_by(group_num=group_num).first()
+            period = models.Period.query.get(occupation)
+            discipline = models.Discipline.query.filter_by(name=discipline_name).first()
+            teacher = models.Teacher.query.filter_by(teacher_name=teacher_name).first()
+            lesson_type = models.LessonType.query.filter_by(lesson_type=lesson_type).first()
+            room = models.Room.query.filter_by(group_num=group_num).first()
+            
+            lesson = models.Lesson()
+            
+            
         db_cursor = self.connect_to_db.cursor()
 
-        data_append_to_schedule_calls(self.time_dict)
-        data_append_to_occupation(doc_type)
+        append_from_dict(self.time_dict, db, models.Call)
+        append_from_dict(self.lesson_types, db, models.LessonType)
+        append_from_dict(self.periods, db, models.Period)
+        
         for group_name, value in sorted(timetable.items()):
 
-            if write_to_db is not False:
+            group_name = re.findall(r"([А-Я]+-\w+-\w+)", group_name, re.I)
+            if len(group_name) > 0:
+                group_name = group_name[0]
+                get_or_create(group_name, models.Group)
 
-                group_name = re.findall(r"([А-Я]+-\w+-\w+)", group_name, re.I)
-                if len(group_name) > 0:
-                    group_name = group_name[0]
-                    data_append_to_groups(group_name)
+            for n_day, day_item in sorted(value.items()):
+                for n_lesson, lesson_item in sorted(day_item.items()):
+                    for n_week, item in sorted(lesson_item.items()):
+                        day_num = n_day.split("_")[1]
+                        call_num = n_lesson.split("_")[1]
+                        week = n_week.split("_")[1]
+                        for dist in item:
+                            print(dist)
+                            call_time = dist['time']
+                            if "include" in dist:
+                                include = str(dist["include"])[1:-1]
+                            else:
+                                include = ""
+                            if "exception" in dist:
+                                exception = str(dist["exception"])[1:-1]
+                            else:
+                                exception = ""
 
-                for n_day, day_item in sorted(value.items()):
-                    for n_lesson, lesson_item in sorted(day_item.items()):
-                        for n_week, item in sorted(lesson_item.items()):
-                            day_num = n_day.split("_")[1]
-                            call_num = n_lesson.split("_")[1]
-                            week = n_week.split("_")[1]
-                            for dist in item:
-                                date = dist['date']
-                                call_time = dist['time']
-                                if "include" in dist:
-                                    include = str(dist["include"])[1:-1]
-                                else:
-                                    include = ""
-                                if "exception" in dist:
-                                    exception = str(dist["exception"])[1:-1]
-                                else:
-                                    exception = ""
+                            if write_to_db is not False:
+                                get_or_create(dist['teacher'], modrls.Teacher) #### TODO
+                                get_or_create(dist['name'], models.Discipline) ### TODO
+                                get_or_create(dist['type'], models.LessonType) #### TODO
+                                get_or_create(dist['room'], models.Room) #### TODO
 
-                                if write_to_db is not False:
-                                    data_append_to_teachers(dist['teacher'])
-                                    data_append_to_disciplines(dist['name'])
-                                    data_append_to_lesson_types(dist['type'])
-                                    data_append_to_rooms(dist['room'])
-
-                                    occupation = list(self.doc_type_list.keys())[
-                                        list(self.doc_type_list.values()).index(doc_type)]
-
-                                    data_append_to_lesson(group_name, occupation, dist['name'], dist['teacher'], date,
-                                                          day_num,
-                                                          call_time, call_num,
-                                                          week, dist['type'], dist['room'], include, exception)
+                                occupation = 1
+                                data_append_to_lesson(group_name, occupation, dist['name'], dist['teacher'],
+                                                        day_num,
+                                                        call_num,
+                                                        week, dist['type'], dist['room'], include, exception) #### TODO
 
         self.connect_to_db.commit()
         db_cursor.close()

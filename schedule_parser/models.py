@@ -33,20 +33,14 @@ class Teacher(db.Model):
 class LessonType(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lesson_type = db.Column(db.String(20), unique=True, nullable=False)
-    lessons = db.relationship('Lesson', backref='lesson_type', lazy='dynamic')
 
     def __repr__(self):
         return '<Lesson_Type %r>' % self.lesson_type
 
 
-lesson_week = db.Table('lesson_week',
-    db.Column('lesson_id', db.Integer, db.ForeignKey('lesson.id')),
-    db.Column('week_id', db.Integer, db.ForeignKey('week.id'))
-)
-
 class Week(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    week_num = db.Column(db.String(20), unique=True, nullable=False)
+    week_num = db.Column(db.Integer, primary_key=True)
+    lessons = db.Column(db.Integer, db.ForeignKey('lesson.id'), nullable=False, primary_key=True)
 
     def __repr__(self):
         return '<Week %r>' % self.week_num
@@ -86,12 +80,13 @@ class Lesson(db.Model):
     period_id = db.Column(db.Integer, db.ForeignKey('period.id'), nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'), nullable=False)
     lesson_type_id = db.Column(db.Integer, db.ForeignKey('lesson_type.id'), nullable=False)
-    week_id = db.relationship('Week', secondary=lesson_week, lazy='subquery', backref=db.backref('lessons', lazy=True))
+    week_id = db.relationship('Week', backref='lesson', lazy='dynamic')
     subgroup_id = db.Column(db.Integer, nullable=True)
     discipline_id = db.Column(db.Integer, db.ForeignKey('discipline.id'), nullable=False)
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
-
+    day_of_week = db.Column(db.Integer, nullable=False)
+    
     def __repr__(self):
         return '<Post %r>' % self.title
 

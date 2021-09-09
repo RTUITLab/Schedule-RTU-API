@@ -1,4 +1,4 @@
-from connect import connect_to_sqlite
+# from connect import connect_to_sqlite
 import datetime as dt
 from datetime import datetime, date, time
 import re
@@ -171,7 +171,7 @@ def alter_format_lesson(record, day_of_week, week, today):
 def return_one_day(today, group, alter_format = None):
     week = cur_week(today)
     try:
-        cursor = connect_to_sqlite()
+        # cursor = connect_to_sqlite()
         day_of_week = today.isocalendar()[2]
         if (week%2):
             current_week = 1
@@ -199,7 +199,7 @@ def return_one_day(today, group, alter_format = None):
     
 def for_cache(): 
     try:
-        cursor = connect_to_sqlite()
+        # cursor = connect_to_sqlite()
         sqlite_select_Query = "SELECT group_name FROM groups where group_name like 'И%';"
         cursor.execute(sqlite_select_Query)
         record = cursor.fetchall()
@@ -224,7 +224,7 @@ def get_groups():
         res = {"bachelor": {"first":[], "second":[], "third":[], "fourth":[]},
                 "master": {"first":[], "second":[]}
         }
-        cursor = connect_to_sqlite()
+        # cursor = connect_to_sqlite()
         sqlite_select_Query = "SELECT group_name FROM groups where group_name like 'И%';"
         cursor.execute(sqlite_select_Query)
         record = cursor.fetchall()
