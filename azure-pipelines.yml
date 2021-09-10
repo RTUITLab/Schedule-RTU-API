@@ -3,7 +3,7 @@ name: $(BuildID)-$(Build.SourceBranchName)
 pool:
   vmImage: "ubuntu-latest"
 variables: 
-  ${{ if notIn(variables['Build.SourceBranchName'], 'master', 'develop') }}:
+  ${{ if notIn(variables['Build.SourceBranchName'], 'master') }}:
     buildImage: false
     deployService: false
     deployEnvironment: 'no'
@@ -18,8 +18,8 @@ variables:
       $(Build.BuildId)
       latest
     apiServiceName: schedule-rtu_api
-    refreshInvokerServiceName: schedule-rtu_api
-    proxyServiceName: schedule-rtu_api
+    refreshInvokerServiceName: schedule-rtu_refresh_invoker
+    proxyServiceName: schedule-rtu_proxy
 
 stages:
 - stage: dockerImage
