@@ -25,3 +25,4 @@ def parse_schedule():
 
     except Exception as err:
         print("Ошибка открытия файла!\n")
+        print(err.args)
