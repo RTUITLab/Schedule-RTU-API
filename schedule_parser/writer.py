@@ -158,7 +158,3 @@ class New_to_old_table:
 
         wb.save(self.outfile)
 
-
-if __name__ == "__main__":
-    wr = New_to_old_table("parser/template.xlsx", "parser/table.db", "parser/out.xlsx", "09.02.2018", ["БСБО-11-17"])
-    wr.run()

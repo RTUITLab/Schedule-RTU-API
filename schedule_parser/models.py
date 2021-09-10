@@ -4,8 +4,8 @@ from app import app, db
 
 
 class Call(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    time = db.Column(db.String(6), unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True,  autoincrement=False)
+    name = db.Column(db.String(6), unique=True, nullable=False)
     lessons = db.relationship('Lesson', backref='call', lazy='dynamic')
 
     def __repr__(self):
@@ -13,8 +13,8 @@ class Call(db.Model):
 
 
 class Period(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    period = db.Column(db.String(8), unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
+    name = db.Column(db.String(8), unique=True, nullable=False)
     lessons = db.relationship('Lesson', backref='period', lazy='dynamic')
 
     def __repr__(self):
@@ -23,7 +23,7 @@ class Period(db.Model):
 
 class Teacher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    teacher_name = db.Column(db.String(50), unique=True, nullable=False)
+    name = db.Column(db.String(50), unique=True, nullable=False)
     lessons = db.relationship('Lesson', backref='teacher', lazy='dynamic')
 
     def __repr__(self):
@@ -31,15 +31,15 @@ class Teacher(db.Model):
 
 
 class LessonType(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    lesson_type = db.Column(db.String(20), unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=False)
+    name = db.Column(db.String(20), unique=True, nullable=False)
 
     def __repr__(self):
         return '<Lesson_Type %r>' % self.lesson_type
 
 
 class Week(db.Model):
-    week_num = db.Column(db.Integer, primary_key=True)
+    week_num = db.Column(db.Integer, primary_key=True, autoincrement=False)
     lessons = db.Column(db.Integer, db.ForeignKey('lesson.id'), nullable=False, primary_key=True)
 
     def __repr__(self):
@@ -57,7 +57,7 @@ class Discipline(db.Model):
 
 class Room(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    room_num = db.Column(db.String(70), unique=True, nullable=False)
+    name = db.Column(db.String(70), unique=True, nullable=False)
     lessons = db.relationship('Lesson', backref='room', lazy='dynamic')
 
     def __repr__(self):
@@ -66,7 +66,7 @@ class Room(db.Model):
 
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    group_num = db.Column(db.String(70), unique=True, nullable=False)
+    name = db.Column(db.String(70), unique=True, nullable=False)
     lessons = db.relationship('Lesson', backref='group', lazy='dynamic')
 
     def __repr__(self):
@@ -80,13 +80,14 @@ class Lesson(db.Model):
     period_id = db.Column(db.Integer, db.ForeignKey('period.id'), nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey('teacher.id'), nullable=False)
     lesson_type_id = db.Column(db.Integer, db.ForeignKey('lesson_type.id'), nullable=False)
-    week_id = db.relationship('Week', backref='lesson', lazy='dynamic')
-    subgroup_id = db.Column(db.Integer, nullable=True)
+    subgroup = db.Column(db.Integer, nullable=True)
     discipline_id = db.Column(db.Integer, db.ForeignKey('discipline.id'), nullable=False)
     room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
     day_of_week = db.Column(db.Integer, nullable=False)
     
+    week_id = db.relationship('Week', backref='lesson', lazy='dynamic')
+
     def __repr__(self):
         return '<Post %r>' % self.title
 
