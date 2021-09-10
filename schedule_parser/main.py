@@ -1,15 +1,35 @@
-from .postgres_reader import Reader
-from .downloader import Downloader
+import contextlib
 import sys
 import os.path
 import json
+
+from .postgres_reader import Reader
+from .downloader import Downloader
+from sqlalchemy import MetaData
+from sqlalchemy import create_engine
+from os import environ 
 
 
 def parse_schedule():
     global Downloader
     try:
-        # Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
-        # Download.download()
+        engine = create_engine(environ.get('CONNECTION_STRING'),
+                            encoding='utf-8', echo=True)
+        
+        meta = MetaData()
+
+        connection = engine.connect()
+        connection.execute( '''TRUNCATE TABLE lesson_on_week CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE lesson CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE discipline CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE "group" CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE room CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE teacher CASCADE''' )
+        connection.close()
+    
+        print("truncate")
+        Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
+        Download.download()
 
         print("downloaded")
         try:

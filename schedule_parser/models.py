@@ -38,9 +38,9 @@ class LessonType(db.Model):
         return '<Lesson_Type %r>' % self.name
 
 
-class Week(db.Model):
-    week_num = db.Column(db.Integer, primary_key=True, autoincrement=False)
-    lessons = db.Column(db.Integer, db.ForeignKey('lesson.id'), nullable=False, primary_key=True)
+class LessonOnWeek(db.Model):
+    week = db.Column(db.Integer, primary_key=True, autoincrement=False)
+    lesson = db.Column(db.Integer, db.ForeignKey('lesson.id'), nullable=False, primary_key=True)
 
     def __repr__(self):
         return '<Week %r>' % self.name
@@ -86,7 +86,7 @@ class Lesson(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
     day_of_week = db.Column(db.Integer, nullable=False)
     
-    week_id = db.relationship('Week', backref='lesson', lazy='dynamic')
+    week_id = db.relationship('LessonOnWeek', backref='lessons', lazy='dynamic')
 
     def __repr__(self):
         return '<Post %r>' % self.id

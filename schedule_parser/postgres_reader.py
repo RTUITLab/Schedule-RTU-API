@@ -190,73 +190,69 @@ class Reader:
                 # session.add(instance)
                 # session.commit()
                 
-        # def add_weeks(weeks, lesson):
-        #     for week in weeks:
-        #         week_l = models.
-        #         db.session.add(week_l)
+        def add_weeks(weeks, lesson):
+            for week in weeks:
+                week_l = models.LessonOnWeek(week=week, lesson=lesson)
+                db.session.add(week_l)
 
-        def data_append_to_lesson(group, period, discipline, teacher, day_num,
+        def data_append_to_lesson(group, period, teacher, day_num,
                                   call,
                                   week, lesson_type, room, discipline_name, include, exception):
             
 
-            # weeks = []
-            # less = ""
+            weeks = []
+            less = ""
             
-            # if "кр." in discipline_name:
-            #     exc = discipline_name.split("н.")[0]
-            #     less = discipline_name.split("н.")[1].strip()
-            #     regex_num = re.compile(r'\d+')
-            #     weeks = [int(item) for item in regex_num.findall(exc)] 
+            if "кр." in discipline_name:
+                exc = discipline_name.split("н.")[0]
+                less = discipline_name.split("н.")[1].strip()
+                regex_num = re.compile(r'\d+')
+                weeks = [int(item) for item in regex_num.findall(exc)] 
                 
-            #     # usless
-            #     # if "-" in exc:
-            #     #     weeks = range(2, 16, 2)
-            #     #     .extend(L)
-            #     #     weeks = range(2, 16, 2)
-            #     # else:
-            #     #     pass
+                # usless
+                # if "-" in exc:
+                #     weeks = range(2, 16, 2)
+                #     .extend(L)
+                #     weeks = range(2, 16, 2)
+                # else:
+                #     pass
 
-            # elif " н." in discipline_name or " н " in discipline_name or ("н." in discipline_name and "Ин." not in discipline_name):
-            #     if " н." in discipline_name:
-            #         exc = discipline_name.split(" н.")[0]
-            #         less = discipline_name.split(" н.")[1].strip()
-            #     elif "н." in discipline_name:
-            #         exc = discipline_name.split("н.")[0]
-            #         less = discipline_name.split("н.")[1].strip()
-            #     elif " н " in discipline_name:
-            #         exc = discipline_name.split(" н ")[0]
-            #         less = discipline_name.split(" н ")[1].strip()
-            #     regex_num = re.compile(r'\d+')  
-            #     weeks = [int(item) for item in regex_num.findall(exc)]
-            #     if len(weeks) > 0:
-            #         print(discipline_name)
+            elif " н." in discipline_name or " н " in discipline_name or ("н." in discipline_name and "Ин." not in discipline_name):
+                if " н." in discipline_name:
+                    exc = discipline_name.split(" н.")[0]
+                    less = discipline_name.split(" н.")[1].strip()
+                elif "н." in discipline_name:
+                    exc = discipline_name.split("н.")[0]
+                    less = discipline_name.split("н.")[1].strip()
+                elif " н " in discipline_name:
+                    exc = discipline_name.split(" н ")[0]
+                    less = discipline_name.split(" н ")[1].strip()
+                regex_num = re.compile(r'\d+')  
+                weeks = [int(item) for item in regex_num.findall(exc)]
 
-            #     if "-" in exc:
-            #         weeks = 
-            #         pass
-            #     else:
+                if "-" in exc:
+                    weeks = range(weeks[1], 16, weeks[2])
+                    pass
                     
-            #         if (week in weeks):
-            #             pass
-
-            # else:
-            #     less = discipline_name
-            #     if week == 1:
-            #         weeks = range(1, 16, 2)
-            #     else:
-            #         weeks = range(2, 16, 2)
+            else:
+                less = discipline_name
+                if week == 1:
+                    weeks = range(1, 16, 2)
+                else:
+                    weeks = range(2, 16, 2)
                 
-
+            discipline = get_or_create(session=db.session, model=models.Discipline, name=less.strip())
+            db.session.commit()
             lesson = models.Lesson(call_id=call, period_id=period, 
                                    teacher_id=teacher, lesson_type_id=lesson_type, 
-                                   subgroup=None, discipline_id=discipline, 
+                                   subgroup=None, discipline_id=discipline.id, 
                                    room_id=room, group_id=group, 
                                    day_of_week = day_num)
             db.session.add(lesson)
-            
-            # add_weeks(weeks, lesson.id)
+            db.session.commit()
+            add_weeks(weeks, lesson.id)
 
+        
             
         append_from_dict(self.periods, db.session, models.Period)
         append_from_dict(self.time_dict, db.session, models.Call)
@@ -270,7 +266,7 @@ class Reader:
             if len(group_name) > 0:
                 print("Add schedule for ", group_name)
                 group_name = group_name[0]
-                group = get_or_create(session=db.session, model=models.Group, name=group_name).id
+                group = get_or_create(session=db.session, model=models.Group, name=group_name)
 
             for n_day, day_item in sorted(value.items()):
                 
@@ -306,17 +302,17 @@ class Reader:
                                 lesson_type = self.lesson_types[""]
                                 
 
-                            teacher = get_or_create(session=db.session, model=models.Teacher, name=dist['teacher']).id #### TODO
-                            discipline = get_or_create(session=db.session, model=models.Discipline, name=dist['name']).id ### TODO
-                            room = get_or_create(session=db.session, model=models.Room, name=dist['room']).id #### TODO
-
+                            teacher = get_or_create(session=db.session, model=models.Teacher, name=dist['teacher'])
+                            room = get_or_create(session=db.session, model=models.Room, name=dist['room'])
+                            
+                            db.session.commit()
                             occupation = 1
-                            data_append_to_lesson(group, occupation, discipline, teacher,
+                            data_append_to_lesson(group.id, occupation, teacher.id,
                                                     day_num,
                                                     call_num,
-                                                    week, lesson_type, room, dist['name'], include, exception) #### TODO
+                                                    week, lesson_type, room.id , dist['name'], include, exception)
+
         db.session.commit()
-        
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
         """

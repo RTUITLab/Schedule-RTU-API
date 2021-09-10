@@ -3,7 +3,7 @@ from flask import Flask, flash, request, redirect, url_for, session, jsonify, re
 import requests
 from os import environ  
 import datetime
-from schedule import today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched, for_cache
+from schedule import today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched
 import sys
 
 sys.path.append('..')
@@ -349,14 +349,14 @@ def full_schedule(group):
   res = Response(headers={'Retry-After':200}, status=503)
   return res 
 
-@app.route('/api/schedule/schedule_for_cache', methods=["GET"])
-def schedule_for_cache():
+# @app.route('/api/schedule/schedule_for_cache', methods=["GET"])
+# def schedule_for_cache():
 
-  sch = for_cache()
-  if sch:
-    response = jsonify(sch)
-    # return "today for{} is {}".format(group, res)
-    return make_response(response)
-  res = Response(headers={'Retry-After':200}, status=503)
-  return res
+#   sch = for_cache()
+#   if sch:
+#     response = jsonify(sch)
+#     # return "today for{} is {}".format(group, res)
+#     return make_response(response)
+#   res = Response(headers={'Retry-After':200}, status=503)
+#   return res
 

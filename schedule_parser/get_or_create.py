@@ -5,5 +5,4 @@ def get_or_create(session, model, **kwargs):
     else:
         instance = model(**kwargs)
         session.add(instance)
-        session.commit()
         return instance
