@@ -1,14 +1,29 @@
-trigger:
-  - master
-
 name: $(BuildID)-$(Build.SourceBranchName)
 
 pool:
   vmImage: "ubuntu-latest"
 
+${{ if notIn(variables['Build.SourceBranchName'], 'master', 'develop') }}:
+  buildImage: false
+  deployService: false
+  deployEnvironment: 'no'
+  imageTags: 'no'
+  serviceName: 'no'
+
+${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+  buildImage: true
+  deployService: true
+  deployEnvironment: production
+  imageTags: |
+    $(Build.BuildId)
+    latest
+  apiServiceName: schedule-rtu_api
+  refreshInvokerServiceName: schedule-rtu_api
+  proxyServiceName: schedule-rtu_api
+
 stages:
 - stage: dockerImage
-  condition: ${{variables.buildImage}}
+  condition: and(succeeded(), ${{variables.buildImage}})
   jobs:
   - job: dockerBuild
     strategy:
@@ -34,11 +49,12 @@ stages:
           $(Build.BuildId)
           latest
 - stage: UpdateServices
+  condition: and(succeeded(), ${{variables.deployService}})
   jobs:
   - deployment: DeployApi
     pool:
       vmImage: 'ubuntu-latest'
-    environment: production
+    environment: ${{variables.deployEnvironment}}
     strategy:
       runOnce:
         deploy:
@@ -48,7 +64,7 @@ stages:
               inputs:
                 sshEndpoint: 'swarm manager'
                 runOptions: 'commands'
-                commands: 'docker service update --image rtuitlab/schedule-rtu-api:$(Build.BuildId) schedule-rtu_api --with-registry-auth'
+                commands: 'docker service update --image rtuitlab/schedule-rtu-api:$(Build.BuildId) ${{variables.apiServiceName}} --with-registry-auth'
                 readyTimeout: '20000'
   - deployment: DeployRefreshInvoker
     pool:
@@ -63,7 +79,7 @@ stages:
               inputs:
                 sshEndpoint: 'swarm manager'
                 runOptions: 'commands'
-                commands: 'docker service update --image rtuitlab/schedule-rtu-refresh-invoker:$(Build.BuildId) schedule-rtu_refresh_invoker --with-registry-auth'
+                commands: 'docker service update --image rtuitlab/schedule-rtu-refresh-invoker:$(Build.BuildId) ${{variables.refreshInvokerServiceName}} --with-registry-auth'
                 readyTimeout: '20000'
   - deployment: DeployProxy
     pool:
@@ -78,5 +94,5 @@ stages:
               inputs:
                 sshEndpoint: 'swarm manager'
                 runOptions: 'commands'
-                commands: 'docker service update --image rtuitlab/schedule-rtu-proxy:$(Build.BuildId) schedule-rtu_proxy --with-registry-auth'
+                commands: 'docker service update --image rtuitlab/schedule-rtu-proxy:$(Build.BuildId) ${{variables.proxyServiceName}} --with-registry-auth'
                 readyTimeout: '20000'
