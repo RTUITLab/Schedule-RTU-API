@@ -136,3 +136,5 @@ migrations/
 /xls
 *.db
 *.pgsql
+stack.yml
+

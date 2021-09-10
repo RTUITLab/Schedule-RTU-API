@@ -36,7 +36,6 @@ def cur_week(today):
         week+=1
     return week
 
-
 def return_one_day(today, group, alter_format = None):
     week = cur_week(today)
     result = []
@@ -234,3 +233,22 @@ def full_sched(group):
     if cur_week(datetime.now(tz=time_zone))%2 == 1: 
         return {"first": res, "second": res2}
     return {"first": res2, "second": res}
+
+def get_schedule_by_week(group, week):
+    today = datetime.now(tz=time_zone)
+    day_of_week = today.isocalendar()[2]
+    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    res = {}
+    for i in range(6):
+        day = return_one_day_by_week(week, i, group)
+        if day:
+            res[days[i-1]] = day
+        else:
+            return None
+    return res
+
+def get_full_schedule_by_weeks(group, max_weeks):
+    schedule = []
+    for i in range(1, max_weeks+1):
+        schedule.append(get_schedule_by_week(group, i))
+    return schedule if len(schedule) > 0 else None
