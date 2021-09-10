@@ -1,25 +1,43 @@
-from .reader import Reader
-from .downloader import Downloader
-from .writer import New_to_old_table
+import contextlib
 import sys
 import os.path
 import json
+
+from .postgres_reader import Reader
+from .downloader import Downloader
+from sqlalchemy import MetaData
+from sqlalchemy import create_engine
+from os import environ 
 
 
 def parse_schedule():
     global Downloader
     try:
+        engine = create_engine(environ.get('CONNECTION_STRING'),
+                            encoding='utf-8', echo=True)
+        
+        meta = MetaData()
+
+        connection = engine.connect()
+        connection.execute( '''TRUNCATE TABLE lesson_on_week CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE lesson CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE discipline CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE "group" CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE room CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE teacher CASCADE''' )
+        connection.close()
+    
+        print("truncate")
         Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
         Download.download()
-        # os.remove("xls/semester/.DS_Store")
-        # os.remove("xls/.DS_Store")
+
         print("downloaded")
         try:
-            reader = Reader(path_to_db="table.db")
+            reader = Reader()
         except:
             print("Reader error")
         print("start reading")
-        reader.run('xls', write_to_db=True, write_to_new_db=True, write_to_json_file=False, write_to_csv_file=False)
+        reader.run('xls')
         print("\nКонвертация успешно выполнена!\n\n")
 
     except FileNotFoundError as err:
@@ -27,3 +45,4 @@ def parse_schedule():
 
     except Exception as err:
         print("Ошибка открытия файла!\n")
+        print(err.args)

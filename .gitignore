@@ -135,5 +135,6 @@ migrations/
 /output
 /xls
 *.db
-
+*.pgsql
 stack.yml
+

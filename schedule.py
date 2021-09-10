@@ -1,10 +1,12 @@
-from connect import connect_to_sqlite
+# from connect import connect_to_sqlite
 import datetime as dt
-from datetime import datetime, date, time
 import re
+from datetime import datetime, date, time
+
 from schedule_parser.main import parse_schedule
 from pprint import pprint
-
+from app import db
+from schedule_parser import models
 
 offset = dt.timedelta(hours=3)
 
@@ -34,212 +36,81 @@ def cur_week(today):
         week+=1
     return week
 
-def format_lesson(record, day_of_week, week, today=None):
-    day = [{
-        "time" : {"start": '9:00', "end": '10:30'},
-        "lesson": None
-    }, {
-        "time" : {"start": '10:40', "end": '12:10'},
-        "lesson": None
-    }, {
-        "time" : {"start": '12:40', "end": '14:10'},
-        "lesson": None
-    }, {
-        "time" :{"start": '14:20', "end": '15:50'} ,
-        "lesson": None
-    }, {
-        "time" : {"start": '16:20', "end": '17:50'},
-        "lesson": None
-    }, {
-        "time" : {"start": '18:00', "end": '19:30'},
-        "lesson": None
-    }, { 
-        "time" : {"start": '19:40', "end": '21:10'},
-        "lesson": None
-    }]
-    for lesson in record:
-        res_lesson = {}
-        typ = lesson[3].split()
-        typ.append('')
-        less = lesson[2] 
-        if "кр." in less or "кр " in less:
-            exc = less.split("н.")[0]
-            less = less.split("н.")[1].strip()
-            regex_num = re.compile(r'\d+')
-            weeks = [int(item) for item in regex_num.findall(exc)] 
-            if "-" in exc:
-                
-                if not (weeks[0]<=week and week <= weeks[1]):
-                    res_lesson["classRoom"] = lesson[4]
-                    res_lesson["teacher"] = lesson[5]
-                    res_lesson["name"] = less
-                    res_lesson["type"] = typ[0]
-                    day[lesson[0]-1]["lesson"] = res_lesson
-
-            else:
-
-                if not (week in weeks):
-                    res_lesson["classRoom"] = lesson[4]
-                    res_lesson["teacher"] = lesson[5]
-                    res_lesson["name"] = less
-                    res_lesson["type"] = typ[0]
-                    day[lesson[0]-1]["lesson"] = res_lesson
-
-        elif " н." in less or " н " in less or ("н." in less and "Ин." not in less):
-            if " н." in less:
-                exc = less.split(" н.")[0]
-                less = less.split(" н.")[1].strip()
-            elif "н." in less:
-                exc = less.split("н.")[0]
-                less = less.split("н.")[1].strip()
-            elif " н " in less:
-                exc = less.split(" н ")[0]
-                less = less.split(" н ")[1].strip()
-            regex_num = re.compile(r'\d+')  
-            weeks = [int(item) for item in regex_num.findall(exc)]
-
-            if "-" in exc:
-                
-                if (weeks[0]<=week and week <= weeks[1]):
-                    res_lesson["classRoom"] = lesson[4]
-                    res_lesson["teacher"] = lesson[5]
-                    res_lesson["name"] = less
-                    res_lesson["type"] = typ[0]
-                    day[lesson[0]-1]["lesson"] = res_lesson
-
-            else:
-                if (week in weeks):
-                    res_lesson["classRoom"] = lesson[4]
-                    res_lesson["teacher"] = lesson[5]
-                    res_lesson["name"] = less
-                    res_lesson["type"] = typ[0]
-                    day[lesson[0]-1]["lesson"] = res_lesson
-
-        else:
-            res_lesson["classRoom"] = lesson[4]
-            res_lesson["teacher"] = lesson[5]
-            res_lesson["name"] = less
-            res_lesson["type"] = typ[0]
-            day[lesson[0]-1]["lesson"] = res_lesson
-
-    return day
-
-def alter_format_lesson(record, day_of_week, week, today):
-    day = [{
-        "time" : {"start": '9:00', "end": '10:30'},
-        "lesson": None
-    }, {
-        "time" : {"start": '10:40', "end": '12:10'},
-        "lesson": None
-    }, {
-        "time" : {"start": '12:40', "end": '14:10'},
-        "lesson": None
-    }, {
-        "time" :{"start": '14:20', "end": '15:50'} ,
-        "lesson": None
-    }, {
-        "time" : {"start": '16:20', "end": '17:50'},
-        "lesson": None
-    }, {
-        "time" : {"start": '18:00', "end": '19:30'},
-        "lesson": None
-    }, { 
-        "time" : {"start": '19:40', "end": '21:10'},
-        "lesson": None
-    }]
-    
-    for lesson in record:
-        res_lesson = {}
-        typ = lesson[3].split()
-        typ.append('')
-        less = lesson[2]
-        if(day[lesson[0]-1]["lesson"]): 
-            day[lesson[0]-1]["lesson"]["classRoom"] = day[lesson[0]-1]["lesson"]["classRoom"] + "\n" + lesson[4]
-
-            day[lesson[0]-1]["lesson"]["teacher"] = day[lesson[0]-1]["lesson"]["teacher"] + "\n" + lesson[5]
-
-            day[lesson[0]-1]["lesson"]["name"] = day[lesson[0]-1]["lesson"]["name"] + "\n" + less
-            day[lesson[0]-1]["lesson"]["type"] = day[lesson[0]-1]["lesson"]["type"] + "\n" + typ[0]
-        else:
-            res_lesson["classRoom"] = lesson[4]
-            res_lesson["teacher"] = lesson[5]
-            res_lesson["name"] = less
-            res_lesson["type"] = typ[0]
-            day[lesson[0]-1]["lesson"] = res_lesson
-    return day
-
 def return_one_day(today, group, alter_format = None):
     week = cur_week(today)
-    try:
-        cursor = connect_to_sqlite()
-        day_of_week = today.isocalendar()[2]
-        if (week%2):
-            current_week = 1
-        else:
-            current_week = 2
-        sqlite_select_Query = "SELECT schedule_calls.call_id, lessons.call_time, discipline_name, lesson_types.lesson_type_name, room_num, teacher_name  \
-                            FROM lessons\
-                            Join disciplines ON discipline_id = discipline\
-                            Join schedule_calls ON call_id = call_num\
-                            Join rooms On room_id = room\
-                            JOIN teachers On teacher = teacher_id\
-                            JOIN groups on group_id = group_num\
-                            JOIN lesson_types on lesson_type_id = lesson_type\
-                            WHERE groups.group_name = :group AND day = :day AND week = :week \
-                            order by schedule_calls.call_id"
-        cursor.execute(sqlite_select_Query, {'group':group, 'day':day_of_week, 'week':current_week})
-        record = cursor.fetchall()
-        cursor.close()
-        if alter_format:
-            return alter_format_lesson(record, day_of_week, week, today)
-        return format_lesson(record, day_of_week, week, today)
-    except:
-        print("No database")
-        return None
-
-def return_one_day_by_week(week, day_of_week, group):
-    try:
-        cursor = connect_to_sqlite()
-        if (week % 2):
-            current_week = 1
-        else:
-            current_week = 2
-        sqlite_select_Query = "SELECT schedule_calls.call_id, lessons.call_time, discipline_name, lesson_types.lesson_type_name, room_num, teacher_name  \
-                            FROM lessons\
-                            Join disciplines ON discipline_id = discipline\
-                            Join schedule_calls ON call_id = call_num\
-                            Join rooms On room_id = room\
-                            JOIN teachers On teacher = teacher_id\
-                            JOIN groups on group_id = group_num\
-                            JOIN lesson_types on lesson_type_id = lesson_type\
-                            WHERE groups.group_name = :group AND day = :day AND week = :week \
-                            order by schedule_calls.call_id"
-        cursor.execute(sqlite_select_Query, {'group':group, 'day':day_of_week, 'week': current_week})
-        record = cursor.fetchall()
-        cursor.close()
-        return format_lesson(record, day_of_week, week)
-    except:
-        print("No database")
-        return None
+    result = []
+    day_of_week = today.isocalendar()[2]
     
-def for_cache(): 
+    day = [{
+        "time" : {"start": '9:00', "end": '10:30'},
+        "lesson": None
+    }, {
+        "time" : {"start": '10:40', "end": '12:10'},
+        "lesson": None
+    }, {
+        "time" : {"start": '12:40', "end": '14:10'},
+        "lesson": None
+    }, {
+        "time" :{"start": '14:20', "end": '15:50'} ,
+        "lesson": None
+    }, {
+        "time" : {"start": '16:20', "end": '17:50'},
+        "lesson": None
+    }, {
+        "time" : {"start": '18:00', "end": '19:30'},
+        "lesson": None
+    }, { 
+        "time" : {"start": '19:40', "end": '21:10'},
+        "lesson": None
+    }]
+    
     try:
-        cursor = connect_to_sqlite()
-        sqlite_select_Query = "SELECT group_name FROM groups where group_name like 'И%';"
-        cursor.execute(sqlite_select_Query)
-        record = cursor.fetchall()
-        cursor.close()
-        res = {}
-
-        for group in record:
-            group = group[0]
-            print(group)
-            res[group] = full_sched(group)
+        group = models.Group.query.filter_by(name=group).first()
         
-        return res
-    except:
-        print("No database")
+        if not group:
+            return None
+
+        lessons = models.Lesson.query.filter_by(group_id=group.id, day_of_week=day_of_week)
+        
+        
+        for lesson in lessons:
+            if models.LessonOnWeek.query.filter_by(week=week, lesson=lesson.id):
+                res_lesson = {}
+                
+                res_lesson["classRoom"] = models.Room.query.get(lesson.room_id).name
+                res_lesson["teacher"] = models.Teacher.query.get(lesson.teacher_id).name
+                res_lesson["name"] = models.Discipline.query.get(lesson.discipline_id).name
+                res_lesson["type"] = models.LessonType.query.get(lesson.lesson_type_id).name
+                
+                day[lesson.call_id]['lesson'] = res_lesson
+                
+    except Exception as e:
+        print("Error", e)
         return None
+    return day
+        # sqlite_select_Query = "SELECT schedule_calls.call_id, lessons.call_time, discipline_name, lesson_types.lesson_type_name, room_num, teacher_name  \
+        #                     FROM lessons\
+        #                     Join disciplines ON discipline_id = discipline\
+        #                     Join schedule_calls ON call_id = call_num\
+        #                     Join rooms On room_id = room\
+        #                     JOIN teachers On teacher = teacher_id\
+        #                     JOIN groups on group_id = group_num\
+        #                     JOIN lesson_types on lesson_type_id = lesson_type\
+        #                     WHERE groups.group_name = :group AND day = :day AND week = :week \
+        #                     order by schedule_calls.call_id"
+        # cursor.execute(sqlite_select_Query, {'group':group, 'day':day_of_week, 'week':current_week})
+        
+        # record = cursor.fetchall()
+        # cursor.close()
+        
+        
+    #     if alter_format:
+    #         return alter_format_lesson(record, day_of_week, week, today)
+    #     return format_lesson(record, day_of_week, week, today)
+    # except:
+    #     print("No database")
+    #     return None
+
 
 def get_groups():
     courses = {
@@ -249,24 +120,21 @@ def get_groups():
         res = {"bachelor": {"first":[], "second":[], "third":[], "fourth":[]},
                 "master": {"first":[], "second":[]}
         }
-        cursor = connect_to_sqlite()
-        sqlite_select_Query = "SELECT group_name FROM groups where group_name like 'И%';"
-        cursor.execute(sqlite_select_Query)
-        record = cursor.fetchall()
-        cursor.close()
+        # cursor = connect_to_sqlite()
+        record = models.Group.query.filter(models.Group.name.startswith('И')).all()
         m = []
         b = []
         a = []
         m_courses = {}
         b_courses = {}
         max_year = 0
-        for group in record:
-            group = group[0]
+        for group_m in record:
+            group = group_m.name
             max_year = max(max_year, int(group[-2]+group[-1]))
         
         
-        for group in record:
-            group = group[0]
+        for group_m in record:
+            group = group_m.name
             
             if group[2] == "М":
                 course = max_year - int(group[-2]+group[-1]) + 1
@@ -297,9 +165,13 @@ def get_groups():
             else:
                 a.append(group)
         return res
-    except:
+    except Exception as e:
         print("No database")
+        print(e.args)
         return None
+
+
+
 
 def today_sch(group):
     today = datetime.now(tz=time_zone)

@@ -164,7 +164,7 @@ class Reader:
                     continue
                 path_to_xlsx_file = os.path.join(path, file_name)
                 print(path_to_xlsx_file)
-                if("ИКиб_маг_2к" in path_to_xlsx_file):
+                if("ИКиб_маг_2к" in path_to_xlsx_file or ".DS_Store" in path_to_xlsx_file):
                     continue
                 xlsx_doc_type = get_doc_type_code(os.path.dirname(os.path.relpath(path_to_xlsx_file, start='xls')))
 
@@ -343,7 +343,7 @@ class Reader:
                 date_range_dict[this_row_date.strftime("%d.%m")].append(date_item[2])
 
             return date_range_dict
-
+            
         book = xlrd.open_workbook(xlsx_path, on_demand = True)
         sheet = book.sheet_by_index(0)
         DOC_TYPE_EXAM = 2
@@ -392,13 +392,13 @@ class Reader:
 
                 for key in one_time_table.keys():
                     timetable[key] = one_time_table[key]  # Добавление в общий словарь
-
         if write_to_json_file is not False:  # Запись в JSON файл
             self.write_to_json(timetable, doc_type)
         if write_to_csv_file is not False or write_to_db is not False:  # Запись в CSV файл, Запись в базу данных
             self.write_to_csv_and_old_db(doc_type, timetable, write_to_csv_file, write_to_db)
         if write_to_new_db is not False:
             self.write_to_db(doc_type, timetable, write_to_db)
+        print(timetable)
         book.release_resources()
         del book
         return group_list
