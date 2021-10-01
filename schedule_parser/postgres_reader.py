@@ -231,15 +231,19 @@ class Reader:
                 weeks = [int(item) for item in regex_num.findall(exc)]
 
                 if "-" in exc:
-                    weeks = range(weeks[1], 16, weeks[2])
+
+                    weeks = list(range(weeks[0], weeks[1], 17))
                     pass
                     
             else:
                 less = discipline_name
-                if week == 1:
-                    weeks = range(1, 16, 2)
+                if int(week)%2 == 1:
+                    weeks = list(range(1, 17, 2))
+                    print(1, weeks, week)
+                    
                 else:
-                    weeks = range(2, 16, 2)
+                    weeks = list(range(2, 17, 2))
+                    print(2, weeks, week)
                 
             discipline = get_or_create(session=db.session, model=models.Discipline, name=less.strip())
             db.session.commit()
@@ -302,7 +306,7 @@ class Reader:
                                 lesson_type = self.lesson_types[""]
                                 
 
-                            teacher = get_or_create(session=db.session, model=models.Teacher, name=dist['teacher'])
+                            teacher = get_or_create(session=db.session, model=models.Teacher, name=dist['teacher'][:49])
                             room = get_or_create(session=db.session, model=models.Room, name=dist['room'])
                             
                             db.session.commit()

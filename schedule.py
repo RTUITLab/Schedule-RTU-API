@@ -12,13 +12,13 @@ offset = dt.timedelta(hours=3)
 
 
 rings = {
-    1: {"start": '9:00', "end": '10:30'},
-    2: {"start": '10:40', "end": '12:10'},
-    3: {"start": '12:40', "end": '14:10'},
-    4: {"start": '14:20', "end": '15:50'},
-    5: {"start": '16:20', "end": '17:50'},
-    6: {"start": '18:00', "end": '19:30'},
-    7: {"start": '19:40', "end": '21:10'},
+    0: {"start": '9:00', "end": '10:30'},
+    1: {"start": '10:40', "end": '12:10'},
+    2: {"start": '12:40', "end": '14:10'},
+    3: {"start": '14:20', "end": '15:50'},
+    4: {"start": '16:20', "end": '17:50'},
+    5: {"start": '18:00', "end": '19:30'},
+    6: {"start": '19:40', "end": '21:10'},
 }
 
 time_zone = dt.timezone(offset, name='МСК')
@@ -40,6 +40,7 @@ def return_one_day(today, group, alter_format = None):
     week = cur_week(today)
     result = []
     day_of_week = today.isocalendar()[2]
+    print(week, day_of_week)
     
     day = [{
         "time" : {"start": '9:00', "end": '10:30'},
@@ -74,7 +75,8 @@ def return_one_day(today, group, alter_format = None):
         
         
         for lesson in lessons:
-            if models.LessonOnWeek.query.filter_by(week=week, lesson=lesson.id):
+            a = models.LessonOnWeek.query.filter_by(week=week, lesson=lesson.id).first()
+            if a:
                 res_lesson = {}
                 
                 res_lesson["classRoom"] = models.Room.query.get(lesson.room_id).name
