@@ -239,11 +239,9 @@ class Reader:
                 less = discipline_name
                 if int(week)%2 == 1:
                     weeks = list(range(1, 17, 2))
-                    print(1, weeks, week)
                     
                 else:
                     weeks = list(range(2, 17, 2))
-                    print(2, weeks, week)
                 
             discipline = get_or_create(session=db.session, model=models.Discipline, name=less.strip())
             db.session.commit()

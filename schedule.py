@@ -12,13 +12,13 @@ offset = dt.timedelta(hours=3)
 
 
 rings = {
-    0: {"start": '9:00', "end": '10:30'},
-    1: {"start": '10:40', "end": '12:10'},
-    2: {"start": '12:40', "end": '14:10'},
-    3: {"start": '14:20', "end": '15:50'},
-    4: {"start": '16:20', "end": '17:50'},
-    5: {"start": '18:00', "end": '19:30'},
-    6: {"start": '19:40', "end": '21:10'},
+    1: {"start": '9:00', "end": '10:30'},
+    2: {"start": '10:40', "end": '12:10'},
+    3: {"start": '12:40', "end": '14:10'},
+    4: {"start": '14:20', "end": '15:50'},
+    5: {"start": '16:20', "end": '17:50'},
+    6: {"start": '18:00', "end": '19:30'},
+    7: {"start": '19:40', "end": '21:10'},
 }
 
 time_zone = dt.timezone(offset, name='МСК')
@@ -36,11 +36,11 @@ def cur_week(today):
         week+=1
     return week
 
-def return_one_day(today, group, alter_format = None):
+def return_one_day(today, gr):
     week = cur_week(today)
     result = []
     day_of_week = today.isocalendar()[2]
-    print(week, day_of_week)
+    
     
     day = [{
         "time" : {"start": '9:00', "end": '10:30'},
@@ -64,10 +64,10 @@ def return_one_day(today, group, alter_format = None):
         "time" : {"start": '19:40', "end": '21:10'},
         "lesson": None
     }]
-    
+
     try:
-        group = models.Group.query.filter_by(name=group).first()
-        
+        group = models.Group.query.filter_by(name=gr.strip()).first()
+        print(str(group), gr)
         if not group:
             return None
 
@@ -84,7 +84,7 @@ def return_one_day(today, group, alter_format = None):
                 res_lesson["name"] = models.Discipline.query.get(lesson.discipline_id).name
                 res_lesson["type"] = models.LessonType.query.get(lesson.lesson_type_id).name
                 
-                day[lesson.call_id]['lesson'] = res_lesson
+                day[lesson.call_id-1]['lesson'] = res_lesson
                 
     except Exception as e:
         print("Error", e)
@@ -220,14 +220,14 @@ def full_sched(group):
 
     for i in range(6):
         today = datetime.now(tz=time_zone) + dt.timedelta(days=i-day_of_week+1)
-        day = return_one_day(today, group, alter_format=1)
+        day = return_one_day(today, group)
         if day:
             res[days[i]] = day
         else:
             return None
     for i in range(6):
         today = datetime.now(tz=time_zone) + dt.timedelta(days=i-day_of_week+1) + dt.timedelta(days=7)
-        day = return_one_day(today, group, alter_format=1)
+        day = return_one_day(today, group)
         if day:
             res2[days[i]] = day
         else:
