@@ -1,10 +1,6 @@
 # from connect import connect_to_sqlite
 import datetime as dt
-import re
 from datetime import datetime, date, time
-
-from schedule_parser.main import parse_schedule
-from pprint import pprint
 from app import db
 from schedule_parser import models
 
@@ -254,3 +250,17 @@ def get_full_schedule_by_weeks(group, max_weeks):
     for i in range(1, max_weeks+1):
         schedule.append(get_schedule_by_week(group, i))
     return schedule if len(schedule) > 0 else None
+
+def get_teachers():
+    rows = models.Teacher.query.all()
+    teachers = []
+    for i in rows:
+        teachers.append(i.name)
+    return teachers
+
+def get_teacher_schedule(teacher_name):
+    rows = models.Teacher.query.filter(models.Teacher.name==teacher_name)
+    teachers = []
+    for i in rows:
+        teachers.append(i.name)
+    return teachers

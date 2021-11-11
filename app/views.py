@@ -4,7 +4,7 @@ import requests
 from os import environ
 import datetime
 
-from schedule import today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched
+from schedule import get_full_schedule_by_weeks, get_schedule_by_week, get_teachers, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched
 
 import sys
 
@@ -229,9 +229,10 @@ def week(group):
     res = Response(headers={'Retry-After':200}, status=503)
     return res
 
+
 @app.route('/api/schedule/get_groups', methods=["GET"])
 def groups():
-  """Next week's schedule for requested group
+  """List of groups in IIT
     ---
       
     responses:
@@ -252,6 +253,7 @@ def groups():
     return make_response(response)
   res = Response(headers={'Retry-After':200}, status=503)
   return res
+
 
 @app.route('/api/schedule/<string:group>/next_week', methods=["GET"])
 def next_week(group):
@@ -426,4 +428,27 @@ def get_week_schedule_by_week_num(group, week):
 #     return make_response(response)
 #   res = Response(headers={'Retry-After':200}, status=503)
 #   return res
+
+
+@app.route('/api/schedule/teachers/get_teachers', methods=["GET"])
+def teachers():
+  """List of teachers in IIT
+    ---
+    responses:
+      200:
+        description: Return all teachers in IIT.
+        schema:
+          type: array
+          items: 
+            type: string
+      503:
+          description: Retry-After:100
+  """
+  res = get_teachers()
+  if res:
+    response = jsonify(res)
+    print(res)
+    return make_response(response)
+  res = Response(headers={'Retry-After':200}, status=503)
+  return res
 
