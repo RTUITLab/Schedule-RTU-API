@@ -86,28 +86,6 @@ def return_one_day(today, gr):
         print("Error", e)
         return None
     return day
-        # sqlite_select_Query = "SELECT schedule_calls.call_id, lessons.call_time, discipline_name, lesson_types.lesson_type_name, room_num, teacher_name  \
-        #                     FROM lessons\
-        #                     Join disciplines ON discipline_id = discipline\
-        #                     Join schedule_calls ON call_id = call_num\
-        #                     Join rooms On room_id = room\
-        #                     JOIN teachers On teacher = teacher_id\
-        #                     JOIN groups on group_id = group_num\
-        #                     JOIN lesson_types on lesson_type_id = lesson_type\
-        #                     WHERE groups.group_name = :group AND day = :day AND week = :week \
-        #                     order by schedule_calls.call_id"
-        # cursor.execute(sqlite_select_Query, {'group':group, 'day':day_of_week, 'week':current_week})
-        
-        # record = cursor.fetchall()
-        # cursor.close()
-        
-        
-    #     if alter_format:
-    #         return alter_format_lesson(record, day_of_week, week, today)
-    #     return format_lesson(record, day_of_week, week, today)
-    # except:
-    #     print("No database")
-    #     return None
 
 
 def get_groups():
@@ -251,6 +229,59 @@ def get_full_schedule_by_weeks(group, max_weeks):
         schedule.append(get_schedule_by_week(group, i))
     return schedule if len(schedule) > 0 else None
 
+
+def return_teacher_one_day(today, teacher_name):
+    week = cur_week(today)
+    day_of_week = today.isocalendar()[2]
+    day = [{
+        "time" : {"start": '9:00', "end": '10:30'},
+        "lesson": None
+    }, {
+        "time" : {"start": '10:40', "end": '12:10'},
+        "lesson": None
+    }, {
+        "time" : {"start": '12:40', "end": '14:10'},
+        "lesson": None
+    }, {
+        "time" :{"start": '14:20', "end": '15:50'} ,
+        "lesson": None
+    }, {
+        "time" : {"start": '16:20', "end": '17:50'},
+        "lesson": None
+    }, {
+        "time" : {"start": '18:00', "end": '19:30'},
+        "lesson": None
+    }, { 
+        "time" : {"start": '19:40', "end": '21:10'},
+        "lesson": None
+    }]
+
+    try:
+        teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name)
+        
+        print(str(teacher), teacher_name)
+        if not teacher:
+            return None
+        lessons = models.Lesson.query.filter_by(teacher_id=teacher.id, day_of_week=day_of_week)
+
+        # lessons = models.Lesson.query.filter_by(group_id=group.id, day_of_week=day_of_week)
+        for lesson in lessons:
+            a = models.LessonOnWeek.query.filter_by(week=week, lesson=lesson.id).first()
+            if a:
+                res_lesson = {}
+                
+                res_lesson["classRoom"] = models.Room.query.get(lesson.room_id).name
+                res_lesson["name"] = models.Discipline.query.get(lesson.discipline_id).name
+                res_lesson["type"] = models.LessonType.query.get(lesson.lesson_type_id).name
+                
+                day[lesson.call_id-1]['lesson'] = res_lesson
+                
+    except Exception as e:
+        print("Error", e)
+        return None
+    return day
+
+
 def get_teachers():
     rows = models.Teacher.query.all()
     teachers = []
@@ -258,8 +289,21 @@ def get_teachers():
         teachers.append(i.name)
     return teachers
 
-def get_teacher_schedule(teacher_name):
-    rows = models.Teacher.query.filter(models.Teacher.name==teacher_name)
+
+def get_day_teacher_schedule(teacher_name):
+    teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name)
+    lessons = models.Lesson.query.filter_by(teacher_id=teacher.id)
+    
+    teachers = []
+    for i in rows:
+        teachers.append(i.name)
+    return teachers
+
+
+def get_full_teacher_schedule(teacher_name):
+    teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name)
+    lessons = models.Lesson.query.filter_by(teacher_id=teacher.id)
+    
     teachers = []
     for i in rows:
         teachers.append(i.name)

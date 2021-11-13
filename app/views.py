@@ -15,6 +15,8 @@ from schedule_parser.main import parse_schedule
 def today(group):
     """Today's schedule for requested group
     ---
+    tags:
+      - Groups
     parameters:
       - name: group
         in: path
@@ -175,6 +177,8 @@ def today(group):
 def tomorrow(group):
     """Tomorrow's schedule for requested group
     ---
+    tags:
+      - Groups
     parameters:
       - name: group
         in: path
@@ -206,6 +210,8 @@ def tomorrow(group):
 def week(group):
     """Current week's schedule for requested group
     ---
+    tags:
+      - Groups
     parameters:
       - name: group
         in: path
@@ -234,7 +240,8 @@ def week(group):
 def groups():
   """List of groups in IIT
     ---
-      
+    tags:
+      - Groups
     responses:
       200:
         description: Return all groups in IIT.
@@ -259,6 +266,8 @@ def groups():
 def next_week(group):
     """Next week's schedule for requested group
     ---
+    tags:
+      - Groups
     parameters:
       - name: group
         in: path
@@ -286,7 +295,8 @@ def next_week(group):
 def refresh():
     """Refresh shedule
     ---
-
+    tags:
+      - Refresh
     responses:
       200:
         description: Return \'ok\' after updating
@@ -303,7 +313,8 @@ def refresh():
 def secret_refresh():
     """Refresh shedule
     ---
-
+    tags:
+      - Refresh
     parameters:
         - in: header
           name: X-Auth-Token
@@ -333,6 +344,8 @@ def secret_refresh():
 def full_schedule(group):
   """Current week's schedule for requested group
     ---
+    tags:
+      - Groups
     parameters:
       - name: group
         in: path
@@ -360,6 +373,8 @@ def full_schedule(group):
 def get_all_weeks_schedule(group, max_weeks):
   """Returns all weeks up to max_weeks
     ---
+    tags:
+      - Groups
     parameters:
       - name: group
         in: path
@@ -391,6 +406,8 @@ def get_all_weeks_schedule(group, max_weeks):
 def get_week_schedule_by_week_num(group, week):
   """Returns week schedule by week number
     ---
+    tags:
+      - Groups
     parameters:
       - name: group
         in: path
@@ -434,6 +451,8 @@ def get_week_schedule_by_week_num(group, week):
 def teachers():
   """List of teachers in IIT
     ---
+    tags:
+        - Teachers
     responses:
       200:
         description: Return all teachers in IIT.
