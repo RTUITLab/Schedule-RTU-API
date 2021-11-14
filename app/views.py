@@ -47,6 +47,29 @@ def today(group):
                 type: string
               end: 
                 type: string
+
+      TeacherLesson:
+        type: object
+        nullable: true
+        properties:
+          lesson:
+            type: object
+            properties:
+              classRoom: 
+                type: string
+              name: 
+                type: string
+              type: 
+                type: string
+            
+          time:
+            type: object
+            properties:
+              start: 
+                type: string
+              end: 
+                type: string
+                
       Week: 
         type: object
         properties:
@@ -74,6 +97,7 @@ def today(group):
             type: array
             items:
               $ref: '#/definitions/Lesson'
+
       FullSchedule:
         type: object
         nullable: true
@@ -82,10 +106,55 @@ def today(group):
             $ref: '#/definitions/Week'
           second:
             $ref: '#/definitions/Week'
+
+
+      TeacherWeek: 
+        type: object
+        properties:
+          monday:
+            type: array
+            items:
+              $ref: '#/definitions/TeacherLesson'
+          tuesday:
+            type: array
+            items:
+              $ref: '#/definitions/TeacherLesson'
+          wednesday: 
+            type: array
+            items:
+              $ref: '#/definitions/TeacherLesson'
+          thursday:
+            type: array
+            items:
+              $ref: '#/definitions/TeacherLesson'
+          friday: 
+            type: array
+            items:
+              $ref: '#/definitions/TeacherLesson'
+          saturday:
+            type: array
+            items:
+              $ref: '#/definitions/TeacherLesson'
+
+      TeacherFullSchedule:
+        type: object
+        nullable: true
+        properties:
+          first:
+            $ref: '#/definitions/TeacherWeek'
+          second:
+            $ref: '#/definitions/TeacherWeek'
+
+            
       AllWeeks:
         type: array
         items:
           $ref: '#/definitions/Week'
+
+      TeacherAllWeeks:
+        type: array
+        items:
+          $ref: '#/definitions/TeacherWeek'
 
       Number: 
         type: object

@@ -257,7 +257,7 @@ def teacher_return_one_day(today, teacher_name):
     }]
 
     try:
-        teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name)
+        teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name).first()
         
         print(str(teacher), teacher_name)
         if not teacher:
