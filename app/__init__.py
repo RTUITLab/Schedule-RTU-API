@@ -39,7 +39,11 @@ app = Flask(__name__)
 app.config['SWAGGER'] = {
     'title': 'SHEDULE API',
     'uiversion': 3,
-    "specs_route": "/api/schedule/swagger/"
+    "specs_route": "/api/schedule/swagger/",
+    "ui_params": {
+        "operationsSorter": "alpha",  # sorts endpoints alphabetically within a tag
+        "tagsSorter": "alpha" # sorts tags alphabetically
+    }
 }
 swagger = Swagger(app, template= template)
 app.config.from_object(config.Config)

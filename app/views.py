@@ -4,7 +4,7 @@ import requests
 from os import environ
 import datetime
 
-from schedule import get_full_schedule_by_weeks, get_schedule_by_week, get_teachers, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched
+from schedule import get_full_schedule_by_weeks, get_schedule_by_week, get_teachers, teacher_next_week_sch, teacher_today_sch, teacher_tomorrow_sch, teacher_week_sch, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched
 
 import sys
 
@@ -16,7 +16,7 @@ def today(group):
     """Today's schedule for requested group
     ---
     tags:
-      - Groups
+      - OLD Groups
     parameters:
       - name: group
         in: path
@@ -178,7 +178,7 @@ def tomorrow(group):
     """Tomorrow's schedule for requested group
     ---
     tags:
-      - Groups
+      - OLD Groups
     parameters:
       - name: group
         in: path
@@ -211,7 +211,7 @@ def week(group):
     """Current week's schedule for requested group
     ---
     tags:
-      - Groups
+      - OLD Groups
     parameters:
       - name: group
         in: path
@@ -241,7 +241,7 @@ def groups():
   """List of groups in IIT
     ---
     tags:
-      - Groups
+      - OLD Groups
     responses:
       200:
         description: Return all groups in IIT.
@@ -267,7 +267,7 @@ def next_week(group):
     """Next week's schedule for requested group
     ---
     tags:
-      - Groups
+      - OLD Groups
     parameters:
       - name: group
         in: path
@@ -345,7 +345,7 @@ def full_schedule(group):
   """Current week's schedule for requested group
     ---
     tags:
-      - Groups
+      - OLD Groups
     parameters:
       - name: group
         in: path
@@ -374,7 +374,7 @@ def get_all_weeks_schedule(group, max_weeks):
   """Returns all weeks up to max_weeks
     ---
     tags:
-      - Groups
+      - OLD Groups
     parameters:
       - name: group
         in: path
@@ -407,7 +407,7 @@ def get_week_schedule_by_week_num(group, week):
   """Returns week schedule by week number
     ---
     tags:
-      - Groups
+      - OLD Groups
     parameters:
       - name: group
         in: path
@@ -452,7 +452,7 @@ def teachers():
   """List of teachers in IIT
     ---
     tags:
-        - Teachers
+        - OLD Teachers 
     responses:
       200:
         description: Return all teachers in IIT.
@@ -471,3 +471,128 @@ def teachers():
   res = Response(headers={'Retry-After':200}, status=503)
   return res
 
+
+@app.route('/api/schedule/teachers/<string:teacher>/today', methods=["GET"])
+def teacher_today(teacher):
+    """Today's schedule for requested teacher
+    ---
+    tags:
+      - OLD Teachers
+    parameters:
+      - name: teacher
+        in: path
+        type: string
+        required: true
+
+    responses:
+      200:
+        description: Return today\'s schedule. There are 8 lessons on a day. "lesson":null, if there is no pair 
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/TeacherLesson'
+          minItems: 8
+          maxItems: 8
+            
+      503:
+          description: Retry-After:100
+    """
+    sch = teacher_today_sch(teacher)
+    if sch:
+      response = jsonify(sch)
+      # return "today for{} is {}".format(group, res)
+      return make_response(response)
+    res = Response(headers={'Retry-After':200}, status=503)
+    return res
+
+@app.route('/api/schedule/teachers/<string:teacher>/tomorrow', methods=["GET"])
+def teacher_tomorrow(teacher):
+    """Tomorrow's schedule for requested teacher
+    ---
+    tags:
+      - OLD Teachers
+    parameters:
+      - name: teacher
+        in: path
+        type: string
+        required: true
+
+    responses:
+      200:
+        description: Return tomorrow\'s schedule. There are 8 lessons on a day. "lesson":null, if there is no pair 
+        schema:
+          type: array
+          items:
+            $ref: '#/definitions/TeacherLesson'
+          minItems: 8
+          maxItems: 8
+            
+      503:
+          description: Retry-After:100
+    """
+    res = teacher_tomorrow_sch(teacher)
+    if res:
+      response = jsonify(res)
+      # return "tomorrow for{} is {}".format(group, res)
+      return make_response(response)
+    res = Response(headers={'Retry-After':200}, status=503)
+    return res
+
+@app.route('/api/schedule/teachers/<string:teacher>/week', methods=["GET"])
+def teacher_week(teacher):
+    """Current week's schedule for requested teacher
+    ---
+    tags:
+      - OLD Teachers
+    parameters:
+      - name: teacher
+        in: path
+        type: string
+        required: true
+      
+    responses:
+      200:
+        description: Return week\'s schedule. There are 8 lessons on a day. "lesson":null, if there is no pair.
+        schema:
+          $ref: '#/definitions/TeacherWeek'
+            
+      503:
+          description: Retry-After:100
+    """
+    res = teacher_week_sch(teacher)
+    if res:
+      response = jsonify(res)
+      # return "tomorrow for{} is {}".format(group, res)
+      return make_response(response)
+    res = Response(headers={'Retry-After':200}, status=503)
+    return res
+
+
+@app.route('/api/schedule/teachers/<string:teacher>/next_week', methods=["GET"])
+def teacher_next_week(teacher):
+    """Next week's schedule for requested teacher
+    ---
+    tags:
+      - OLD Teachers
+    parameters:
+      - name: teacher
+        in: path
+        type: string
+        required: true
+      
+    responses:
+      200:
+        description: Return week\'s schedule. There are 8 lessons on a day. "lesson":null, if there is no pair.
+        schema:
+          $ref: '#/definitions/TeacherWeek'
+            
+      503:
+          description: Retry-After:100
+    """
+    res = teacher_next_week_sch(teacher)
+    if res:
+      response = jsonify(res)
+      # return "tomorrow for{} is {}".format(group, res)
+      return make_response(response)
+    res = Response(headers={'Retry-After':200}, status=503)
+    return res

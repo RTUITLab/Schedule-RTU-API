@@ -230,7 +230,7 @@ def get_full_schedule_by_weeks(group, max_weeks):
     return schedule if len(schedule) > 0 else None
 
 
-def return_teacher_one_day(today, teacher_name):
+def teacher_return_one_day(today, teacher_name):
     week = cur_week(today)
     day_of_week = today.isocalendar()[2]
     day = [{
@@ -290,21 +290,84 @@ def get_teachers():
     return teachers
 
 
-def get_day_teacher_schedule(teacher_name):
-    teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name)
-    lessons = models.Lesson.query.filter_by(teacher_id=teacher.id)
-    
-    teachers = []
-    for i in rows:
-        teachers.append(i.name)
-    return teachers
+def teacher_today_sch(teacher):
+    today = datetime.now(tz=time_zone)
+    return teacher_return_one_day(today, teacher)
 
 
-def get_full_teacher_schedule(teacher_name):
-    teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name)
-    lessons = models.Lesson.query.filter_by(teacher_id=teacher.id)
+def teacher_tomorrow_sch(teacher): 
+    today = datetime.now(tz=time_zone) + dt.timedelta(days=1)
+    return teacher_return_one_day(today, teacher)
+
+
+def teacher_week_sch(teacher): 
+    today = datetime.now(tz=time_zone)
+    day_of_week = today.isocalendar()[2]
+    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    res = {}
+    for i in range(6):
+        today = datetime.now(tz=time_zone) + dt.timedelta(days=i-day_of_week+1)
+        day = teacher_return_one_day(today, teacher)
+        if day:
+            res[days[i]] = day
+        else:
+            return None
+    return res
+
+def teacher_next_week_sch(teacher):
+    today = datetime.now(tz=time_zone) + dt.timedelta(days=7)
+    day_of_week = today.isocalendar()[2]
+    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    res = {}
+    for i in range(6):
+        today = datetime.now(tz=time_zone) + dt.timedelta(days=i-day_of_week+1) + dt.timedelta(days=7)
+        day = teacher_return_one_day(today, teacher)
+        if day:
+            res[days[i]] = day
+        else:
+            return None
+    return res
+
+
+def full_sched(teacher):
+    today = datetime.now(tz=time_zone)
+    day_of_week = today.isocalendar()[2]
+    days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+    res = {}
+    res2 = {}
+
+    for i in range(6):
+        today = datetime.now(tz=time_zone) + dt.timedelta(days=i-day_of_week+1)
+        day = teacher_return_one_day(today, teacher)
+        if day:
+            res[days[i]] = day
+        else:
+            return None
+    for i in range(6):
+        today = datetime.now(tz=time_zone) + dt.timedelta(days=i-day_of_week+1) + dt.timedelta(days=7)
+        day = teacher_return_one_day(today, teacher)
+        if day:
+            res2[days[i]] = day
+        else:
+            return None     
+    if cur_week(datetime.now(tz=time_zone))%2 == 1: 
+        return {"first": res, "second": res2}
+    return {"first": res2, "second": res}
+# def get_day_teacher_schedule(teacher_name):
+#     teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name)
+#     lessons = models.Lesson.query.filter_by(teacher_id=teacher.id)
     
-    teachers = []
-    for i in rows:
-        teachers.append(i.name)
-    return teachers
+#     teachers = []
+#     for i in rows:
+#         teachers.append(i.name)
+#     return teachers
+
+
+# def get_full_teacher_schedule(teacher_name):
+#     teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name)
+#     lessons = models.Lesson.query.filter_by(teacher_id=teacher.id)
+    
+#     teachers = []
+#     for i in rows:
+#         teachers.append(i.name)
+#     return teachers
