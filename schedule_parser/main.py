@@ -28,8 +28,8 @@ def parse_schedule():
         connection.close()
     
         print("truncate")
-        Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
-        Download.download()
+        # Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
+        # Download.download()
 
         print("downloaded")
         try:

@@ -106,8 +106,8 @@ class Reader:
                 xlsx_doc_type = get_doc_type_code(os.path.dirname(os.path.relpath(path_to_xlsx_file, start='xls')))
 
                 try:
-                    
                     self.read(path_to_xlsx_file, xlsx_doc_type)
+                    db.session.commit()
                 except Exception as err:
                     print(err, traceback.format_exc(), "in", file_name)
                     continue
@@ -244,14 +244,14 @@ class Reader:
                     weeks = list(range(2, 17, 2))
                 
             discipline = get_or_create(session=db.session, model=models.Discipline, name=less.strip())
-            db.session.commit()
+            db.session.flush()
             lesson = models.Lesson(call_id=call, period_id=period, 
                                    teacher_id=teacher, lesson_type_id=lesson_type, 
                                    subgroup=None, discipline_id=discipline.id, 
                                    room_id=room, group_id=group, 
                                    day_of_week = day_num)
             db.session.add(lesson)
-            db.session.commit()
+            db.session.flush()
             add_weeks(weeks, lesson.id)
 
         
@@ -307,14 +307,14 @@ class Reader:
                             teacher = get_or_create(session=db.session, model=models.Teacher, name=dist['teacher'][:49])
                             room = get_or_create(session=db.session, model=models.Room, name=dist['room'])
                             
-                            db.session.commit()
+                            db.session.flush()
                             occupation = 1
                             data_append_to_lesson(group.id, occupation, teacher.id,
                                                     day_num,
                                                     call_num,
                                                     week, lesson_type, room.id , dist['name'], include, exception)
 
-        db.session.commit()
+        
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
         """
