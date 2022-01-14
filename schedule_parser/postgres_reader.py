@@ -63,8 +63,9 @@ class Reader:
             "14:20": 4,
             "16:20": 5,
             "18:00": 6,
-            "18:30": 7,
-            "20:10": 8
+            "19:40": 7,
+            "20:10": 8,
+            "18:30": 9
         }
         
         self.lesson_types = {
@@ -95,10 +96,10 @@ class Reader:
         for path, dirs, files in os.walk(xlsx_dir):
             
             for file_name in files:
-                if "зима" in file_name or "лето" in file_name:
-                    continue
-                if not 'ИИТ' in file_name:
-                    continue
+                # if "зима" in file_name or "лето" in file_name:
+                #     continue
+                # if not 'ИИТ' in file_name:
+                #     continue
                 path_to_xlsx_file = os.path.join(path, file_name)
                 print(path_to_xlsx_file)
                 # if("ИКиб_маг_2к" in path_to_xlsx_file):
@@ -107,6 +108,7 @@ class Reader:
 
                 try:
                     self.read(path_to_xlsx_file, xlsx_doc_type)
+                    ## TODO move truncate here
                     db.session.commit()
                 except Exception as err:
                     print(err, traceback.format_exc(), "in", file_name)
@@ -115,12 +117,17 @@ class Reader:
 
     @staticmethod
     def format_teacher_name(cell):
+        # TODO add re.sub here
         cell = str(cell)
-        return re.split(r' {2,}|\n', cell)
+        res = re.split(r'\\|\n|(?!\d)\/(?!\d)|(?<!\d)\/(?=\d)', cell)
+        if len(res)>1:
+            res = [x.strip() for x in res if len(x.strip())]
+        print(res)
+        return res
 
     def format_room_name(self, cell):
-        if isinstance(cell, float):
-            cell = int(cell)
+        # if isinstance(cell, float):
+        #     cell = int(cell)
         string = str(cell)
         for pattern in self.notes_dict:
             regex_result = re.findall(pattern, string, flags=re.A)

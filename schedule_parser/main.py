@@ -25,6 +25,7 @@ def parse_schedule():
         connection.execute( '''TRUNCATE TABLE "group" CASCADE''' )
         connection.execute( '''TRUNCATE TABLE room CASCADE''' )
         connection.execute( '''TRUNCATE TABLE teacher CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE call CASCADE''' )
         connection.close()
     
         print("truncate")
