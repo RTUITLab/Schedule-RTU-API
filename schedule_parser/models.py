@@ -66,7 +66,7 @@ class Place(db.Model):
 
 class Room(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(70), unique=True, nullable=False, index=True)
+    name = db.Column(db.String(70), nullable=False, index=True)
     place_id = db.Column(db.Integer, db.ForeignKey('place.id'), nullable=True)
     lessons = db.relationship('Lesson', backref='room', lazy='dynamic')
 

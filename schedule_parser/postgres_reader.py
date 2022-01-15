@@ -24,9 +24,11 @@ class Reader:
             'МП-1': 4,
             'В-78': 1,
             'В-86': 2,
+            'В78': 1,
             'С-20': 3,
+            'СГ': 5,
             'СГ-22': 5,
-            'СГ': 5
+            
         }
         self.notes_dict_for_creation = {
             'МП-1': 4,
@@ -159,37 +161,94 @@ class Reader:
                     or re.match(r'^\w{1}-\d{1}$', room_name)
                     or re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name)
                     or re.match(r'^ИВЦ-\d{3}.\w{1}$', room_name))
+        def format_78(room_name):
+            def check_re(room_name):
+                return (not re.match(r'^\w{1}-\d{1,3}$', room_name) 
+                        and not re.match(r'^\w{1}-\d{3}-\w{1}$', room_name) 
+                        and not re.match(r'^ИВЦ-\d{3}$', room_name) 
+                        and not re.match(r'^\w{1}-\d{1}$', room_name)
+                        and not re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name))
+            if re.match(r'^Е', room_name) and not "Е-" in room_name:
+                room_name = re.sub(r'Е', 'Е-', room_name)
+            if re.match(r'^А', room_name) and not "А-" in room_name:
+                room_name = re.sub(r'А', 'А-', room_name)
+            if re.match(r'^Г', room_name) and not "Г-" in room_name:
+                room_name = re.sub(r'Г', 'Г-', room_name)
+
+            
+            if re.match(r'^\w{1}-\d{3}\w{1}$', room_name):
+                print(1)
+                print('convert', room_name, 'to', re.sub(r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name))
+                room_name = re.sub(r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name)
+
+            if re.match(r'^\w{1}-\d{3}\.\w{1}$', room_name):
+                print(2)
+                print('convert', room_name, 'to', re.sub(r'\.', '-', room_name))
+                room_name = re.sub(r'\.', '-', room_name)
+
+            if re.match(r'^\w{1}-\d{3}\(\w{1}\)$', room_name):
+                print(3)
+                print('convert', room_name, 'to', re.sub(r'\((\w{1})\)', '-\g<1>', room_name))
+                room_name = re.sub(r'\((\w{1})\)', '-\g<1>', room_name)
+
+            if re.match(r'^ИВЦ-\d{3}\.\w{1}$', room_name):
+                print(4)
+                print('convert', room_name, 'to',re.sub(r'\.', '-', room_name))
+                room_name = re.sub(r'\.', '-', room_name)
+
+            if check_re(room_name):
+                print('not match', room_name)
+
+            return room_name
+
         if isinstance(cell, float):
             cell = int(cell)
         string = str(cell)
-        rooms = string.replace('*', '').upper()
-        rooms = re.split(r'\n|\\|\/', rooms)
-        result = []
+
+        string = string.replace('*', '').upper()
 
         for pattern in self.notes_dict:
             regex_result = re.findall(pattern, string, flags=re.A)
             for reg in regex_result:
-                reg2 = reg + " {0,}\n"
-                string = re.sub(reg2, reg, string)
+                pattern = re.compile(r"%s\s*\n"%reg)
+                print(pattern)
+                print(pattern.findall(string), "<- Found in ", string,)
+                string = pattern.sub(reg, string)
+
+        
+        rooms = re.split(r'\n|\\|\/', string)
+        print(rooms)
+        all_rooms = []
 
         if len(rooms) > 1:
             res = [x.strip() for x in rooms if len(x.strip())]
-
+        
+        regex_resul = []
+        res = None
+        print(len(rooms), rooms)
         for room_num in range(len(rooms)):
+            room = rooms[room_num].strip()
             for pattern in self.notes_dict.keys():
-                room = rooms[room_num]
                 regex_result = re.findall(pattern, room)
                 if regex_result:
                     res = regex_result[0]
-                    room = re.sub(res, "", room)
-                    result.append([room.strip(), self.notes_dict[res]])
+            
+            if res:
+                room = re.sub(res, "", room)
+                print("room", room.strip())
+                all_rooms.append([room.strip(), self.notes_dict[res]])
+            else:
+                if room == "Д" or room == "Д." or "ДИСТ" in room or "ЛК Д" in room or not len(room):
+                    all_rooms.append([room, None])
+                elif self.current_place == 2 and check_room_for_78(room) or self.current_place == 2 and room[0] == "Е":
+                    print("78 in stom!", room)
+                    all_rooms.append([format_78(room), 1])
+                elif self.current_place == 1:
+                    all_rooms.append([format_78(room), 1])
                 else:
-                    if self.current_place == 2 and check_room_for_78(room) or self.current_place == 2 and room[0] == "Е":
-                        result.append([room, 1])
-                    else:
-                        result.append([room, self.current_place])
-
-        return re.split(r' {2,}|\n', string)
+                    all_rooms.append([room, self.current_place])
+        print(all_rooms, "<- all_rooms")
+        return all_rooms
 
     @staticmethod
     def format_name(temp_name):
@@ -319,7 +378,7 @@ class Reader:
 
         append_from_dict(self.periods, db.session, models.Period)
         append_from_dict(self.time_dict, db.session, models.Call)
-        append_from_dict(self.lesson_for_creation,
+        append_from_dict(self.lesson_types_for_creation,
                          db.session, models.LessonType)
         append_from_dict(self.notes_dict_for_creation,
                          db.session, models.Place)
@@ -371,7 +430,7 @@ class Reader:
                             teacher = get_or_create(
                                 session=db.session, model=models.Teacher, name=dist['teacher'][:49])
                             room = get_or_create(
-                                session=db.session, model=models.Room, name=dist['room'])
+                                session=db.session, model=models.Room, name=dist['room'][0], place_id=dist['room'][1])
 
                             db.session.flush()
                             occupation = 1
@@ -430,15 +489,13 @@ class Reader:
                         room = cycle(room)
 
                     lesson_tuple = list(zip(tmp_name, teacher, room))
+                    
                     for tuple_item in lesson_tuple:
                         name = tuple_item[0][0]
                         include = tuple_item[0][1]
                         exception = tuple_item[0][2]
                         teacher = tuple_item[1]
                         room = tuple_item[2]
-
-                        if isinstance(room, float):
-                            room = int(room)
 
                         one_lesson = {"date": None, "time": time, "name": name, "type": lesson_type,
                                       "teacher": teacher, "room": room}
