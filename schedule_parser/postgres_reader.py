@@ -11,9 +11,9 @@ from app import db
 from .get_or_create import get_or_create
 from . import models
 
+
 class Reader:
     """Класс для парсинга расписания MIREA из xlsx файлов"""
-
 
     def __init__(self):
         """Инициализация клсса
@@ -21,11 +21,19 @@ class Reader:
         """
 
         self.notes_dict = {
-            'МП-1': "ул. Малая Пироговская, д.1",
-            'В-78': "Проспект Вернадского, д.78",
-            'В-86': "Проспект Вернадского, д.86",
-            'С-20': "ул. Стромынка, 20",
-            'СГ-22': "5-я ул. Соколиной горы, д.22"
+            'МП-1': 4,
+            'В-78': 1,
+            'В-86': 2,
+            'С-20': 3,
+            'СГ-22': 5,
+            'СГ': 5
+        }
+        self.notes_dict_for_creation = {
+            'МП-1': 4,
+            'В-78': 1,
+            'В-86': 2,
+            'С-20': 3,
+            'СГ-22': 5
         }
 
         self.doc_type_list = {
@@ -64,23 +72,32 @@ class Reader:
             "16:20": 5,
             "18:00": 6,
             "19:40": 7,
-            "20:10": 8,
-            "18:30": 9
+            "18:30": 8,
+            "20:10": 9
         }
-        
+
+        self.lesson_types_for_creation = {
+            "лк": 1,
+            "пр": 2,
+            "лр": 3,
+            "": 4,
+        }
+
         self.lesson_types = {
             "лк": 1,
             "пр": 2,
             "лр": 3,
-            "лаб": 4,
-            "": 5,
+            "лаб": 3,
+            "": 4,
         }
-        
+
         self.periods = {
             "semestr": 1,
             "credits": 2,
             "exams": 3
         }
+
+        self.current_place = 1
 
     def run(self, xlsx_dir,):
 
@@ -92,48 +109,85 @@ class Reader:
             """
             return self.doc_type_list[doc_type_str]
 
-
         for path, dirs, files in os.walk(xlsx_dir):
-            
+
             for file_name in files:
                 # if "зима" in file_name or "лето" in file_name:
                 #     continue
                 # if not 'ИИТ' in file_name:
                 #     continue
+                file_name = file_name.lower()
+                if "стром" in file_name or "кбисп" in file_name:
+                    self.current_place = 3
+                elif "итхт" in file_name:
+                    self.current_place = 2
+                else:
+                    self.current_place = 1
                 path_to_xlsx_file = os.path.join(path, file_name)
                 print(path_to_xlsx_file)
                 # if("ИКиб_маг_2к" in path_to_xlsx_file):
                 #     continue
-                xlsx_doc_type = get_doc_type_code(os.path.dirname(os.path.relpath(path_to_xlsx_file, start='xls')))
+                xlsx_doc_type = get_doc_type_code(os.path.dirname(
+                    os.path.relpath(path_to_xlsx_file, start='xls')))
 
                 try:
                     self.read(path_to_xlsx_file, xlsx_doc_type)
-                    ## TODO move truncate here
+                    # TODO move truncate here
                     db.session.commit()
                 except Exception as err:
                     print(err, traceback.format_exc(), "in", file_name)
                     continue
 
-
     @staticmethod
     def format_teacher_name(cell):
         # TODO add re.sub here
         cell = str(cell)
-        res = re.split(r'\\|\n|(?!\d)\/(?!\d)|(?<!\d)\/(?=\d)', cell)
-        if len(res)>1:
+        res = re.split(r'\n|\\|(?!\d)\/(?!\d)|(?<!\d)\/(?=\d)', cell)
+        if len(res) > 1:
             res = [x.strip() for x in res if len(x.strip())]
-        print(res)
+        # print(res)
         return res
 
     def format_room_name(self, cell):
-        # if isinstance(cell, float):
-        #     cell = int(cell)
+        def check_room_for_78(room_name):
+            return (re.match(r'^\w{1}-\d{1,3}$', room_name)
+                    or re.match(r'^\w{1}-\d{1,3}\w{1}$', room_name)
+                    or re.match(r'^\w{1}-\d{3}-\w{1}$', room_name)
+                    or re.match(r'^\w{1}-\d{3}.\w{1}$', room_name)
+                    or re.match(r'^\w{1}-\d{3}\(\w{1}\)$', room_name)
+                    or re.match(r'^ИВЦ-\d{3}$', room_name)
+                    or re.match(r'^\w{1}-\d{1}$', room_name)
+                    or re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name)
+                    or re.match(r'^ИВЦ-\d{3}.\w{1}$', room_name))
+        if isinstance(cell, float):
+            cell = int(cell)
         string = str(cell)
+        rooms = string.replace('*', '').upper()
+        rooms = re.split(r'\n|\\|\/', rooms)
+        result = []
+
         for pattern in self.notes_dict:
             regex_result = re.findall(pattern, string, flags=re.A)
-            if regex_result:
-                string = string.replace('  ', '').replace('*', '').replace('\n', '')
-                string = re.sub(regex_result[0], self.notes_dict[regex_result[0]] + " ", string, flags=re.A)
+            for reg in regex_result:
+                reg2 = reg + " {0,}\n"
+                string = re.sub(reg2, reg, string)
+
+        if len(rooms) > 1:
+            res = [x.strip() for x in rooms if len(x.strip())]
+
+        for room_num in range(len(rooms)):
+            for pattern in self.notes_dict.keys():
+                room = rooms[room_num]
+                regex_result = re.findall(pattern, room)
+                if regex_result:
+                    res = regex_result[0]
+                    room = re.sub(res, "", room)
+                    result.append([room.strip(), self.notes_dict[res]])
+                else:
+                    if self.current_place == 2 and check_room_for_78(room) or self.current_place == 2 and room[0] == "Е":
+                        result.append([room, 1])
+                    else:
+                        result.append([room, self.current_place])
 
         return re.split(r' {2,}|\n', string)
 
@@ -158,7 +212,8 @@ class Reader:
         temp_name = temp_name.replace(" ", "  ")
         temp_name = temp_name.replace(";", ";  ")
         # print("1", temp_name)
-        temp_name = re.sub(r"(\s+-\s+(?:лк|пр)(?:;|))", "", temp_name, flags=re.A)
+        temp_name = re.sub(r"(\s+-\s+(?:лк|пр)(?:;|))",
+                           "", temp_name, flags=re.A)
         substr = re.findall(r"(\s+н(?:\.|)\s+)\d+", temp_name)
         if substr:
             temp_name = re.sub(substr[0], " ", temp_name, flags=re.A)
@@ -166,7 +221,8 @@ class Reader:
         temp_name = re.sub(r"(\d+)", r"\1 ", temp_name, flags=re.A)
         temp_name = re.sub(r"(кр\. {2,})", "кр.", temp_name, flags=re.A)
 
-        temp_name = re.sub(r"((, *|)кроме {1,})", " кр.", temp_name, flags=re.A)
+        temp_name = re.sub(
+            r"((, *|)кроме {1,})", " кр.", temp_name, flags=re.A)
         temp_name = re.sub(r"(н[\d,. ]*[+;])", "", temp_name, flags=re.A)
         temp_name = re.findall(r"((?:\s*[\W\s]*)(?:|кр[ .]\s*|\d+\s+-\d+\s+|[\d,. ]*)\s*\s*(?:|[\W\s]*|\D*)*\s*(?:|\(\d\s+п/г\)))(?:\s\s|\Z|\n)",
                                temp_name, flags=re.A)
@@ -190,13 +246,13 @@ class Reader:
             return 0
 
     def write_to_db(self, doc_type, timetable):
-        
+
         def append_from_dict(diction, session, model):
             for key, value in diction.items():
                 get_or_create(session=session, model=model, id=value, name=key)
                 # session.add(instance)
                 # session.commit()
-                
+
         def add_weeks(weeks, lesson):
             for week in weeks:
                 week_l = models.LessonOnWeek(week=week, lesson=lesson)
@@ -205,17 +261,16 @@ class Reader:
         def data_append_to_lesson(group, period, teacher, day_num,
                                   call,
                                   week, lesson_type, room, discipline_name, include, exception):
-            
 
             weeks = []
             less = ""
-            
+
             if "кр." in discipline_name:
                 exc = discipline_name.split("н.")[0]
                 less = discipline_name.split("н.")[1].strip()
                 regex_num = re.compile(r'\d+')
-                weeks = [int(item) for item in regex_num.findall(exc)] 
-                
+                weeks = [int(item) for item in regex_num.findall(exc)]
+
                 # usless
                 # if "-" in exc:
                 #     weeks = range(2, 16, 2)
@@ -234,51 +289,54 @@ class Reader:
                 elif " н " in discipline_name:
                     exc = discipline_name.split(" н ")[0]
                     less = discipline_name.split(" н ")[1].strip()
-                regex_num = re.compile(r'\d+')  
+                regex_num = re.compile(r'\d+')
                 weeks = [int(item) for item in regex_num.findall(exc)]
 
                 if "-" in exc:
 
                     weeks = list(range(weeks[0], weeks[1], 17))
                     pass
-                    
+
             else:
                 less = discipline_name
-                if int(week)%2 == 1:
+                if int(week) % 2 == 1:
                     weeks = list(range(1, 17, 2))
-                    
+
                 else:
                     weeks = list(range(2, 17, 2))
-                
-            discipline = get_or_create(session=db.session, model=models.Discipline, name=less.strip())
+
+            discipline = get_or_create(
+                session=db.session, model=models.Discipline, name=less.strip())
             db.session.flush()
-            lesson = models.Lesson(call_id=call, period_id=period, 
-                                   teacher_id=teacher, lesson_type_id=lesson_type, 
-                                   subgroup=None, discipline_id=discipline.id, 
-                                   room_id=room, group_id=group, 
-                                   day_of_week = day_num)
+            lesson = models.Lesson(call_id=call, period_id=period,
+                                   teacher_id=teacher, lesson_type_id=lesson_type,
+                                   subgroup=None, discipline_id=discipline.id,
+                                   room_id=room, group_id=group,
+                                   day_of_week=day_num)
             db.session.add(lesson)
             db.session.flush()
             add_weeks(weeks, lesson.id)
 
-        
-            
         append_from_dict(self.periods, db.session, models.Period)
         append_from_dict(self.time_dict, db.session, models.Call)
-        append_from_dict(self.lesson_types, db.session, models.LessonType)
-        
+        append_from_dict(self.lesson_for_creation,
+                         db.session, models.LessonType)
+        append_from_dict(self.notes_dict_for_creation,
+                         db.session, models.Place)
+
         stack = ""
-        
+
         for group_name, value in sorted(timetable.items()):
 
             group_name = re.findall(r"([А-Я]+-\w+-\w+)", group_name, re.I)
             if len(group_name) > 0:
                 print("Add schedule for ", group_name)
                 group_name = group_name[0]
-                group = get_or_create(session=db.session, model=models.Group, name=group_name)
+                group = get_or_create(session=db.session,
+                                      model=models.Group, name=group_name)
 
             for n_day, day_item in sorted(value.items()):
-                
+
                 for n_lesson, lesson_item in sorted(day_item.items()):
                     for n_week, item in sorted(lesson_item.items()):
                         day_num = n_day.split("_")[1]
@@ -297,7 +355,7 @@ class Reader:
                                 exception = str(dist["exception"])[1:-1]
                             else:
                                 exception = ""
-                                
+
                             if "пр" in dist['type'].lower():
                                 lesson_type = self.lesson_types["пр"]
                             if "лк" in dist['type'].lower():
@@ -306,22 +364,21 @@ class Reader:
                                 lesson_type = self.lesson_types["лаб"]
                             if "лр" in dist['type'].lower():
                                 lesson_type = self.lesson_types["лр"]
-                            
+
                             else:
                                 lesson_type = self.lesson_types[""]
-                                
 
-                            teacher = get_or_create(session=db.session, model=models.Teacher, name=dist['teacher'][:49])
-                            room = get_or_create(session=db.session, model=models.Room, name=dist['room'])
-                            
+                            teacher = get_or_create(
+                                session=db.session, model=models.Teacher, name=dist['teacher'][:49])
+                            room = get_or_create(
+                                session=db.session, model=models.Room, name=dist['room'])
+
                             db.session.flush()
                             occupation = 1
                             data_append_to_lesson(group.id, occupation, teacher.id,
-                                                    day_num,
-                                                    call_num,
-                                                    week, lesson_type, room.id , dist['name'], include, exception)
-
-        
+                                                  day_num,
+                                                  call_num,
+                                                  week, lesson_type, room.id, dist['name'], include, exception)
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
         """
@@ -330,7 +387,8 @@ class Reader:
             range(dict): Диапазон выбора ячеек
         """
         one_group = {}
-        group_name = sheet.cell(group_name_row_num, discipline_col_num).value  # Название группы
+        group_name = sheet.cell(
+            group_name_row_num, discipline_col_num).value  # Название группы
         one_group[group_name] = {}  # Инициализация словаря
 
         # перебор по дням недели (понедельник-суббота)
@@ -349,15 +407,20 @@ class Reader:
                     one_day["lesson_{}".format(lesson_num)] = {}
 
                 # Получение данных об одной паре
-                tmp_name = str(sheet.cell(string_index, discipline_col_num).value)
+                tmp_name = str(sheet.cell(
+                    string_index, discipline_col_num).value)
                 tmp_name = self.format_name(tmp_name)
 
                 if isinstance(tmp_name, list) and tmp_name != []:
 
-                    lesson_type = sheet.cell(string_index, discipline_col_num + 1).value
-                    teacher = self.format_teacher_name(sheet.cell(string_index, discipline_col_num + 2).value)
-                    room = self.format_room_name(sheet.cell(string_index, discipline_col_num + 3).value)
+                    lesson_type = sheet.cell(
+                        string_index, discipline_col_num + 1).value
+                    teacher = self.format_teacher_name(sheet.cell(
+                        string_index, discipline_col_num + 2).value)
+                    room = self.format_room_name(sheet.cell(
+                        string_index, discipline_col_num + 3).value)
 
+                    # TODO need to fix
                     max_len = max(len(tmp_name), len(teacher), len(room))
                     if len(tmp_name) < max_len:
                         tmp_name = cycle(tmp_name)
@@ -388,13 +451,14 @@ class Reader:
                             if "week_{}".format(week_num) not in one_day["lesson_{}".format(lesson_num)]:
                                 one_day["lesson_{}".format(lesson_num)][
                                     "week_{}".format(week_num)] = []  # Инициализация списка
-                            one_day["lesson_{}".format(lesson_num)]["week_{}".format(week_num)].append(one_lesson)
+                            one_day["lesson_{}".format(lesson_num)]["week_{}".format(
+                                week_num)].append(one_lesson)
 
                     # Объединение расписания
                     one_group[group_name]["day_{}".format(day_num)] = one_day
 
         return one_group
-    
+
     def read(self, xlsx_path, doc_type):
         """Объединяет расписания отдельных групп и записывает в файлы
             :param xlsx_path:
@@ -436,20 +500,23 @@ class Reader:
                 6: []
             }
 
-            initial_row_num = group_name_row_index + 1  # Номер строки, с которой начинается отсчет пар
+            # Номер строки, с которой начинается отсчет пар
+            initial_row_num = group_name_row_index + 1
             lesson_count = 0  # Счетчик количества пар
             # Перебор столбца с номерами пар и вычисление на основании количества пар в день диапазона выбора ячеек
             day_num_val, lesson_num_val, lesson_time_val, lesson_week_num_val = 0, 0, 0, 0
             row_s = len(xlsx_sheet.col(group_name_row.index(group_name_cell)))
-                
+
             for lesson_num in range(initial_row_num, row_s):
 
-                day_num_col = xlsx_sheet.cell(lesson_num, group_name_row.index(group_name_cell) - 5)
-                
+                day_num_col = xlsx_sheet.cell(
+                    lesson_num, group_name_row.index(group_name_cell) - 5)
+
                 if day_num_col.value != '':
                     day_num_val = get_day_num(day_num_col.value)
 
-                lesson_num_col = xlsx_sheet.cell(lesson_num, group_name_row.index(group_name_cell) - 4)
+                lesson_num_col = xlsx_sheet.cell(
+                    lesson_num, group_name_row.index(group_name_cell) - 4)
                 if lesson_num_col.value != '':
                     lesson_num_val = lesson_num_col.value
                     if isinstance(lesson_num_val, float):
@@ -457,11 +524,14 @@ class Reader:
                         if lesson_num_val > lesson_count:
                             lesson_count = lesson_num_val
 
-                lesson_time_col = xlsx_sheet.cell(lesson_num, group_name_row.index(group_name_cell) - 3)
+                lesson_time_col = xlsx_sheet.cell(
+                    lesson_num, group_name_row.index(group_name_cell) - 3)
                 if lesson_time_col.value != '':
-                    lesson_time_val = str(lesson_time_col.value).replace('-', ':')
+                    lesson_time_val = str(
+                        lesson_time_col.value).replace('-', ':')
 
-                lesson_week_num = xlsx_sheet.cell(lesson_num, group_name_row.index(group_name_cell) - 1)
+                lesson_week_num = xlsx_sheet.cell(
+                    lesson_num, group_name_row.index(group_name_cell) - 1)
                 if lesson_week_num.value != '':
                     if lesson_week_num.value == 'I':
                         lesson_week_num_val = 1
@@ -476,12 +546,12 @@ class Reader:
                 lesson_string_index = lesson_num
 
                 if re.findall(r'\d+:\d+', str(lesson_time_val), flags=re.A):
-                    lesson_range = (lesson_num_val, lesson_time_val, lesson_week_num_val, lesson_string_index)
+                    lesson_range = (lesson_num_val, lesson_time_val,
+                                    lesson_week_num_val, lesson_string_index)
                     week_range[day_num_val].append(lesson_range)
             return week_range
 
-        
-        book = xlrd.open_workbook(xlsx_path, on_demand = True)
+        book = xlrd.open_workbook(xlsx_path, on_demand=True)
         sheet = book.sheet_by_index(0)
         DOC_TYPE_EXAM = 2
         column_range = []
@@ -504,7 +574,7 @@ class Reader:
                     break
 
         group_name_row = sheet.row(group_name_row_num)
-        
+
         for group_cell in group_name_row:  # Поиск названий групп
             group = str(group_cell.value)
             group = re.search(r'([А-Я]+-\w+-\w+)', group)
@@ -512,19 +582,20 @@ class Reader:
                 print(group.group(0))
                 # обновляем column_range, если левее группы нет разметки с неделями, используем старый
                 if not group_list and doc_type != DOC_TYPE_EXAM:
-                    column_range = get_column_range_for_type_eq_semester(sheet, group_cell, group_name_row_num)
-
+                    column_range = get_column_range_for_type_eq_semester(
+                        sheet, group_cell, group_name_row_num)
 
                 group_list.append(group.group(0))
 
                 if doc_type != DOC_TYPE_EXAM:
                     one_time_table = self.read_one_group_for_semester(
                         sheet, group_name_row.index(group_cell), group_name_row_num, column_range)  # По номеру столбца
-               
+
                 # print(one_time_table)
 
                 for key in one_time_table.keys():
-                    timetable[key] = one_time_table[key]  # Добавление в общий словарь
+                    # Добавление в общий словарь
+                    timetable[key] = one_time_table[key]
 
         self.write_to_db(doc_type, timetable)
         book.release_resources()
