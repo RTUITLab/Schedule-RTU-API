@@ -13,12 +13,8 @@ from . import models
 
 
 class Reader:
-    """Класс для парсинга расписания MIREA из xlsx файлов"""
 
     def __init__(self):
-        """Инициализация клсса
-            src(str): Абсолютный путь к XLS файлу
-        """
 
         self.notes_dict = {
             'МП-1': 4,
@@ -36,10 +32,6 @@ class Reader:
             'В-86': 2,
             'С-20': 3,
             'СГ-22': 5
-        }
-
-        self.doc_type_list = {
-            'semester': 0
         }
 
         self.days_dict = {
@@ -87,6 +79,7 @@ class Reader:
 
         self.lesson_types = {
             "лк": 1,
+            "лек": 1,
             "пр": 2,
             "лр": 3,
             "лаб": 3,
@@ -102,14 +95,6 @@ class Reader:
         self.current_place = 1
 
     def run(self, xlsx_dir,):
-
-        def get_doc_type_code(doc_type_str):
-            """
-            Получение типа документа, для каждого типа документа
-            :param doc_type_str:
-            :return:
-            """
-            return self.doc_type_list[doc_type_str]
 
         for path, dirs, files in os.walk(xlsx_dir):
 
@@ -129,19 +114,16 @@ class Reader:
                 print(path_to_xlsx_file)
                 # if("ИКиб_маг_2к" in path_to_xlsx_file):
                 #     continue
-                xlsx_doc_type = get_doc_type_code(os.path.dirname(
-                    os.path.relpath(path_to_xlsx_file, start='xls')))
 
                 try:
-                    self.read(path_to_xlsx_file, xlsx_doc_type)
+                    self.read(path_to_xlsx_file)
                     # TODO move truncate here
                     db.session.commit()
                 except Exception as err:
                     print(err, traceback.format_exc(), "in", file_name)
                     continue
 
-    @staticmethod
-    def format_teacher_name(cell):
+    def format_teacher_name(self, cell):
         # TODO add re.sub here
         cell = str(cell)
         res = re.split(r'\n|\\|(?!\d)\/(?!\d)|(?<!\d)\/(?=\d)', cell)
@@ -150,6 +132,12 @@ class Reader:
         # print(res)
         return res
 
+    def format_lesson_type(self, cell):
+        print(cell, "<- cell")
+        result = re.split(';|\n|\\|\s{1,}', cell)
+        result = [x.strip() for x in result if len(x.strip())]
+        print(result, "result")
+        return result
     def format_room_name(self, cell):
         def check_room_for_78(room_name):
             return (re.match(r'^\w{1}-\d{1,3}$', room_name)
@@ -210,14 +198,13 @@ class Reader:
         for pattern in self.notes_dict:
             regex_result = re.findall(pattern, string, flags=re.A)
             for reg in regex_result:
-                pattern = re.compile(r"%s\s*\n"%reg)
-                print(pattern)
-                print(pattern.findall(string), "<- Found in ", string,)
+                pattern = re.compile(r"%s *\n"%reg)
+                # print(pattern.findall(string), "<- Found in ", string,)
                 string = pattern.sub(reg, string)
 
         
-        rooms = re.split(r'\n|\\|\/', string)
-        print(rooms)
+        rooms = re.split(r'\n|\\|\/|\t|\s{3,}', string)
+        # print(rooms)
         all_rooms = []
 
         if len(rooms) > 1:
@@ -225,7 +212,7 @@ class Reader:
         
         regex_resul = []
         res = None
-        print(len(rooms), rooms)
+        # print(len(rooms), rooms)
         for room_num in range(len(rooms)):
             room = rooms[room_num].strip()
             for pattern in self.notes_dict.keys():
@@ -235,67 +222,33 @@ class Reader:
             
             if res:
                 room = re.sub(res, "", room)
-                print("room", room.strip())
+                # print("room", room.strip())
                 all_rooms.append([room.strip(), self.notes_dict[res]])
             else:
                 if room == "Д" or room == "Д." or "ДИСТ" in room or "ЛК Д" in room or not len(room):
                     all_rooms.append([room, None])
                 elif self.current_place == 2 and check_room_for_78(room) or self.current_place == 2 and room[0] == "Е":
-                    print("78 in stom!", room)
+                    # print("78 in strom!", room)
                     all_rooms.append([format_78(room), 1])
                 elif self.current_place == 1:
                     all_rooms.append([format_78(room), 1])
                 else:
                     all_rooms.append([room, self.current_place])
-        print(all_rooms, "<- all_rooms")
+        # print(all_rooms, "<- all_rooms")
         return all_rooms
 
-    @staticmethod
-    def format_name(temp_name):
-        """Разбор строки 'Предмет' на название дисциплины и номера
-            недель включения и исключения
-            temp_name(str)
+    def format_name(self, temp_name):
         """
+        """
+        temp_name = temp_name.strip()
+        # print(temp_name, "temp_name")
+        if not temp_name:
+            return None
+        result = re.split(';|\n|\\|(?<!п)/(?!г)|(?<!п)/|/(?!г)', temp_name)
+        result = [x.strip() for x in result if len(x.strip())]
+        print(temp_name, "<- temp_name")
+        print(result)
 
-        def if_diapason_week(lesson_string):
-            start_week = re.findall(r"\d+\s+-", lesson_string)
-            start_week = re.sub("-", "", start_week[0])
-            end_week = re.findall(r"-\d+\s+", lesson_string)
-            end_week = re.sub("-", "", end_week[0])
-            weeks = []
-            for week in range(int(start_week), int(end_week) + 1):
-                weeks.append(week)
-            return weeks
-
-        result = []
-        temp_name = temp_name.replace(" ", "  ")
-        temp_name = temp_name.replace(";", ";  ")
-        # print("1", temp_name)
-        temp_name = re.sub(r"(\s+-\s+(?:лк|пр)(?:;|))",
-                           "", temp_name, flags=re.A)
-        substr = re.findall(r"(\s+н(?:\.|)\s+)\d+", temp_name)
-        if substr:
-            temp_name = re.sub(substr[0], " ", temp_name, flags=re.A)
-
-        temp_name = re.sub(r"(\d+)", r"\1 ", temp_name, flags=re.A)
-        temp_name = re.sub(r"(кр\. {2,})", "кр.", temp_name, flags=re.A)
-
-        temp_name = re.sub(
-            r"((, *|)кроме {1,})", " кр.", temp_name, flags=re.A)
-        temp_name = re.sub(r"(н[\d,. ]*[+;])", "", temp_name, flags=re.A)
-        temp_name = re.findall(r"((?:\s*[\W\s]*)(?:|кр[ .]\s*|\d+\s+-\d+\s+|[\d,. ]*)\s*\s*(?:|[\W\s]*|\D*)*\s*(?:|\(\d\s+п/г\)))(?:\s\s|\Z|\n)",
-                               temp_name, flags=re.A)
-        # print("2", temp_name)
-        if isinstance(temp_name, list):
-            for item in temp_name:
-                if len(item) > 0:
-                    _except = ""
-                    _include = ""
-                    name = item
-                    name = name.replace("  ", " ")
-                    name = name.strip()
-                    one_str = [name, _include, _except]
-                    result.append(one_str)
         return result
 
     def get_lesson_num_from_time(self, time_str):
@@ -304,7 +257,7 @@ class Reader:
         else:
             return 0
 
-    def write_to_db(self, doc_type, timetable):
+    def write_to_db(self, timetable):
 
         def append_from_dict(diction, session, model):
             for key, value in diction.items():
@@ -319,7 +272,7 @@ class Reader:
 
         def data_append_to_lesson(group, period, teacher, day_num,
                                   call,
-                                  week, lesson_type, room, discipline_name, include, exception):
+                                  week, lesson_type, room, discipline_name):
 
             weeks = []
             less = ""
@@ -410,19 +363,17 @@ class Reader:
                                 include = str(dist["include"])[1:-1]
                             else:
                                 include = ""
-                            if "exception" in dist:
-                                exception = str(dist["exception"])[1:-1]
-                            else:
-                                exception = ""
 
                             if "пр" in dist['type'].lower():
                                 lesson_type = self.lesson_types["пр"]
                             if "лк" in dist['type'].lower():
                                 lesson_type = self.lesson_types["лк"]
                             if "лаб" in dist['type'].lower():
-                                lesson_type = self.lesson_types["лаб"]
+                                lesson_type = self.lesson_types["лр"]
                             if "лр" in dist['type'].lower():
                                 lesson_type = self.lesson_types["лр"]
+                            if "лек" in dist['type'].lower():
+                                lesson_type = self.lesson_types["лк"]
 
                             else:
                                 lesson_type = self.lesson_types[""]
@@ -437,7 +388,7 @@ class Reader:
                             data_append_to_lesson(group.id, occupation, teacher.id,
                                                   day_num,
                                                   call_num,
-                                                  week, lesson_type, room.id, dist['name'], include, exception)
+                                                  week, dist['type'], room.id, dist['name'])
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
         """
@@ -468,41 +419,42 @@ class Reader:
                 # Получение данных об одной паре
                 tmp_name = str(sheet.cell(
                     string_index, discipline_col_num).value)
+                
                 tmp_name = self.format_name(tmp_name)
 
-                if isinstance(tmp_name, list) and tmp_name != []:
+                if isinstance(tmp_name, list) and tmp_name:
 
-                    lesson_type = sheet.cell(
-                        string_index, discipline_col_num + 1).value
+                    lesson_type = self.format_lesson_type(sheet.cell(
+                        string_index, discipline_col_num + 1).value)
                     teacher = self.format_teacher_name(sheet.cell(
                         string_index, discipline_col_num + 2).value)
                     room = self.format_room_name(sheet.cell(
                         string_index, discipline_col_num + 3).value)
 
                     # TODO need to fix
-                    max_len = max(len(tmp_name), len(teacher), len(room))
+                    max_len = max(len(tmp_name), len(teacher), len(room), len(lesson_type))
                     if len(tmp_name) < max_len:
                         tmp_name = cycle(tmp_name)
                     if len(teacher) < max_len:
                         teacher = cycle(teacher)
                     if len(room) < max_len:
                         room = cycle(room)
+                    if len(lesson_type) < max_len:
+                        room = cycle(lesson_type)
 
-                    lesson_tuple = list(zip(tmp_name, teacher, room))
+                    lesson_tuple = list(zip(tmp_name, teacher, room, lesson_type))
                     
+                    print(lesson_tuple)
+                    print()
                     for tuple_item in lesson_tuple:
-                        name = tuple_item[0][0]
-                        include = tuple_item[0][1]
-                        exception = tuple_item[0][2]
+                        name = tuple_item[0]
                         teacher = tuple_item[1]
                         room = tuple_item[2]
+                        lesson_type = tuple_item[3]
+                        print(name, teacher, room, lesson_type)
 
                         one_lesson = {"date": None, "time": time, "name": name, "type": lesson_type,
                                       "teacher": teacher, "room": room}
-                        if include:
-                            one_lesson["include"] = include
-                        if exception:
-                            one_lesson["exception"] = exception
 
                         if name:
                             if "week_{}".format(week_num) not in one_day["lesson_{}".format(lesson_num)]:
@@ -516,38 +468,24 @@ class Reader:
 
         return one_group
 
-    def read(self, xlsx_path, doc_type):
-        """Объединяет расписания отдельных групп и записывает в файлы
-            :param xlsx_path:
-            :param doc_type:
-            :return:
+    def read(self, xlsx_path):
+        """
+
         """
 
         def get_day_num(day_name):
             """
-            Получение номера дня недели
-            :param day_name: Название дня недели в верхнем регистре
-            :return:
+
             """
             return self.days_dict[day_name.upper()]
 
         def get_month_num(month_name):
             """
-            Получение номера месяца
-            :param month_name: Названеи месяца в верхнем регистре
-            :return:
+
             """
             return self.months_dict[month_name.upper().replace(' ', '')]
 
         def get_column_range_for_type_eq_semester(xlsx_sheet, group_name_cell, group_name_row_index):
-            """
-            Получение диапазона ячеек недели для типа расписания = семестр
-            :param group_name_row_index: 
-            :param xlsx_sheet:
-            :param group_name_cell:
-            :return:
-            """
-
             week_range = {
                 1: [],
                 2: [],
@@ -617,16 +555,23 @@ class Reader:
 
         # Индекс строки с названиями групп
         group_name_row_num = 1
-        # Поиск строки, содержащей названия групп
-        leng = len(sheet.col(1))
-        if leng > 200:
-            leng = 122
-        for row_index in range(leng):
+        # TODO find by name of groups
+        # v86 = ["", "", "", "", "", "", ""]
+        # strom = ["УПБ", "УУБ", "УНБ", "УЮБ", "УМБ", "УЭБ", "", "", "", "", "", "", ""]
+        for row_index in range(len(sheet.col(1))):
             group_name_row = sheet.row_values(row_index)
             if len(group_name_row) > 0:
                 group_row_str = " ".join(str(x) for x in group_name_row)
                 gr = re.findall(r'([А-Я]+-\w+-\w+)', group_row_str, re.I)
                 if gr:
+                    # group = gr[0][0:3]
+                    
+                    # if group in v86:
+                    #     self.current_place=2
+                    # elif group in strom:
+                    #     self.current_place=3
+                    # else:
+                    #     self.current_place=1
                     group_name_row_num = row_index
                     break
 
@@ -638,15 +583,15 @@ class Reader:
             if group:  # Если название найдено, то получение расписания этой группы
                 print(group.group(0))
                 # обновляем column_range, если левее группы нет разметки с неделями, используем старый
-                if not group_list and doc_type != DOC_TYPE_EXAM:
+                if not group_list:
                     column_range = get_column_range_for_type_eq_semester(
                         sheet, group_cell, group_name_row_num)
 
                 group_list.append(group.group(0))
 
-                if doc_type != DOC_TYPE_EXAM:
-                    one_time_table = self.read_one_group_for_semester(
-                        sheet, group_name_row.index(group_cell), group_name_row_num, column_range)  # По номеру столбца
+                # if doc_type != DOC_TYPE_EXAM:
+                one_time_table = self.read_one_group_for_semester(
+                    sheet, group_name_row.index(group_cell), group_name_row_num, column_range)  # По номеру столбца
 
                 # print(one_time_table)
 
@@ -654,7 +599,7 @@ class Reader:
                     # Добавление в общий словарь
                     timetable[key] = one_time_table[key]
 
-        self.write_to_db(doc_type, timetable)
+        self.write_to_db(timetable)
         book.release_resources()
         del book
         return group_list
