@@ -331,7 +331,7 @@ class Reader:
                                    teacher_id=teacher, lesson_type_id=lesson_type,
                                    subgroup=None, discipline_id=discipline.id,
                                    room_id=room, group_id=group,
-                                   day_of_week=day_num)
+                                   day_of_week=day_num, week=week)
             db.session.add(lesson)
             db.session.flush()
 
@@ -479,6 +479,10 @@ class Reader:
             for lesson_range in cell_range[day_num]:
                 lesson_num = lesson_range[0]
                 time = lesson_range[1]
+                if "18:30" in time:
+                    lesson_num = 8
+                if "19:40" in time:
+                    lesson_num = 9
                 week_num = lesson_range[2]
                 string_index = lesson_range[3]
 
@@ -544,7 +548,7 @@ class Reader:
 
                     # Объединение расписания
                     one_group[group_name]["day_{}".format(day_num)] = one_day
-
+        # print(one_group)
         return one_group
 
     def read(self, xlsx_path):

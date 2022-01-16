@@ -100,6 +100,8 @@ class Lesson(db.Model):
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
     day_of_week = db.Column(db.Integer, nullable=False)
 
+    week = db.Column(db.Integer)
+
     week_id = db.relationship(
         'LessonOnWeek', backref='lessons', lazy='dynamic')
 

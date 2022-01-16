@@ -3,6 +3,7 @@ import datetime as dt
 from datetime import datetime, date, time
 from app import db
 from schedule_parser import models
+import csv
 
 offset = dt.timedelta(hours=3)
 
@@ -353,6 +354,54 @@ def full_sched(teacher):
     if cur_week(datetime.now(tz=time_zone))%2 == 1: 
         return {"first": res, "second": res2}
     return {"first": res2, "second": res}
+
+
+def form_csv_new():
+    header = ["номер комнаты", "день недели", "номер пары", "неделя", "дисциплина", "группа"]
+    days_of_week = {1:"понедельник", 2:"вторник",3:"среда",4:"четверг",5:"пятница",6:"суббота"}
+    rows = models.Room.query.all()
+
+    with open('result.csv', 'w', encoding='utf-8', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=header, delimiter = ";")
+        writer.writeheader()
+        print("start")
+        for room in rows:
+            for week in range(1, 3):
+                for day in range(0, 6):
+                    for call_num in range(0, 10):
+                        sqlite_select_Query = 'SELECT discipline.name, "group".name  \
+                                                    FROM lesson \
+                                                    JOIn discipline ON  lesson.discipline_id = discipline.id \
+                                                    JOIn "group" ON  lesson.group_id = "group".id \
+                                                    WHERe room_id = :room AND day_of_week = :day AND call_id = :call_num AND week = :week' 
+                        result = db.session.execute(sqlite_select_Query, {'room':room.id, 'day':day+1, 'call_num':call_num+1, 'week': week})
+                        # res = [row[0] for row in res]
+                        for pair in result:
+                            res = {"номер комнаты": room.name, "день недели": days_of_week[day+1], "номер пары": call_num+1, "неделя": week, "дисциплина": pair[0], "группа": pair[1]}
+                            # print(res)
+                            writer.writerow(res)
+        #                 sqlite_select_Query = "SELECT disciplines.discipline_name, groups.group_name \
+        #                                         FROM lessons \
+        #                                         JOIn disciplines ON  lessons.discipline = disciplines.discipline_id \
+        #                                         JOIn groups ON  lessons.group_num = groups.group_id \
+        #                                         WHERe room = :room AND day = :day AND call_num = :call_num AND week = :week" 
+        #                 cursor.execute(sqlite_select_Query, {'room':room[0], 'day':day+1, 'call_num':call_num+1, 'week': week})
+        #                 pairs = list(cursor.fetchall())
+        #                 # if not "-" in room_name:
+        #                 #     print(room_name)
+        #                 # else len(room_name) => 5: 
+        #                 #     print(room_name)
+        #                 # if many:
+        #                 #     for room_name in rooms:
+        #                 #         for pair in pairs:
+        #                 #             res = {"номер комнаты": room_name, "день недели": days_of_week[day+1], "номер пары": call_num+1, "неделя": week, "дисциплина": pair[0], "группа": pair[1]}
+        #                 #             # print(res)
+        #                 #             writer.writerow(res)
+        #                 # else:
+
+
+
+
 # def get_day_teacher_schedule(teacher_name):
 #     teacher = models.Teacher.query.filter(models.Teacher.name==teacher_name)
 #     lessons = models.Lesson.query.filter_by(teacher_id=teacher.id)

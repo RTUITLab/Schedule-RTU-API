@@ -4,7 +4,7 @@ import requests
 from os import environ
 import datetime
 
-from schedule import get_full_schedule_by_weeks, get_schedule_by_week, get_teachers, teacher_next_week_sch, teacher_today_sch, teacher_tomorrow_sch, teacher_week_sch, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched
+from schedule import get_full_schedule_by_weeks, get_schedule_by_week, get_teachers, teacher_next_week_sch, teacher_today_sch, teacher_tomorrow_sch, teacher_week_sch, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched, form_csv_new
 
 import sys
 
@@ -665,3 +665,20 @@ def teacher_next_week(teacher):
       return make_response(response)
     res = Response(headers={'Retry-After':200}, status=503)
     return res
+
+
+@app.route('/form_csv', methods=["POST"])
+def csv():
+    """Refresh shedule
+    ---
+    responses:
+      200:
+        description: Return \'ok\' after updating
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+    """
+    form_csv_new()
+    return make_response({"status": 'ok'})
