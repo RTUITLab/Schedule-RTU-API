@@ -133,7 +133,6 @@ class Reader:
         return res
 
     def format_lesson_type(self, cell):
-        print(cell, "<- cell")
         result = re.split(';|\n|\\|\s{1,}', cell)
         result = [x.strip() for x in result if len(x.strip())]
         print(result, "result")
@@ -156,12 +155,12 @@ class Reader:
                         and not re.match(r'^ИВЦ-\d{3}$', room_name) 
                         and not re.match(r'^\w{1}-\d{1}$', room_name)
                         and not re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name))
-            if re.match(r'^Е', room_name) and not "Е-" in room_name:
-                room_name = re.sub(r'Е', 'Е-', room_name)
-            if re.match(r'^А', room_name) and not "А-" in room_name:
-                room_name = re.sub(r'А', 'А-', room_name)
-            if re.match(r'^Г', room_name) and not "Г-" in room_name:
-                room_name = re.sub(r'Г', 'Г-', room_name)
+            if re.match(r'^\w', room_name) and not re.match(r"^\w-", room_name):
+                room_name = re.sub(r'^(\w)', r'\g<1>-', room_name)
+            # if re.match(r'^А', room_name) and not "А-" in room_name:
+            #     room_name = re.sub(r'А', 'А-', room_name)
+            # if re.match(r'^Г', room_name) and not "Г-" in room_name:
+            #     room_name = re.sub(r'Г', 'Г-', room_name)
 
             
             if re.match(r'^\w{1}-\d{3}\w{1}$', room_name):
@@ -192,7 +191,7 @@ class Reader:
         if isinstance(cell, float):
             cell = int(cell)
         string = str(cell)
-
+        
         string = string.replace('*', '').upper()
 
         for pattern in self.notes_dict:
@@ -210,10 +209,10 @@ class Reader:
         if len(rooms) > 1:
             res = [x.strip() for x in rooms if len(x.strip())]
         
-        regex_resul = []
-        res = None
+        print(rooms)
         # print(len(rooms), rooms)
         for room_num in range(len(rooms)):
+            res = None
             room = rooms[room_num].strip()
             for pattern in self.notes_dict.keys():
                 regex_result = re.findall(pattern, room)
@@ -223,18 +222,20 @@ class Reader:
             if res:
                 room = re.sub(res, "", room)
                 # print("room", room.strip())
+                if (self.notes_dict[res] == 1):
+                     room = format_78(room)
                 all_rooms.append([room.strip(), self.notes_dict[res]])
             else:
                 if room == "Д" or room == "Д." or "ДИСТ" in room or "ЛК Д" in room or not len(room):
                     all_rooms.append([room, None])
                 elif self.current_place == 2 and check_room_for_78(room) or self.current_place == 2 and room[0] == "Е":
-                    # print("78 in strom!", room)
+                    print("78 in strom!", room)
                     all_rooms.append([format_78(room), 1])
                 elif self.current_place == 1:
                     all_rooms.append([format_78(room), 1])
                 else:
                     all_rooms.append([room, self.current_place])
-        # print(all_rooms, "<- all_rooms")
+        print(all_rooms, "<- all_rooms")
         return all_rooms
 
     def format_name(self, temp_name):
@@ -246,6 +247,20 @@ class Reader:
             return None
         result = re.split(';|\n|\\|(?<!п)/(?!г)|(?<!п)/|/(?!г)', temp_name)
         result = [x.strip() for x in result if len(x.strip())]
+        
+        for name_num in range(1, len(result)):
+
+            if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\D{5,}', result[name_num]):
+                clear_name = re.sub(r"\d+|п/г|\(|\)|,| н |н\.", "", result[name_num-1]).strip()
+                print(clear_name, "<- clear_name")
+                result[name_num]+= " " + clear_name
+        
+        for name_num in range(0, len(result)-1):
+            if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\D{5,}', result[name_num]):
+                clear_name = re.sub(r"\d+|п/г|\(|\)|,| н |н\.", "", result[name_num+1]).strip()
+                print(clear_name, "<- clear_name")
+                result[name_num]+= " " + clear_name
+                
         print(temp_name, "<- temp_name")
         print(result)
 
@@ -357,12 +372,6 @@ class Reader:
                         for dist in item:
                             if dist['name'].strip() == "":
                                 continue
-                            # print(dist)
-                            call_time = dist['time']
-                            if "include" in dist:
-                                include = str(dist["include"])[1:-1]
-                            else:
-                                include = ""
 
                             if "пр" in dist['type'].lower():
                                 lesson_type = self.lesson_types["пр"]
@@ -388,7 +397,7 @@ class Reader:
                             data_append_to_lesson(group.id, occupation, teacher.id,
                                                   day_num,
                                                   call_num,
-                                                  week, dist['type'], room.id, dist['name'])
+                                                  week, lesson_type, room.id, dist['name'])
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
         """
@@ -440,18 +449,15 @@ class Reader:
                     if len(room) < max_len:
                         room = cycle(room)
                     if len(lesson_type) < max_len:
-                        room = cycle(lesson_type)
+                        lesson_type = cycle(lesson_type)
 
                     lesson_tuple = list(zip(tmp_name, teacher, room, lesson_type))
                     
-                    print(lesson_tuple)
-                    print()
                     for tuple_item in lesson_tuple:
                         name = tuple_item[0]
                         teacher = tuple_item[1]
                         room = tuple_item[2]
                         lesson_type = tuple_item[3]
-                        print(name, teacher, room, lesson_type)
 
                         one_lesson = {"date": None, "time": time, "name": name, "type": lesson_type,
                                       "teacher": teacher, "room": room}
