@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 from os import environ 
 
 
-def parse_schedule():
+def parse_schedule(without_weeks=True):
     global Downloader
     try:
         engine = create_engine(environ.get('CONNECTION_STRING'),
@@ -36,7 +36,7 @@ def parse_schedule():
 
         print("downloaded")
         try:
-            reader = Reader()
+            reader = Reader(without_weeks=without_weeks)
         except:
             print("Reader error")
         print("start reading")
