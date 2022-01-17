@@ -357,8 +357,16 @@ def full_sched(teacher):
 
 
 def form_csv_new():
-    header = ["номер комнаты", "день недели", "номер пары", "неделя", "дисциплина", "группа"]
+    header = ["номер комнаты", "корпус", "день недели", "номер пары", "неделя", "дисциплина", "группа"]
     days_of_week = {1:"понедельник", 2:"вторник",3:"среда",4:"четверг",5:"пятница",6:"суббота"}
+    place_dict = {
+            4: 'МП-1',
+            1: 'В-78',
+            2: 'В-86',
+            3: 'С-20',
+            5: 'СГ-22',
+            None: 0
+        }
     rows = models.Room.query.all()
 
     with open('result.csv', 'w', encoding='utf-8', newline='') as csvfile:
@@ -366,6 +374,9 @@ def form_csv_new():
         writer.writeheader()
         print("start")
         for room in rows:
+            if not len(room.name) or room.name == "Д" or room.place_id == 4 or room.place_id == 5:
+                continue
+            print(room)
             for week in range(1, 3):
                 for day in range(0, 6):
                     for call_num in range(0, 10):
@@ -377,7 +388,7 @@ def form_csv_new():
                         result = db.session.execute(sqlite_select_Query, {'room':room.id, 'day':day+1, 'call_num':call_num+1, 'week': week})
                         # res = [row[0] for row in res]
                         for pair in result:
-                            res = {"номер комнаты": room.name, "день недели": days_of_week[day+1], "номер пары": call_num+1, "неделя": week, "дисциплина": pair[0], "группа": pair[1]}
+                            res = {"номер комнаты": room.name, "корпус": place_dict[room.place_id], "день недели": days_of_week[day+1], "номер пары": call_num+1, "неделя": week, "дисциплина": pair[0], "группа": pair[1]}
                             # print(res)
                             writer.writerow(res)
         #                 sqlite_select_Query = "SELECT disciplines.discipline_name, groups.group_name \
