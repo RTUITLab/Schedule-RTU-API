@@ -15,7 +15,7 @@ import shutil
 
 
 class Downloader:
-    def __init__(self, path_to_error_log='errors/downloadErrorLog.csv', base_file_dir='xls/', except_types=[]):
+    def __init__(self, path_to_error_log='errors/downloadErrorLog.csv', base_file_dir='xls/'):
         """
         Клаас загрузки расписания с сайта MIREA
         :type file_type: list
@@ -36,12 +36,6 @@ class Downloader:
         self.path_to_error_log = path_to_error_log
         self.base_file_dir = base_file_dir
         self.file_type = ['xls', 'xlsx']
-        self.except_types = except_types
-        self.download_dir = {
-            "zach": [r'zach', r'zachety'],
-            "exam": [r'zima', r'ekz', r'ekzam', r'ekzameny', r'sessiya'],
-            "semester": [r'']
-        }
 
     @staticmethod
     def install(package):
@@ -75,35 +69,23 @@ class Downloader:
                         if chunk:
                             f.write(chunk)
 
-        if "зима" in path or "лето" in path or "зач" in path or "экз" in path:
+        try:
+            download(url, path)
+            return "download"
+        except:
             return "skip"
-
-        if os.path.isfile(path):
-            
-            old_file_size = os.path.getsize(path)
-            new_file_size = len(requests.get(url).content)
-            if old_file_size != new_file_size:
-                try:
-                    download(url, path)
-                    return "download"
-                except:
-                    return "skip"
-            else:
-                return "skip"
-        else:
-            try:
-                download(url, path)
-                return "download"
-            except:
-                return "skip"
-            
             
 
     def get_dir(self, file_name):
-        for dir_name in self.download_dir:
-            for pattern in self.download_dir[dir_name]:
-                if re.search(pattern, file_name, flags=re.IGNORECASE):
-                    return dir_name
+        if "ЗАЧ" in file_name:
+            return "zach"
+        if 'ЭКЗ' in file_name or 'СЕСС' in file_name:
+            return "exam"
+        if 'ЗИМА' in file_name and not 'ИТХТ' in file_name: 
+            return "exam"
+        else:
+            return "semester"
+
 
     def download(self):
         #urlopen(request, context=ssl.create_default_context(cafile=certifi.where()))
@@ -114,7 +96,7 @@ class Downloader:
         parse = BeautifulSoup(site, "html.parser")  # Объект BS с параметром парсера
         # xls_list = parse.findAll('a', {"class": "xls"})  # поиск в HTML Всех классов с разметой Html
         xls_list = parse.findAll('a', {"class": "uk-link-toggle"})  # поиск в HTML Всех классов с разметой Html
-
+        
         # Списки адресов на файлы
         url_files = [x['href'].replace('https', 'http') for x in xls_list]  # Сохранение списка адресов сайтов
         progress_all = len(url_files)
@@ -127,20 +109,20 @@ class Downloader:
             subdir = ''
             file_name = subdir + divided_path[1]
             try:
-                if "зима" in file_name or "лето" in file_name:
-                    continue
+                
                 if os.path.splitext(file_name)[1].replace('.', '') in self.file_type and "заоч" not in os.path.splitext(file_name)[0].replace('.', ''):
-                    subdir = self.get_dir(file_name)
+                    subdir = self.get_dir(file_name.upper())
+                    print(subdir)
                     path_to_file = os.path.join(self.base_file_dir, subdir, file_name)
-                    if subdir not in self.except_types:
-                        if not os.path.isdir(os.path.join(self.base_file_dir, subdir)):
-                            os.makedirs(os.path.join(self.base_file_dir, subdir), exist_ok=False)
-                        result = self.save_file(url_file, path_to_file)
-                        count_file += 1  # Счетчик для отображения скаченных файлов в %
+                    print(path_to_file)
 
-                        print('{} : {} -- {}'.format(result, path_to_file, count_file / progress_all * 100))
-                    else:
-                        continue
+                    if not os.path.isdir(os.path.join(self.base_file_dir, subdir)):
+                        os.makedirs(os.path.join(self.base_file_dir, subdir), exist_ok=False)
+                    result = self.save_file(url_file, path_to_file)
+                    count_file += 1  # Счетчик для отображения скаченных файлов в %
+
+                    print('{} : {} -- {}'.format(result, path_to_file, count_file / progress_all * 100))
+
                 else:
                     count_file += 1  # Счетчик для отображения скаченных файлов в %
 

@@ -18,21 +18,21 @@ def parse_schedule(without_weeks=True):
         
         meta = MetaData()
 
-        connection = engine.connect()
-        connection.execute( '''TRUNCATE TABLE lesson_on_week CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE lesson CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE discipline CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE "group" CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE room CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE place CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE lesson_type CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE teacher CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE call CASCADE''' )
-        connection.close()
+        # connection = engine.connect()
+        # connection.execute( '''TRUNCATE TABLE lesson_on_week CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE lesson CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE discipline CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE "group" CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE room CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE place CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE lesson_type CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE teacher CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE call CASCADE''' )
+        # connection.close()
     
         print("truncate")
-        # Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
-        # Download.download()
+        Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
+        Download.download()
 
         print("downloaded")
         try:
@@ -40,7 +40,7 @@ def parse_schedule(without_weeks=True):
         except:
             print("Reader error")
         print("start reading")
-        reader.run('xls')
+        # reader.run('xls')
         print("\nКонвертация успешно выполнена!\n\n")
 
     except FileNotFoundError as err:
