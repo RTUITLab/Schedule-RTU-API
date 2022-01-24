@@ -45,21 +45,6 @@ class Reader:
             'СУББОТА': 6
         }
 
-        self.months_dict = {
-            'ЯНВАРЬ': 1,
-            'ФЕВРАЛЬ': 2,
-            'МАРТ': 3,
-            'АПРЕЛЬ': 4,
-            'МАЙ': 5,
-            'ИЮНЬ': 6,
-            'ИЮЛЬ': 7,
-            'АВГУСТ': 8,
-            'СЕНТЯБРЬ': 9,
-            'ОКТЯБРЬ': 10,
-            'НОЯБРЬ': 11,
-            'ДЕКАБРЬ': 12
-        }
-
         self.time_dict = {
             "9:00": 1,
             "10:40": 2,
@@ -95,16 +80,14 @@ class Reader:
         }
 
         self.current_place = 1
+        self.current_period = 1
 
-    def run(self, xlsx_dir,):
+    def run(self, xlsx_dir):
 
         for path, dirs, files in os.walk(xlsx_dir):
 
             for file_name in files:
-                # if "зима" in file_name or "лето" in file_name:
-                #     continue
-                # if not 'ИИТ' in file_name:
-                #     continue
+
                 file_name = file_name.lower()
                 if "стром" in file_name or "кбисп" in file_name:
                     self.current_place = 3
@@ -112,6 +95,9 @@ class Reader:
                     self.current_place = 2
                 else:
                     self.current_place = 1
+                
+                self.current_period = self.periods[path.split("\\")[1]]
+                print("current_period -> ", self.current_period)
                 path_to_xlsx_file = os.path.join(path, file_name)
                 print(path_to_xlsx_file)
                 # if("ИКиб_маг_2к" in path_to_xlsx_file):
@@ -562,11 +548,6 @@ class Reader:
             """
             return self.days_dict[day_name.upper()]
 
-        def get_month_num(month_name):
-            """
-
-            """
-            return self.months_dict[month_name.upper().replace(' ', '')]
 
         def get_column_range_for_type_eq_semester(xlsx_sheet, group_name_cell, group_name_row_index):
             week_range = {
