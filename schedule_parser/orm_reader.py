@@ -11,6 +11,7 @@ from itertools import cycle
 from app import db
 from .get_or_create import get_or_create
 from . import models
+from .formatters import format_lesson_type, format_name, format_room_name, format_teacher_name
 
 
 class Reader:
@@ -62,6 +63,10 @@ class Reader:
             "пр": 2,
             "лр": 3,
             "": 4,
+            "зач": 5,
+            "экз": 5,
+            "кр": 5,
+            "зд": 5,
         }
 
         self.lesson_types = {
@@ -95,7 +100,7 @@ class Reader:
                     self.current_place = 2
                 else:
                     self.current_place = 1
-                
+
                 self.current_period = self.periods[path.split("\\")[1]]
                 print("current_period -> ", self.current_period)
                 path_to_xlsx_file = os.path.join(path, file_name)
@@ -110,181 +115,6 @@ class Reader:
                 except Exception as err:
                     print(err, traceback.format_exc(), "in", file_name)
                     continue
-
-    def format_teacher_name(self, cell):
-        # TODO add re.sub here
-        cell = str(cell)
-        res = re.split(r'\n|\\\\|\\|(?!\d)\/(?!\d)|(?<!\d)\/(?=\d)', cell)
-        if len(res) > 1:
-            res = [x.strip() for x in res if len(x.strip())]
-        # print(res)
-        return res
-
-    def format_lesson_type(self, cell):
-        result = re.split(';|\n|\\\\|\\|\s{1,}', cell)
-        result = [x.strip() for x in result if len(x.strip())]
-        # print(result, "result")
-        return result
-
-    def format_room_name(self, cell, correct_max_len):
-        def check_room_for_78(room_name):
-            return (re.match(r'^\w{1}-\d{1,3}$', room_name)
-                    or re.match(r'^\w{1}-\d{1,3}\w{1}$', room_name)
-                    or re.match(r'^\w{1}-\d{3}-\w{1}$', room_name)
-                    or re.match(r'^\w{1}-\d{3}.\w{1}$', room_name)
-                    or re.match(r'^\w{1}-\d{3}\(\w{1}\)$', room_name)
-                    or re.match(r'^ИВЦ-\d{3}$', room_name)
-                    or re.match(r'^\w{1}-\d{1}$', room_name)
-                    or re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name)
-                    or re.match(r'^ИВЦ-\d{3}.\w{1}$', room_name))
-
-        def format_78(room_name):
-            def check_re(room_name):
-                return (not re.match(r'^\w{1}-\d{1,3}$', room_name)
-                        and not re.match(r'^\w{1}-\d{3}-\w{1}$', room_name)
-                        and not re.match(r'^ИВЦ-\d{3}$', room_name)
-                        and not re.match(r'^\w{1}-\d{1}$', room_name)
-                        and not re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name))
-            if re.match(r'^\D\d', room_name) and not re.match(r"^\w-\d", room_name):
-                room_name = re.sub(r'^(\w)', r'\g<1>-', room_name)
-            # if re.match(r'^А', room_name) and not "А-" in room_name:
-            #     room_name = re.sub(r'А', 'А-', room_name)
-            # if re.match(r'^Г', room_name) and not "Г-" in room_name:
-            #     room_name = re.sub(r'Г', 'Г-', room_name)
-
-            if re.match(r'^\w{1}-\d{3}\w{1}$', room_name):
-                print('convert', room_name, 'to', re.sub(
-                    r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name))
-                room_name = re.sub(
-                    r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name)
-
-            if re.match(r'^\w{1}-\d{3}\.\w{1}$', room_name):
-                print('convert', room_name, 'to',
-                      re.sub(r'\.', '-', room_name))
-                room_name = re.sub(r'\.', '-', room_name)
-
-            if re.match(r'^\w{1}-\d{3}\(\w{1}\)$', room_name):
-                print('convert', room_name, 'to', re.sub(
-                    r'\((\w{1})\)', '-\g<1>', room_name))
-                room_name = re.sub(r'\((\w{1})\)', '-\g<1>', room_name)
-
-            if re.match(r'^ИВЦ-\d{3}\.\w{1}$', room_name):
-                print('convert', room_name, 'to',
-                      re.sub(r'\.', '-', room_name))
-                room_name = re.sub(r'\.', '-', room_name)
-
-            if check_re(room_name):
-                print('not match', room_name)
-
-            return room_name
-
-        if isinstance(cell, float):
-            cell = int(cell)
-        string = str(cell)
-
-        string = string.replace('*', '').upper()
-
-        for pattern in self.notes_dict:
-            regex_result = re.findall(pattern, string, flags=re.A)
-            for reg in regex_result:
-                pattern = re.compile(r"%s *\n" % reg)
-                # print(pattern.findall(string), "<- Found in ", string,)
-                string = pattern.sub(reg, string)
-        if self.current_place == 2: 
-            rooms = re.split(r'(?<!КБ-1)(?<!КБ)(?<!КАФ)(?<!КАФ.)\n|\\\\|\\|\/|\t|\s{3,}|,', string)
-            if len(rooms)<correct_max_len:
-                rooms = re.split(r'(?<!КБ-1)(?<!КБ)(?<!КАФ)(?<!КАФ.)\s|\\\\|\\|\/|,', string)
-        else:
-            rooms = re.split(r'(?<!КБ-1)(?<!КБ)(?<!КАФ)\n|\\\\|\\|\/|\t|\s{3,}|,', string)
-            if len(rooms)<correct_max_len:
-                rooms = re.split(r'(?<!КБ-1)(?<!КБ)(?<!КАФ)\s|\\\\|\\|\/|,', string)
-
-        # print(rooms)
-        all_rooms = []
-
-        if len(rooms) > 1:
-            res = [x.strip() for x in rooms if len(x.strip())]
-            
-
-        # print(rooms)
-        # print(len(rooms), rooms)
-        for room_num in range(len(rooms)):
-            
-            res = None
-            room = rooms[room_num].strip()
-            if "КАФ." in room:
-                room = re.sub(
-                    r'КАФ.', r'КАФ', room)
-            if "НА" in room:
-                room = re.sub(
-                    r'НА', r'', room).strip()
-
-            if "КАФЕДРА" in room:
-                room = re.sub(
-                    r'КАФЕДРА', r'КАФ', room)
-
-            for pattern in self.notes_dict.keys():
-                regex_result = re.findall(pattern, room)
-                if regex_result:
-                    res = regex_result[0]
-
-            if res:
-                room = re.sub(res, "", room)
-                # print("room", room.strip())
-                if (self.notes_dict[res] == 1):
-                    if re.match(r'^\d{2,}', room):
-                        all_rooms.append([room.strip(), self.notes_dict[res]])
-                    room = format_78(room)
-                    
-                all_rooms.append([room.strip(), self.notes_dict[res]])
-            else:
-                if room == "Д" or room == "Д." or "ДИСТ" in room or "ЛК Д" in room or not len(room):
-                    all_rooms.append([room, None])
-                elif self.current_place == 3 and check_room_for_78(room) or self.current_place == 3 and room[0] == "Е":
-                    print("78 in strom!", room)
-                    all_rooms.append([format_78(room), 1])
-                elif self.current_place == 1:
-                    all_rooms.append([format_78(room), 1])
-                else:
-                    all_rooms.append([room, self.current_place])
-        # print(all_rooms, "<- all_rooms")
-        return all_rooms
-
-    def format_name(self, temp_name):
-        """
-        """
-        temp_name = temp_name.strip()
-        # print(temp_name, "temp_name")
-        if not temp_name:
-            return None
-        # print(temp_name)
-        result = re.split(';|\n|\\\\|\\|(?<!п)/(?!г)|(?<!п)/|/(?!г)', temp_name)
-        
-        result = [x.strip() for x in result if len(x.strip())]
-        # print(result)
-        for name_num in range(1, len(result)):
-
-            if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
-                clear_name = re.sub(r"\d+|п/г|\(|\)|,| н |н\.",
-                                    "", result[name_num-1]).strip()
-
-                # print(clear_name, "<- clear_name")
-                result[name_num] += " " + clear_name
-
-        for name_num in range(0, len(result)-1):
-            if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
-                clear_name = re.sub(r"\d+|п/г|\(|\)|,| н |н\.",
-                                    "", result[name_num+1]).strip()
-                if not re.search(r'\w{5,}', clear_name) and name_num+2 < len(result):
-                    clear_name = re.sub(
-                        r"\d+|п/г|\(|\)|,| н |н\.", "", result[name_num+2]).strip()
-                # print(clear_name, "<- clear_name")
-                result[name_num] += " " + clear_name
-
-        # print(temp_name, "<- temp_name")
-        # print(result)
-
-        return result
 
     def get_lesson_num_from_time(self, time_str):
         if time_str in self.time_dict:
@@ -305,22 +135,6 @@ class Reader:
                 week_l = models.LessonOnWeek(week=week, lesson=lesson)
                 db.session.add(week_l)
 
-        def data_append_to_lesson_without_weeks(group, period, teacher, day_num,
-                                  call,
-                                  week, lesson_type, room, discipline_name):
-
-
-            discipline = get_or_create(
-                session=db.session, model=models.Discipline, name=discipline_name)
-            db.session.flush()
-            lesson = models.Lesson(call_id=call, period_id=period,
-                                   teacher_id=teacher, lesson_type_id=lesson_type,
-                                   subgroup=None, discipline_id=discipline.id,
-                                   room_id=room, group_id=group,
-                                   day_of_week=day_num, week=week)
-            db.session.add(lesson)
-            db.session.flush()
-
         def data_append_to_lesson(group, period, teacher, day_num,
                                   call,
                                   week, lesson_type, room, discipline_name):
@@ -328,49 +142,10 @@ class Reader:
             weeks = []
             less = ""
 
-            clean_discipline_name = re.sub(r"(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|,| н |н\.| кр |кр.|^кр |^н |-","", discipline_name).strip()
+            clean_discipline_name = re.sub(
+                r"(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|,| н |н\.| кр |кр.|^кр |^н |-", "", discipline_name).strip()
             if clean_discipline_name[0] == "н":
                 clean_discipline_name = clean_discipline_name[1:]
-
-            # if "кр." in discipline_name:
-            #     exc = discipline_name.split("н.")[0]
-            #     less = discipline_name.split("н.")[1].strip()
-            #     regex_num = re.compile(r'\d+')
-            #     weeks = [int(item) for item in regex_num.findall(exc)]
-
-            #     # usless
-            #     # if "-" in exc:
-            #     #     weeks = range(2, 16, 2)
-            #     #     .extend(L)
-            #     #     weeks = range(2, 16, 2)
-            #     # else:
-            #     #     pass
-
-            # elif " н." in discipline_name or " н " in discipline_name or ("н." in discipline_name and "Ин." not in discipline_name):
-            #     if " н." in discipline_name:
-            #         exc = discipline_name.split(" н.")[0]
-            #         less = discipline_name.split(" н.")[1].strip()
-            #     elif "н." in discipline_name:
-            #         exc = discipline_name.split("н.")[0]
-            #         less = discipline_name.split("н.")[1].strip()
-            #     elif " н " in discipline_name:
-            #         exc = discipline_name.split(" н ")[0]
-            #         less = discipline_name.split(" н ")[1].strip()
-            #     regex_num = re.compile(r'\d+')
-            #     weeks = [int(item) for item in regex_num.findall(exc)]
-
-                # if "-" in exc:
-
-                #     weeks = list(range(weeks[0], weeks[1], 17))
-                #     pass
-
-            # else:
-            #     less = discipline_name
-            #     if int(week) % 2 == 1:
-            #         weeks = list(range(1, 17, 2))
-
-            #     else:
-            #         weeks = list(range(2, 17, 2))
 
             discipline = get_or_create(
                 session=db.session, model=models.Discipline, name=clean_discipline_name)
@@ -435,13 +210,8 @@ class Reader:
 
                             db.session.flush()
                             occupation = 1
-                            if(self.without_weeks):
-                                data_append_to_lesson_without_weeks(group.id, occupation, teacher.id,
-                                                    day_num,
-                                                    call_num,
-                                                    week, lesson_type, room.id, dist['name'])
-                            else:
-                                data_append_to_lesson(group.id, occupation, teacher.id,
+
+                            data_append_to_lesson(group.id, occupation, teacher.id,
                                                     day_num,
                                                     call_num,
                                                     week, lesson_type, room.id, dist['name'])
@@ -480,27 +250,20 @@ class Reader:
                 tmp_name = str(sheet.cell(
                     string_index, discipline_col_num).value)
 
-                tmp_name = self.format_name(tmp_name)
+                tmp_name = format_name(tmp_name)
 
                 if isinstance(tmp_name, list) and tmp_name:
-                    
 
-                    lesson_type = self.format_lesson_type(sheet.cell(
+                    lesson_type = format_lesson_type(sheet.cell(
                         string_index, discipline_col_num + 1).value)
 
                     correct_max_len = max(len(tmp_name), len(lesson_type))
 
-
-                    teacher = self.format_teacher_name(sheet.cell(
+                    teacher = format_teacher_name(sheet.cell(
                         string_index, discipline_col_num + 2).value)
-                    room = self.format_room_name(sheet.cell(
-                        string_index, discipline_col_num + 3).value, correct_max_len)
+                    room = format_room_name(sheet.cell(
+                        string_index, discipline_col_num + 3).value, correct_max_len, self.notes_dict, self.current_place)
 
-                    # if ((len(room) > len(tmp_name) and len(room) > len(lesson_type)) and len(room) == 2 
-                    #         and ("КБ" in room[0] or "каф" in room[0]) ):
-                    #     room = [[room[0][0] + ' ' + room[1][0], room[0][1]]]
-                        # print("!!!!!!!!!!!!!", room)
-                    
                     # TODO need to fix
                     max_len = max(len(tmp_name), len(teacher),
                                   len(room), len(lesson_type))
@@ -542,13 +305,6 @@ class Reader:
 
         """
 
-        def get_day_num(day_name):
-            """
-
-            """
-            return self.days_dict[day_name.upper()]
-
-
         def get_column_range_for_type_eq_semester(xlsx_sheet, group_name_cell, group_name_row_index):
             week_range = {
                 1: [],
@@ -572,7 +328,7 @@ class Reader:
                     lesson_num, group_name_row.index(group_name_cell) - 5)
 
                 if day_num_col.value != '':
-                    day_num_val = get_day_num(day_num_col.value)
+                    day_num_val = self.days_dict[day_num_col.value.upper()]
 
                 lesson_num_col = xlsx_sheet.cell(
                     lesson_num, group_name_row.index(group_name_cell) - 4)
@@ -620,22 +376,14 @@ class Reader:
         # Индекс строки с названиями групп
         group_name_row_num = 1
         # TODO find by name of groups
-        # v86 = ["", "", "", "", "", "", ""]
-        # strom = ["УПБ", "УУБ", "УНБ", "УЮБ", "УМБ", "УЭБ", "", "", "", "", "", "", ""]
+
         for row_index in range(len(sheet.col(1))):
             group_name_row = sheet.row_values(row_index)
             if len(group_name_row) > 0:
                 group_row_str = " ".join(str(x) for x in group_name_row)
                 gr = re.findall(r'([А-Я]+-\w+-\w+)', group_row_str, re.I)
                 if gr:
-                    # group = gr[0][0:3]
 
-                    # if group in v86:
-                    #     self.current_place=2
-                    # elif group in strom:
-                    #     self.current_place=3
-                    # else:
-                    #     self.current_place=1
                     group_name_row_num = row_index
                     break
 
@@ -660,7 +408,6 @@ class Reader:
                 one_time_table = self.read_one_group_for_semester(
                     sheet, group_name_row.index(group_cell), group_name_row_num, column_range)  # По номеру столбца
 
-                # print(one_time_table)
 
                 for key in one_time_table.keys():
                     # Добавление в общий словарь

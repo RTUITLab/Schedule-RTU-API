@@ -2,7 +2,7 @@
 
 [![Build Status](https://dev.azure.com/rtuitlab/RTU%20IT%20Lab/_apis/build/status/Schedule-RTU-API?branchName=master)](https://dev.azure.com/rtuitlab/RTU%20IT%20Lab/_build/latest?definitionId=159&branchName=master)
 
-Service for getting jsons with a schedule for a given group of RTU MIREA
+API for getting a schedule of RTU MIREA.
 
 # Build service from Docker image
 Requirements:
