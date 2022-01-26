@@ -156,6 +156,8 @@ def format_name(temp_name, week, week_count):
     if not temp_name:
         return None
     # print(temp_name)
+    temp_name = temp_name.replace('кроме', 'кр. ')
+
     result = re.split(';|\n|\\\\|\\|(?<!п)/(?!г)|(?<!п)/|/(?!г)', temp_name)
 
     result = [x.strip() for x in result if len(x.strip())]
@@ -163,13 +165,13 @@ def format_name(temp_name, week, week_count):
     for name_num in range(1, len(result)):
 
         if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
-            clean_discipline_name = re.sub(r"п/гр|п/г|\(|\)|,|\d+н| н |н\.|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|\d+|\+",
+            clean_discipline_name = re.sub(r"п/гр|п/г|\(|\)|,|\d+н| н |н\.|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|\d+|\+|(?<!\w)нед\.*(?!\w)|(?<=\d)нед\.*(?!\w)",
                                            "", result[name_num-1]).strip()
             result[name_num] += " " + clean_discipline_name
 
     for name_num in range(0, len(result)-1):
         if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
-            clean_discipline_name = re.sub(r"п/гр|п/г|\(|\)|,|\d+н| н |н\.|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|\d+|\+",
+            clean_discipline_name = re.sub(r"п/гр|п/г|\(|\)|,|\d+н| н |н\.|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|\d+|\+|(?<!\w)нед\.*(?!\w)|(?<=\d)нед\.*(?!\w)",
                                            "", result[name_num+1]).strip()
             if not re.search(r'\w{5,}', clean_discipline_name) and name_num+2 < len(result):
                 clean_discipline_name = re.sub(
@@ -177,19 +179,42 @@ def format_name(temp_name, week, week_count):
             result[name_num] += " " + clean_discipline_name
 
     for name_num in range(len(result)):
-        clean_discipline_name = re.sub(r"\d+н|(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|,| н |н\.| кр |кр\.|^кр |^н |(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)",
-                                       "", result[name_num]).strip()
+        discipl = result[name_num]
+        clean_discipline_name = re.sub(r"\d+н|(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|,| н |н\.| кр |кр\.|^кр |^н |(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|(?<!\w)нед\.*(?!\w)|(?<=\d)нед\.*(?!\w)",
+                                       "", discipl).strip()
         weeks = re.findall(
-            r"\d+н|(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)| н |н\.| кр |кр\.|^кр |^н |(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", result[name_num])
+            r"(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", discipl)
         weeks = [i.strip() for i in weeks]
         # weeks = " ".join(weeks).strip()
-        if len(weeks):
-            pass
-        else:
-            weeks = [i for i in range(week, week_count+1, 2)]
-            print(week)
+        flag = 1
+        result_weeks = set()
 
-        print(result[name_num], "| clean_name -> ",
+        if len(weeks):
+            while "-" in weeks:
+                indx = weeks.index("-")
+                if indx:
+                    try:
+                        if start%2 == 1 and week == 2 or  start%2 == 0 and week == 1:
+                            start += 1
+                        start = int(weeks[indx - 1])
+                        end = int(weeks[indx + 1])
+                        for i in range(start, end, 2):
+                            result_weeks.add(i)
+                        flag = 0
+                    except Exception as e:
+                        weeks.pop(indx)
+                        print("BAD FORMAT -> ", discipl)
+                else:
+                    weeks.pop(indx)
+        if flag:
+            if re.search(r"(?<!\w)кр\.*(?!\w)|(?<!\w)кр\.*(?=\d)",discipl):
+                for i in range((week, week_count+1, 2):
+                    result_weeks.add()
+            else:
+                weeks = [i for i in range(week, week_count+1, 2)]
+                print(week)
+
+        print(discipl, "| clean_name -> ",
               clean_discipline_name, "| weeks -> ", weeks)
         if clean_discipline_name[0] == "н":
             clean_discipline_name = clean_discipline_name[1:]
