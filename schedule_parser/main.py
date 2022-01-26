@@ -28,6 +28,7 @@ def parse_schedule(without_weeks=True):
         connection.execute( '''TRUNCATE TABLE lesson_type CASCADE''' )
         connection.execute( '''TRUNCATE TABLE teacher CASCADE''' )
         connection.execute( '''TRUNCATE TABLE call CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE period CASCADE''' )
         connection.close()
     
         print("truncate")
@@ -36,9 +37,9 @@ def parse_schedule(without_weeks=True):
 
         print("downloaded")
         try:
-            reader = Reader(without_weeks=without_weeks)
-        except:
-            print("Reader error")
+            reader = Reader()
+        except Exception as err:
+            print("Reader error -> ", err)
         print("start reading")
         reader.run('xls')
         print("\nКонвертация успешно выполнена!\n\n")

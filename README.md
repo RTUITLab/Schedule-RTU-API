@@ -10,7 +10,12 @@ Requirements:
 
 ## Run container:
 
-Clone or download this repo and build container 
+Clone or download this repo and create .env with database URI that should be used for the connection to database. 
+```
+CONNECTION_STRING=dialect+driver://username:password@host:port/database
+```
+
+Build container 
 * ```docker build -t schedule-rtu:latest .```
 
 Run container

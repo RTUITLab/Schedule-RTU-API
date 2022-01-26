@@ -1,5 +1,6 @@
 import re
 
+
 def format_teacher_name(cell):
     # TODO add re.sub here
     cell = str(cell)
@@ -9,11 +10,14 @@ def format_teacher_name(cell):
     # print(res)
     return res
 
+
 def format_lesson_type(cell):
     result = re.split(';|\n|\\\\|\\|\s{1,}', cell)
     result = [x.strip() for x in result if len(x.strip())]
+
     # print(result, "result")
     return result
+
 
 def format_room_name(cell, correct_max_len, notes_dict, current_place):
     def check_room_for_78(room_name):
@@ -49,7 +53,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
 
         if re.match(r'^\w{1}-\d{3}\.\w{1}$', room_name):
             print('convert', room_name, 'to',
-                    re.sub(r'\.', '-', room_name))
+                  re.sub(r'\.', '-', room_name))
             room_name = re.sub(r'\.', '-', room_name)
 
         if re.match(r'^\w{1}-\d{3}\(\w{1}\)$', room_name):
@@ -59,7 +63,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
 
         if re.match(r'^ИВЦ-\d{3}\.\w{1}$', room_name):
             print('convert', room_name, 'to',
-                    re.sub(r'\.', '-', room_name))
+                  re.sub(r'\.', '-', room_name))
             room_name = re.sub(r'\.', '-', room_name)
 
         if check_re(room_name):
@@ -79,26 +83,29 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
             pattern = re.compile(r"%s *\n" % reg)
             # print(pattern.findall(string), "<- Found in ", string,)
             string = pattern.sub(reg, string)
-    if current_place == 2: 
-        rooms = re.split(r'(?<!КБ-1)(?<!КБ)(?<!КАФ)(?<!КАФ.)\n|\\\\|\\|\/|\t|\s{3,}|,', string)
-        if len(rooms)<correct_max_len:
-            rooms = re.split(r'(?<!КБ-1)(?<!КБ)(?<!КАФ)(?<!КАФ.)\s|\\\\|\\|\/|,', string)
+    if current_place == 2:
+        rooms = re.split(
+            r'(?<!КБ-1)(?<!КБ)(?<!КАФ)(?<!КАФ.)\n|\\\\|\\|\/|\t|\s{3,}|,', string)
+        if len(rooms) < correct_max_len:
+            rooms = re.split(
+                r'(?<!КБ-1)(?<!КБ)(?<!КАФ)(?<!КАФ.)\s|\\\\|\\|\/|,', string)
     else:
-        rooms = re.split(r'(?<!КБ-1)(?<!КБ)(?<!КАФ)\n|\\\\|\\|\/|\t|\s{3,}|,', string)
-        if len(rooms)<correct_max_len:
-            rooms = re.split(r'(?<!КБ-1)(?<!КБ)(?<!КАФ)\s|\\\\|\\|\/|,', string)
+        rooms = re.split(
+            r'(?<!КБ-1)(?<!КБ)(?<!КАФ)\n|\\\\|\\|\/|\t|\s{3,}|,', string)
+        if len(rooms) < correct_max_len:
+            rooms = re.split(
+                r'(?<!КБ-1)(?<!КБ)(?<!КАФ)\s|\\\\|\\|\/|,', string)
 
     # print(rooms)
     all_rooms = []
 
     if len(rooms) > 1:
         res = [x.strip() for x in rooms if len(x.strip())]
-        
 
     # print(rooms)
     # print(len(rooms), rooms)
     for room_num in range(len(rooms)):
-        
+
         res = None
         room = rooms[room_num].strip()
         if "КАФ." in room:
@@ -124,7 +131,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
                 if re.match(r'^\d{2,}', room):
                     all_rooms.append([room.strip(), notes_dict[res]])
                 room = format_78(room)
-                
+
             all_rooms.append([room.strip(), notes_dict[res]])
         else:
             if room == "Д" or room == "Д." or "ДИСТ" in room or "ЛК Д" in room or not len(room):
@@ -139,10 +146,54 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
     # print(all_rooms, "<- all_rooms")
     return all_rooms
 
-def format_name(temp_name):
+
+def format_name(temp_name, week, week_count):
     """
     """
-    
+
+    temp_name = temp_name.strip()
+    # print(temp_name, "temp_name")
+    if not temp_name:
+        return None
+    # print(temp_name)
+    result = re.split(';|\n|\\\\|\\|(?<!п)/(?!г)|(?<!п)/|/(?!г)', temp_name)
+
+    result = [x.strip() for x in result if len(x.strip())]
+    # print(result)
+    for name_num in range(1, len(result)):
+
+        if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
+            clean_discipline_name = re.sub(r"п/гр|п/г|\(|\)|,|\d+н| н |н\.|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|\d+|\+",
+                                           "", result[name_num-1]).strip()
+            result[name_num] += " " + clean_discipline_name
+
+    for name_num in range(0, len(result)-1):
+        if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
+            clean_discipline_name = re.sub(r"п/гр|п/г|\(|\)|,|\d+н| н |н\.|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|\d+|\+",
+                                           "", result[name_num+1]).strip()
+            if not re.search(r'\w{5,}', clean_discipline_name) and name_num+2 < len(result):
+                clean_discipline_name = re.sub(
+                    r"\d+|п/г|\(|\)|,| н |н\.", "", result[name_num+2]).strip()
+            result[name_num] += " " + clean_discipline_name
+
+    for name_num in range(len(result)):
+        clean_discipline_name = re.sub(r"\d+н|(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|,| н |н\.| кр |кр\.|^кр |^н |(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)",
+                                       "", result[name_num]).strip()
+        weeks = re.findall(
+            r"\d+н|(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)| н |н\.| кр |кр\.|^кр |^н |(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", result[name_num])
+        weeks = [i.strip() for i in weeks]
+        # weeks = " ".join(weeks).strip()
+        if len(weeks):
+            pass
+        else:
+            weeks = [i for i in range(week, week_count+1, 2)]
+            print(week)
+
+        print(result[name_num], "| clean_name -> ",
+              clean_discipline_name, "| weeks -> ", weeks)
+        if clean_discipline_name[0] == "н":
+            clean_discipline_name = clean_discipline_name[1:]
+
     # if "кр." in discipline_name:
     #     exc = discipline_name.split("н.")[0]
     #     less = discipline_name.split("н.")[1].strip()
@@ -182,34 +233,6 @@ def format_name(temp_name):
 
     #     else:
     #         weeks = list(range(2, 17, 2))
-    temp_name = temp_name.strip()
-    # print(temp_name, "temp_name")
-    if not temp_name:
-        return None
-    # print(temp_name)
-    result = re.split(';|\n|\\\\|\\|(?<!п)/(?!г)|(?<!п)/|/(?!г)', temp_name)
-    
-    result = [x.strip() for x in result if len(x.strip())]
-    # print(result)
-    for name_num in range(1, len(result)):
-
-        if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
-            clear_name = re.sub(r"\d+|п/г|\(|\)|,| н |н\.",
-                                "", result[name_num-1]).strip()
-
-            # print(clear_name, "<- clear_name")
-            result[name_num] += " " + clear_name
-
-    for name_num in range(0, len(result)-1):
-        if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
-            clear_name = re.sub(r"\d+|п/г|\(|\)|,| н |н\.",
-                                "", result[name_num+1]).strip()
-            if not re.search(r'\w{5,}', clear_name) and name_num+2 < len(result):
-                clear_name = re.sub(
-                    r"\d+|п/г|\(|\)|,| н |н\.", "", result[name_num+2]).strip()
-            # print(clear_name, "<- clear_name")
-            result[name_num] += " " + clear_name
-
     # print(temp_name, "<- temp_name")
     # print(result)
 

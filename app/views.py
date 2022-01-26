@@ -10,6 +10,7 @@ import sys
 
 sys.path.append('..')
 from schedule_parser.main import parse_schedule
+from schedule_parser.models import WorkingData, db
 
 @app.route('/api/schedule/<string:group>/today', methods=["GET"])
 def today(group):
@@ -311,7 +312,7 @@ def refresh():
     """Refresh shedule
     ---
     tags:
-      - Refresh
+      - Closed
     responses:
       200:
         description: Return \'ok\' after updating
@@ -324,12 +325,58 @@ def refresh():
     parse_schedule()
     return make_response({"status": 'ok'})
 
+@app.route('/set_weeks_count', methods=["POST"])
+def set_weeks_count():
+    """Refresh shedule
+    ---
+    tags:
+      - Closed
+    parameters:
+      - in: body
+        name: weeks_count
+        required: true
+        schema:
+          type: object
+          properties:
+            value:
+              type: integer
+
+      - in: header
+        name: X-Auth-Token
+        type: string
+        required: true
+
+    responses:
+      200:
+        description: Return \'ok\' after updating
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+    """
+    try:
+      secret = request.headers.get('X-Auth-Token')
+      SECRET_FOR_REFRESH = environ.get('SECRET_FOR_REFRESH')
+      if secret == SECRET_FOR_REFRESH:
+        
+        weeks = request.get_json('weeks_count')["value"]
+        db_weeks = WorkingData.query.filter_by(name="week_count").first()
+        db_weeks.value = str(weeks)
+        db.session.commit()
+
+        return make_response({"status": 'ok'})
+      return make_response({"status": 'wrong_password'}, 401)
+    except:
+      return make_response({"status": 'need_password'}, 401)
+    
+
 @app.route('/api/schedule/secret_refresh', methods=["POST"])
 def secret_refresh():
     """Refresh shedule
     ---
     tags:
-      - Refresh
+      - Closed
     parameters:
         - in: header
           name: X-Auth-Token
@@ -353,7 +400,7 @@ def secret_refresh():
         return make_response({"status": 'ok'})
       return make_response({"status": 'wrong_password'}, 401)
     except:
-      return make_response({"status": 'need_password'})
+      return make_response({"status": 'need_password'}, 401)
 
 @app.route('/api/schedule/<string:group>/full_schedule', methods=["GET"])
 def full_schedule(group):

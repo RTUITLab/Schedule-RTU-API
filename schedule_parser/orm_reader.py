@@ -1,4 +1,5 @@
 from distutils.command.clean import clean
+from msilib.schema import Error
 import re
 import json
 import os.path
@@ -9,6 +10,7 @@ import xlrd
 
 from itertools import cycle
 from app import db
+from app.schedule import cur_week
 from .get_or_create import get_or_create
 from . import models
 from .formatters import format_lesson_type, format_name, format_room_name, format_teacher_name
@@ -16,9 +18,19 @@ from .formatters import format_lesson_type, format_name, format_room_name, forma
 
 class Reader:
 
-    def __init__(self, without_weeks):
-        self.without_weeks = without_weeks
+    def __init__(self):
+        self.week_count = 16
 
+        try:
+            self.week_count = int(models.WorkingData.query.filter_by(name="week_count").first().value)
+
+        except Exception as err:
+            self.week_count = int(get_or_create(session=db.session, model=models.WorkingData,
+                    name="week_count", value="16")).value
+
+            print("week_count ERROR! -> ", err)
+
+        
         self.notes_dict = {
             'МП-1': 4,
             'В-78': 1,
@@ -64,9 +76,9 @@ class Reader:
             "лр": 3,
             "": 4,
             "зач": 5,
-            "экз": 5,
-            "кр": 5,
-            "зд": 5,
+            "экз": 6,
+            "кр": 7,
+            "зд": 8,
         }
 
         self.lesson_types = {
@@ -79,7 +91,7 @@ class Reader:
         }
 
         self.periods = {
-            "semestr": 1,
+            "semester": 1,
             "credits": 2,
             "exams": 3
         }
@@ -90,7 +102,6 @@ class Reader:
     def run(self, xlsx_dir):
 
         for path, dirs, files in os.walk(xlsx_dir):
-
             for file_name in files:
 
                 file_name = file_name.lower()
@@ -142,13 +153,9 @@ class Reader:
             weeks = []
             less = ""
 
-            clean_discipline_name = re.sub(
-                r"(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|,| н |н\.| кр |кр.|^кр |^н |-", "", discipline_name).strip()
-            if clean_discipline_name[0] == "н":
-                clean_discipline_name = clean_discipline_name[1:]
 
             discipline = get_or_create(
-                session=db.session, model=models.Discipline, name=clean_discipline_name)
+                session=db.session, model=models.Discipline, name=discipline_name[0])
             db.session.flush()
             lesson = models.Lesson(call_id=call, period_id=period,
                                    teacher_id=teacher, lesson_type_id=lesson_type,
@@ -209,9 +216,8 @@ class Reader:
                                 session=db.session, model=models.Room, name=dist['room'][0], place_id=dist['room'][1])
 
                             db.session.flush()
-                            occupation = 1
 
-                            data_append_to_lesson(group.id, occupation, teacher.id,
+                            data_append_to_lesson(group.id, self.current_period, teacher.id,
                                                     day_num,
                                                     call_num,
                                                     week, lesson_type, room.id, dist['name'])
@@ -250,7 +256,7 @@ class Reader:
                 tmp_name = str(sheet.cell(
                     string_index, discipline_col_num).value)
 
-                tmp_name = format_name(tmp_name)
+                tmp_name = format_name(tmp_name, week_num, self.week_count)
 
                 if isinstance(tmp_name, list) and tmp_name:
 
@@ -366,7 +372,7 @@ class Reader:
                     week_range[day_num_val].append(lesson_range)
             return week_range
 
-        book = xlrd.open_workbook(xlsx_path, on_demand=True)
+        book = xlrd.open_workbook(xlsx_path)
         sheet = book.sheet_by_index(0)
         DOC_TYPE_EXAM = 2
         column_range = []
@@ -399,15 +405,35 @@ class Reader:
                     continue
                 # обновляем column_range, если левее группы нет разметки с неделями, используем старый
                 if not group_list:
-                    column_range = get_column_range_for_type_eq_semester(
-                        sheet, group_cell, group_name_row_num)
+                    
+                    if self.current_period == 3:
+                        pass
+                    
+                    elif self.current_period == 2 and self.current_place == 2: 
+                        pass
+
+                    elif self.current_period == 2:
+                        pass
+                    
+                    else:
+                        column_range = get_column_range_for_type_eq_semester(
+                            sheet, group_cell, group_name_row_num)
 
                 group_list.append(group.group(0))
+                one_time_table = {}
 
-                # if doc_type != DOC_TYPE_EXAM:
-                one_time_table = self.read_one_group_for_semester(
-                    sheet, group_name_row.index(group_cell), group_name_row_num, column_range)  # По номеру столбца
+                if self.current_period == 3:
+                    pass
 
+                elif self.current_period == 2 and self.current_place == 2: 
+                    pass
+
+                elif self.current_period == 2:
+                    pass
+                
+                else:
+                    one_time_table = self.read_one_group_for_semester(
+                        sheet, group_name_row.index(group_cell), group_name_row_num, column_range)  # По номеру столбца
 
                 for key in one_time_table.keys():
                     # Добавление в общий словарь
