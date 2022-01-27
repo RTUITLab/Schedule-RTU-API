@@ -150,11 +150,11 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
 def format_name(temp_name, week, week_count):
     """
     """
-
+    temp_name = re.sub(r'(\. \. )+|(\.\.\.)+|…+', '', temp_name)
     temp_name = temp_name.strip()
     # print(temp_name, "temp_name")
-    if not temp_name:
-        return None
+    if len(temp_name) < 3:
+        return ""
     # print(temp_name)
     temp_name = temp_name.replace('кроме', 'кр. ')
 
@@ -182,42 +182,54 @@ def format_name(temp_name, week, week_count):
         discipl = result[name_num]
         clean_discipline_name = re.sub(r"\d+н|(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|,| н |н\.| кр |кр\.|^кр |^н |(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|(?<!\w)нед\.*(?!\w)|(?<=\d)нед\.*(?!\w)",
                                        "", discipl).strip()
+        if clean_discipline_name[0] == "н":
+            clean_discipline_name=clean_discipline_name[1:]
+        
         weeks = re.findall(
             r"(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", discipl)
         weeks = [i.strip() for i in weeks]
         # weeks = " ".join(weeks).strip()
-        flag = 1
         result_weeks = set()
+        flag = 1
 
         if len(weeks):
             while "-" in weeks:
                 indx = weeks.index("-")
-                if indx:
+                if indx and indx != len(weeks)-1:
                     try:
-                        if start%2 == 1 and week == 2 or  start%2 == 0 and week == 1:
+                        weeks.pop(indx)
+                        end = int(weeks.pop(indx))
+                        start = int(weeks.pop(indx - 1))
+                        
+                        print("start", start, "  end", end)
+                        if start % 2 == 1 and week == 2 or start % 2 == 0 and week == 1:
                             start += 1
-                        start = int(weeks[indx - 1])
-                        end = int(weeks[indx + 1])
+
                         for i in range(start, end, 2):
                             result_weeks.add(i)
+
                         flag = 0
                     except Exception as e:
                         weeks.pop(indx)
                         print("BAD FORMAT -> ", discipl)
                 else:
                     weeks.pop(indx)
-        if flag:
-            if re.search(r"(?<!\w)кр\.*(?!\w)|(?<!\w)кр\.*(?=\d)",discipl):
-                for i in range((week, week_count+1, 2):
-                    result_weeks.add()
+                    print("BAD FORMAT -> ", discipl)
+        if len(weeks):
+            if re.search(r"(?<!\w)кр\.*(?!\w)|(?<!\w)кр\.*(?=\d)", discipl):
+                for i in range(week, week_count+1, 2):
+                    if str(i) not in weeks:
+                        result_weeks.add(i)
             else:
-                weeks = [i for i in range(week, week_count+1, 2)]
-                print(week)
+                for i in weeks:
+                    result_weeks.add(int(i))
+        elif flag:
+            for i in range(week, week_count+1, 2):
+                result_weeks.add(i)
+            print(week)
+        result[name_num] = [clean_discipline_name, result_weeks]
+        print(discipl, "| result[name_num] -> ", result[name_num])
 
-        print(discipl, "| clean_name -> ",
-              clean_discipline_name, "| weeks -> ", weeks)
-        if clean_discipline_name[0] == "н":
-            clean_discipline_name = clean_discipline_name[1:]
 
     # if "кр." in discipline_name:
     #     exc = discipline_name.split("н.")[0]

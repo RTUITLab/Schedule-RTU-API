@@ -149,8 +149,10 @@ class Reader:
         def data_append_to_lesson(group, period, teacher, day_num,
                                   call,
                                   week, lesson_type, room, discipline_name):
-
-            weeks = []
+            
+            print(discipline_name)
+            weeks = list(discipline_name[1])
+            weeks.sort()
             less = ""
 
 
@@ -193,8 +195,6 @@ class Reader:
                         call_num = n_lesson.split("_")[1]
                         week = n_week.split("_")[1]
                         for dist in item:
-                            if dist['name'].strip() == "":
-                                continue
 
                             if "пр" in dist['type'].lower():
                                 lesson_type = self.lesson_types["пр"]
