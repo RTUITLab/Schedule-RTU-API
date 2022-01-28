@@ -49,4 +49,4 @@ def parse_schedule(without_weeks=True):
 
     except Exception as err:
         print("Ошибка открытия файла!\n")
-        print(err.args)
+        print(err)

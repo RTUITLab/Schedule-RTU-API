@@ -1,10 +1,10 @@
 from distutils.command.clean import clean
-from msilib.schema import Error
 import re
 import json
 import os.path
 import subprocess
 import datetime
+from threading import ExceptHookArgs
 import traceback
 import xlrd
 
@@ -98,9 +98,10 @@ class Reader:
 
         self.current_place = 1
         self.current_period = 1
+        print("Reader initialized")
 
     def run(self, xlsx_dir):
-
+        
         for path, dirs, files in os.walk(xlsx_dir):
             for file_name in files:
 
@@ -111,8 +112,12 @@ class Reader:
                     self.current_place = 2
                 else:
                     self.current_place = 1
-
-                self.current_period = self.periods[path.split("\\")[1]]
+                print(path)
+                print(self.periods)
+                try:
+                    self.current_period = self.periods[path.split("/")[1]]
+                except Exception as e:
+                    continue
                 print("current_period -> ", self.current_period)
                 path_to_xlsx_file = os.path.join(path, file_name)
                 print(path_to_xlsx_file)
