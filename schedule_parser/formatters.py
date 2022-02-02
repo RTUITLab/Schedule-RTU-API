@@ -4,6 +4,7 @@ import re
 def format_teacher_name(cell):
     # TODO add re.sub here
     cell = str(cell)
+    cell = re.sub(r'( ){3,}', '  ', cell)
     res = re.split(r'\n|\\\\|\\|(?!\d)\/(?!\d)|(?<!\d)\/(?=\d)', cell)
     if len(res) > 1:
         res = [x.strip() for x in res if len(x.strip())]
@@ -74,6 +75,8 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
     if isinstance(cell, float):
         cell = int(cell)
     string = str(cell)
+
+    string = re.sub(r'( ){3,}', '  ', string)
 
     string = string.replace('*', '').upper()
 
@@ -151,6 +154,7 @@ def format_name(temp_name, week, week_count):
     """
     """
     temp_name = re.sub(r'(\. \. )+|(\.\.\.)+|…+', '', temp_name)
+    temp_name = re.sub(r'( ){3,}', '  ', temp_name)
     temp_name = temp_name.strip()
     # print(temp_name, "temp_name")
     if len(temp_name) < 3:
@@ -201,7 +205,7 @@ def format_name(temp_name, week, week_count):
                         end = int(weeks.pop(indx))
                         start = int(weeks.pop(indx - 1))
                         
-                        print("start", start, "  end", end)
+                        # print("start", start, "  end", end)
                         if start % 2 == 1 and week == 2 or start % 2 == 0 and week == 1:
                             start += 1
 
@@ -226,9 +230,9 @@ def format_name(temp_name, week, week_count):
         elif flag:
             for i in range(week, week_count+1, 2):
                 result_weeks.add(i)
-            print(week)
+            # print(week)
         result[name_num] = [clean_discipline_name, result_weeks]
-        print(discipl, "| result[name_num] -> ", result[name_num])
+        # print(discipl, "| result[name_num] -> ", result[name_num])
 
 
     # if "кр." in discipline_name:

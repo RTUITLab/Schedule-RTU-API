@@ -32,7 +32,9 @@ def today(group):
       Lesson:
         type: object
         properties:
-          classRoom: 
+          callNumber: 
+            type: integer
+          room: 
             type: string
           name: 
             type: string
@@ -40,6 +42,13 @@ def today(group):
             type: string
           type: 
             type: string
+          location: 
+            type: string
+          isUsualLocation: 
+            type: string
+          fullRoomName:
+            type: string
+
           time:
             type: object
             properties:
@@ -50,14 +59,18 @@ def today(group):
       Day:
         type: object
         properties:
-          "1": 
-            $ref: '#/definitions/Lesson'
-          "num_on_pair": 
-            $ref: '#/definitions/Lesson'
+          day_num: 
+            type: integer
+          name: 
+            type: string
+          lessons: 
+            type: array
+            items:
+              $ref: '#/definitions/Lesson'
       Week:
         type: array
         items:
-              $ref: '#/definitions/Day'
+          $ref: '#/definitions/Day'
 
       LessonOld:
         type: object
@@ -534,7 +547,7 @@ def get_shedule_by_week(group, week):
 
       responses:
         200:
-          description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with keys as numbers of lesson and values as lessons.
+          description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
           schema:
             $ref: '#/definitions/Week'
 

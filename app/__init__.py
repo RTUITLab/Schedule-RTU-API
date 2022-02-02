@@ -5,6 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from os import environ 
 from flasgger import Swagger, swag_from
+from sqlalchemy import create_engine
+
 
 template = {
   "swagger": "2.0",
@@ -50,6 +52,18 @@ app.config.from_object(config.Config)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('CONNECTION_STRING')
 db = SQLAlchemy(app)
+
+try:
+  
+  engine = create_engine(environ.get('CONNECTION_STRING'),
+                            encoding='utf-8', echo=True)
+  if engine.dialect.has_table(engine.connect(), "alembic_version"):
+    print("Drop")
+    connection = engine.connect()
+    connection.execute( '''TRUNCATE TABLE alembic_version CASCADE''' )
+except Exception as e:
+  print(e)
+
 migrate = Migrate(app, db)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True

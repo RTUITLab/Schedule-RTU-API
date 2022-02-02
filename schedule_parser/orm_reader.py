@@ -4,7 +4,6 @@ import json
 import os.path
 import subprocess
 import datetime
-from threading import ExceptHookArgs
 import traceback
 import xlrd
 
@@ -98,7 +97,7 @@ class Reader:
 
         self.current_place = 1
         self.current_period = 1
-        print("Reader initialized")
+        # print("Reader initialized")
 
     def run(self, xlsx_dir):
         
@@ -106,19 +105,21 @@ class Reader:
             for file_name in files:
 
                 file_name = file_name.lower()
-                if "стром" in file_name or "кбисп" in file_name:
+                if "стром" in file_name or "кбисп" in file_name or "икб" in file_name:
                     self.current_place = 3
                 elif "итхт" in file_name:
                     self.current_place = 2
                 else:
                     self.current_place = 1
-                print(path)
-                print(self.periods)
                 try:
-                    self.current_period = self.periods[path.split("/")[1]]
+                    if ("\\") in path:
+                        self.current_period = self.periods[path.split("\\")[1]]
+                    else:
+                        self.current_period = self.periods[path.split("/")[1]]
                 except Exception as e:
+                    print(e)
                     continue
-                print("current_period -> ", self.current_period)
+                # print("current_period -> ", self.current_period)
                 path_to_xlsx_file = os.path.join(path, file_name)
                 print(path_to_xlsx_file)
                 # if("ИКиб_маг_2к" in path_to_xlsx_file):
@@ -153,25 +154,29 @@ class Reader:
 
         def data_append_to_lesson(group, period, teacher, day_num,
                                   call,
-                                  week, lesson_type, room, discipline_name):
+                                  week, lesson_type, room, is_usual_location, discipline_name):
             
-            print(discipline_name)
-            weeks = list(discipline_name[1])
-            weeks.sort()
-            less = ""
+                # print(discipline_name)
+                weeks = list(discipline_name[1])
+                weeks.sort()
 
+                less = ""
 
-            discipline = get_or_create(
-                session=db.session, model=models.Discipline, name=discipline_name[0])
-            db.session.flush()
-            lesson = models.Lesson(call_id=call, period_id=period,
-                                   teacher_id=teacher, lesson_type_id=lesson_type,
-                                   subgroup=None, discipline_id=discipline.id,
-                                   room_id=room, group_id=group,
-                                   day_of_week=day_num)
-            db.session.add(lesson)
-            db.session.flush()
-            add_weeks(weeks, lesson.id)
+                # print(discipline_name[0])
+
+                discipline = get_or_create(
+                    session=db.session, model=models.Discipline, name=discipline_name[0])
+                db.session.flush()
+                
+                lesson = models.Lesson(call_id=call, period_id=period,
+                                    teacher_id=teacher, lesson_type_id=lesson_type,
+                                    subgroup=None, discipline_id=discipline.id,
+                                    room_id=room, group_id=group,
+                                    day_of_week=day_num, is_usual_location=is_usual_location)
+                db.session.add(lesson)
+                db.session.flush()
+                add_weeks(weeks, lesson.id)
+
 
         append_from_dict(self.periods, db.session, models.Period)
         append_from_dict(self.time_dict, db.session, models.Call)
@@ -203,18 +208,18 @@ class Reader:
 
                             if "пр" in dist['type'].lower():
                                 lesson_type = self.lesson_types["пр"]
-                            if "лк" in dist['type'].lower():
+                            elif "лк" in dist['type'].lower():
                                 lesson_type = self.lesson_types["лк"]
-                            if "лаб" in dist['type'].lower():
+                            elif "лаб" in dist['type'].lower():
                                 lesson_type = self.lesson_types["лр"]
-                            if "лр" in dist['type'].lower():
+                            elif "лр" in dist['type'].lower():
                                 lesson_type = self.lesson_types["лр"]
-                            if "лек" in dist['type'].lower():
+                            elif "лек" in dist['type'].lower():
                                 lesson_type = self.lesson_types["лк"]
 
                             else:
                                 lesson_type = self.lesson_types[""]
-
+    
                             teacher = get_or_create(
                                 session=db.session, model=models.Teacher, name=dist['teacher'][:49])
                             room = get_or_create(
@@ -222,10 +227,19 @@ class Reader:
 
                             db.session.flush()
 
+                            is_usual_location=True
+
+                            if room.place_id == self.current_place or not room.place_id:
+                                is_usual_location=True
+                            else:
+                                is_usual_location=False
+
+                            # print(is_usual_location, room, room.place_id, self.current_place)
+
                             data_append_to_lesson(group.id, self.current_period, teacher.id,
                                                     day_num,
                                                     call_num,
-                                                    week, lesson_type, room.id, dist['name'])
+                                                    week, lesson_type, room.id, is_usual_location, dist['name'])
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
         """
@@ -404,7 +418,6 @@ class Reader:
             group = str(group_cell.value)
             group = re.search(r'([А-Я]+-\w+-\w+)', group)
             if group:  # Если название найдено, то получение расписания этой группы
-                print(group.group(0))
                 if ("ТЛБО" in group.group(0) or "ЭСБО" in group.group(0)) and self.current_place == 2:
                     print("! ТЛБО or ЭСБО in group and current_place == 2")
                     continue
@@ -412,17 +425,20 @@ class Reader:
                 if not group_list:
                     
                     if self.current_period == 3:
-                        pass
+                        continue
                     
                     elif self.current_period == 2 and self.current_place == 2: 
-                        pass
+                        continue
 
                     elif self.current_period == 2:
-                        pass
+                        continue
                     
                     else:
                         column_range = get_column_range_for_type_eq_semester(
                             sheet, group_cell, group_name_row_num)
+                
+                print(group.group(0))
+
 
                 group_list.append(group.group(0))
                 one_time_table = {}

@@ -1,3 +1,4 @@
+from email.policy import default
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from app import app, db
@@ -49,7 +50,7 @@ class LessonOnWeek(db.Model):
 
 class Discipline(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(200), unique=True, nullable=False, index=True)
+    name = db.Column(db.String(255), unique=True, nullable=False, index=True)
     lessons = db.relationship('Lesson', backref='discipline', lazy='dynamic')
 
     def __repr__(self):
@@ -113,6 +114,8 @@ class Lesson(db.Model):
 
     week_id = db.relationship(
         'LessonOnWeek', backref='lessons', lazy='dynamic')
+
+    is_usual_location = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return '<Post %r>' % self.id
