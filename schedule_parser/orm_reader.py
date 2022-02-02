@@ -104,10 +104,10 @@ class Reader:
         for path, dirs, files in os.walk(xlsx_dir):
             for file_name in files:
 
-                file_name = file_name.lower()
-                if "стром" in file_name or "кбисп" in file_name or "икб" in file_name:
+                temp_file_name = file_name.lower()
+                if "стром" in temp_file_name or "кбисп" in temp_file_name or "икб" in temp_file_name:
                     self.current_place = 3
-                elif "итхт" in file_name:
+                elif "итхт" in temp_file_name:
                     self.current_place = 2
                 else:
                     self.current_place = 1
