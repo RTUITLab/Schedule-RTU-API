@@ -47,28 +47,28 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
         #     room_name = re.sub(r'Г', 'Г-', room_name)
 
         if re.match(r'^\w{1}-\d{3}\w{1}$', room_name):
-            print('convert', room_name, 'to', re.sub(
-                r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name))
+            # print('convert', room_name, 'to', re.sub(
+            #     r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name))
             room_name = re.sub(
                 r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name)
 
         if re.match(r'^\w{1}-\d{3}\.\w{1}$', room_name):
-            print('convert', room_name, 'to',
-                  re.sub(r'\.', '-', room_name))
+            # print('convert', room_name, 'to',
+            #       re.sub(r'\.', '-', room_name))
             room_name = re.sub(r'\.', '-', room_name)
 
         if re.match(r'^\w{1}-\d{3}\(\w{1}\)$', room_name):
-            print('convert', room_name, 'to', re.sub(
-                r'\((\w{1})\)', '-\g<1>', room_name))
+            # print('convert', room_name, 'to', re.sub(
+            #     r'\((\w{1})\)', '-\g<1>', room_name))
             room_name = re.sub(r'\((\w{1})\)', '-\g<1>', room_name)
 
         if re.match(r'^ИВЦ-\d{3}\.\w{1}$', room_name):
-            print('convert', room_name, 'to',
-                  re.sub(r'\.', '-', room_name))
+            # print('convert', room_name, 'to',
+            #       re.sub(r'\.', '-', room_name))
             room_name = re.sub(r'\.', '-', room_name)
 
-        if check_re(room_name):
-            print('not match', room_name)
+        # if check_re(room_name):
+        #     print('not match', room_name)
 
         return room_name
 
@@ -140,7 +140,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
             if room == "Д" or room == "Д." or "ДИСТ" in room or "ЛК Д" in room or not len(room):
                 all_rooms.append([room, None])
             elif current_place == 3 and check_room_for_78(room) or current_place == 3 and room[0] == "Е":
-                print("78 in strom!", room)
+                # print("78 in strom!", room)
                 all_rooms.append([format_78(room), 1])
             elif current_place == 1:
                 all_rooms.append([format_78(room), 1])

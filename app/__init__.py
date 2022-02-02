@@ -64,7 +64,7 @@ try:
 except Exception as e:
   print(e)
 
-migrate = Migrate(app, db)
+migrate = Migrate(app, db, compare_type=True)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
