@@ -32,6 +32,7 @@ def parse_schedule(without_weeks=True):
         connection.close()
     
         print("truncate")
+
         Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
         Download.download()
 

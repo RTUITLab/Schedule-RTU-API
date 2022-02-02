@@ -346,7 +346,7 @@ def refresh():
     return make_response({"status": 'ok'})
 
 
-@app.route('/set_weeks_count', methods=["POST"])
+@app.route('/api/schedule/set_weeks_count', methods=["POST"])
 def set_weeks_count():
     """Refresh shedule
     ---

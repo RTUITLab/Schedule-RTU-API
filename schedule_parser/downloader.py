@@ -66,8 +66,13 @@ class Downloader:
 
         count_file = 0
         # Сохранение файлов
-        shutil.rmtree(self.base_file_dir)
-        os.makedirs(self.base_file_dir)
+        print(self.base_file_dir)
+        if not os.path.exists(self.base_file_dir):
+            os.makedirs(self.base_file_dir)
+        else:
+            shutil.rmtree(self.base_file_dir)
+            os.makedirs(self.base_file_dir)
+
         for url_file in url_files:  # цикл по списку
             divided_path = os.path.split(url_file)
             # subdir = os.path.split(divided_path[0])[1]
