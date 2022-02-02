@@ -138,3 +138,6 @@ migrations/
 *.pgsql
 stack.yml
 
+
+*.csv
+*.json
