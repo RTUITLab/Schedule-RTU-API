@@ -346,6 +346,10 @@ def get_sem_schedule(group, week=None):
 
                         less[-1]["teacher"] = less[-1]["teacher"] + "/" + models.Teacher.query.get(
                             lesson.teacher_id).name
+
+                        less[-1]["type"] = less[-1]["type"] + "/" + models.LessonType.query.get(
+                            lesson.lesson_type_id).name
+
                         if lesson.is_usual_location:
                             less[-1]["room"] = less[-1]["room"] + \
                                 "/" + room.name
@@ -353,6 +357,12 @@ def get_sem_schedule(group, week=None):
                             less[-1]["room"] = less[-1]["room"] + "/" + \
                                 models.Place.query.get(
                                     room.place_id).name + "* " + room.name
+                        
+                        if room.place_id:
+                            less[-1]["location"] = less[-1]["location"] + "/" + models.Place.query.get(
+                                room.place_id).name
+                        else:
+                            less[-1]["location"] =  less[-1]["location"] + "/" + "не указано"
 
                     else:
 
@@ -368,7 +378,6 @@ def get_sem_schedule(group, week=None):
                         res_lesson["isUsualLocation"] = lesson.is_usual_location
 
                         if room.place_id:
-
                             res_lesson["location"] = models.Place.query.get(
                                 room.place_id).name
                         else:
