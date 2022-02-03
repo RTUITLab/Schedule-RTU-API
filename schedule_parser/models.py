@@ -45,7 +45,7 @@ class LessonOnWeek(db.Model):
         'lesson.id'), nullable=False, primary_key=True)
 
     def __repr__(self):
-        return '<Week %r>' % self.name
+        return '<Week %r>' % self.week 
 
 
 class Discipline(db.Model):
