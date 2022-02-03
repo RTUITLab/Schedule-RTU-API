@@ -8,7 +8,7 @@ from os import environ
 import datetime as dt
 from datetime import datetime, date, time
 
-from app.schedule import get_full_schedule_by_weeks, get_schedule_by_week, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched, cur_week, get_sem_schedule
+from app.schedule import get_full_schedule_by_weeks, get_groups_info, get_schedule_by_week, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched, cur_week, get_sem_schedule, get_full_sem_schedule
 
 import sys
 from schedule_parser.get_or_create import get_or_create
@@ -42,6 +42,11 @@ def today(group):
             type: string
           type: 
             type: string
+
+          specific_weeks:
+            type: array
+            items:
+              type: integer
           location: 
             type: string
           isUsualLocation: 
@@ -56,6 +61,29 @@ def today(group):
                 type: string
               end: 
                 type: string
+
+      RoomLesson:
+        type: object
+        properties:
+          callNumber: 
+            type: integer
+          group: 
+            type: string
+          name: 
+            type: string
+          teacher: 
+            type: string
+          type: 
+            type: string
+
+          time:
+            type: object
+            properties:
+              begin: 
+                type: string
+              end: 
+                type: string
+
       Day:
         type: object
         properties:
@@ -67,10 +95,64 @@ def today(group):
             type: array
             items:
               $ref: '#/definitions/Lesson'
+      
+      Group:
+        type: object
+        properties:
+          year: 
+            type: integer
+          name: 
+            type: string
+          degree: 
+            type: string
+
+
+      RoomDay:
+        type: object
+        properties:
+          day_num: 
+            type: integer
+          name: 
+            type: string
+          lessons: 
+            type: array
+            items:
+              $ref: '#/definitions/RoomLesson'
+
       Week:
         type: array
         items:
           $ref: '#/definitions/Day'
+
+      FullWeek:
+        type: object
+        properties:
+          num:
+            type: integer
+          week:
+            type: array
+            items:
+              $ref: '#/definitions/Day'
+
+      FullSchedule:
+        type: array
+        items:
+          $ref: '#/definitions/FullWeek'
+
+      RoomWeek:
+        type: array
+        items:
+          $ref: '#/definitions/RoomDay'
+
+      Room:
+        type: object
+        items:
+          name:
+            type: string
+          location: 
+            type: string
+          schedule:
+            $ref: '#/definitions/RoomWeek'
 
       LessonOld:
         type: object
@@ -290,7 +372,7 @@ def groups():
     res = get_groups()
     if res:
         response = jsonify(res)
-        print(res)
+        
         # return "tomorrow for{} is {}".format(group, res)
         return make_response(response)
     res = Response(headers={'Retry-After': 200}, status=503)
@@ -528,7 +610,7 @@ def get_week_schedule_by_week_num(group, week):
     return res
 
 
-@app.route('/api/schedule/<string:group>/<int:week>/', methods=["GET"])
+@app.route('/api/schedule/groups/<string:group>/<int:week>/', methods=["GET"])
 def get_shedule_by_week(group, week):
     """Returns group schedule by week number
       ---
@@ -555,14 +637,113 @@ def get_shedule_by_week(group, week):
             description: Retry-After:100
     """
 
-
     sch = get_sem_schedule(group, week)
+
     if sch:
         response = jsonify(sch)
         return make_response(response)
     res = Response(headers={'Retry-After': 200}, status=503)
     return res
 
+
+@app.route('/api/schedule/groups/', methods=["GET"])
+def get_groups():
+    """Returns full group schedule
+      ---
+      tags:
+        - Groups
+
+      parameters:
+        - name: institute
+          in: query
+          type: string
+
+      responses:
+        200:
+          description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Group'
+
+        503:
+            description: Retry-After:100
+    """
+    institute = request.args.get('institute')
+    print(institute)
+    sch = get_groups_info(institute)
+
+    if sch:
+        response = jsonify(sch)
+        return make_response(response)
+    res = Response(headers={'Retry-After': 200}, status=503)
+    return res
+    
+
+@app.route('/api/schedule/groups/<string:group>/', methods=["GET"])
+def get_shedule(group):
+    """Returns full group schedule
+      ---
+      tags:
+        - Groups
+
+      parameters:
+        - name: group
+          in: path
+          type: string
+          required: true
+
+      responses:
+        200:
+          description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
+          schema:
+            $ref: '#/definitions/FullSchedule'
+
+        503:
+            description: Retry-After:100
+    """
+
+    sch = get_full_sem_schedule(group)
+
+    if sch:
+        response = jsonify(sch)
+        return make_response(response)
+    res = Response(headers={'Retry-After': 200}, status=503)
+    return res
+
+
+# @app.route('/api/schedule/<string:room>/<int:week>/', methods=["GET"])
+# def get_room_shedule(group, week):
+#     """Returns room schedule by week number
+#       ---
+#       tags:
+#         - Rooms
+
+#       parameters:
+#         - name: room
+#           in: path
+#           type: string
+#           required: true
+#         - name: week
+#           in: path
+#           type: integer
+
+#       responses:
+#         200:
+#           description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
+#           schema:
+#             $ref: '#/definitions/Week'
+
+#         503:
+#             description: Retry-After:100
+#     """
+
+#     sch = get_sem_schedule(group, week)
+#     if sch:
+#         response = jsonify(sch)
+#         return make_response(response)
+#     res = Response(headers={'Retry-After': 200}, status=503)
+#     return res
 
 
 @app.route('/api/schedule/current_week/', methods=["GET"])

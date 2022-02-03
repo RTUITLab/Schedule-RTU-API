@@ -172,7 +172,7 @@ class Reader:
                                     teacher_id=teacher, lesson_type_id=lesson_type,
                                     subgroup=None, discipline_id=discipline.id,
                                     room_id=room, group_id=group,
-                                    day_of_week=day_num, is_usual_location=is_usual_location)
+                                    day_of_week=day_num, is_usual_location=is_usual_location, week=week)
                 db.session.add(lesson)
                 db.session.flush()
                 add_weeks(weeks, lesson.id)
