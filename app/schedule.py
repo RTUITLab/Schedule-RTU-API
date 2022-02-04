@@ -428,7 +428,7 @@ def get_full_sem_schedule(group):
     return result
 
 
-def get_room_schedule(room, week):
+def get_rooms_schedule_by_week(room, week, location):
     result = [{"day_num": 1,
                "name": "Понедельник",
                "lessons": []},
@@ -447,42 +447,42 @@ def get_room_schedule(room, week):
               {"day_num": 6,
                "name": "Суббота",
                "lessons": []}]
-    result = {
-
-    }
+               
     try:
-        room = models.Room.query.filter_by(
-            name=room.strip().upper()).first()
+        if location:
+            place_id = models.Place.query.filter_by(
+                name=location.strip().upper()).first().id
+
+            room = models.Room.query.filter_by(
+                name=room.strip().upper(), place_id=place_id).first()
+            print(room)
+            
+        else:
+            room = models.Room.query.filter_by(
+                name=room.strip().upper()).first()
+
+        if not room:
+            return None
+
         for i in range(0, 6):
 
-            if not group:
-                return None
-
             lessons = models.Lesson.query.filter_by(
-                group_id=group.id, day_of_week=i+1).order_by(models.Lesson.call_id)
+                day_of_week=i+1, room_id=room.id).order_by(models.Lesson.call_id)
             less = []
 
             for lesson in lessons:
+
                 a = models.LessonOnWeek.query.filter_by(
                     week=week, lesson=lesson.id).first()
                 if a:
                     room = models.Room.query.get(
                         lesson.room_id)
                     res_lesson = {}
-                    # if len(less) and lesson.call_id == less[-1]["callNumber"]:
-                    #     if less[-1]["name"] != models.Discipline.query.get(lesson.discipline_id).name:
-                    #         less[-1]["name"] = less[-1]["name"] + "/" + models.Discipline.query.get(lesson.discipline_id).name
 
-                    #     less[-1]["teacher"] = less[-1]["teacher"] + "/" + models.Teacher.query.get(
-                    #         lesson.teacher_id).name
-
-                    #     if lesson.is_usual_location:
-                    #         less[-1]["room"] = less[-1]["room"] + "/" + room.name
-                    #     else:
-                    #         less[-1]["room"] = less[-1]["room"] + "/" + room.name
-                    # else:
                     res_lesson["callNumber"] = lesson.call_id
                     res_lesson["room"] = room.name
+                    res_lesson["specific_weeks"] = [week]
+
                     res_lesson["teacher"] = models.Teacher.query.get(
                         lesson.teacher_id).name
                     res_lesson["name"] = models.Discipline.query.get(
@@ -506,7 +506,8 @@ def get_room_schedule(room, week):
                         res_lesson["fullRoomName"] = res_lesson["location"] + \
                             "* " + res_lesson["room"]
                     less.append(res_lesson)
-                result[i]["lessons"] = less
+
+            result[i]["lessons"] = less
 
     except Exception as e:
         print("Error", e)
