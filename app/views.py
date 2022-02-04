@@ -8,7 +8,7 @@ from os import environ
 import datetime as dt
 from datetime import datetime, date, time
 
-from app.schedule import get_full_schedule_by_weeks, get_groups_info, get_rooms_schedule_by_week, get_schedule_by_week, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched, cur_week, get_sem_schedule, get_full_sem_schedule
+from app.schedule import get_full_schedule_by_weeks, get_groups_info, get_rooms_schedule, get_rooms_schedule_by_week, get_schedule_by_week, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched, cur_week, get_sem_schedule, get_full_sem_schedule
 
 import sys
 from schedule_parser.get_or_create import get_or_create
@@ -409,110 +409,6 @@ def next_week(group):
     return res
 
 
-@app.route('/refresh', methods=["POST"])
-def refresh():
-    """Refresh shedule
-    ---
-    tags:
-      - Closed
-    responses:
-      200:
-        description: Return \'ok\' after updating
-        schema:
-          type: object
-          properties:
-            status:
-              type: string
-    """
-    parse_schedule()
-    return make_response({"status": 'ok'})
-
-
-@app.route('/api/schedule/set_weeks_count', methods=["POST"])
-def set_weeks_count():
-    """Refresh shedule
-    ---
-    tags:
-      - Closed
-    parameters:
-      - in: body
-        name: weeks_count
-        required: true
-        schema:
-          type: object
-          properties:
-            value:
-              type: integer
-
-      - in: header
-        name: X-Auth-Token
-        type: string
-        required: true
-
-    responses:
-      200:
-        description: Return \'ok\' after updating
-        schema:
-          type: object
-          properties:
-            status:
-              type: string
-    """
-    try:
-        secret = request.headers.get('X-Auth-Token')
-        SECRET_FOR_REFRESH = environ.get('SECRET_FOR_REFRESH')
-        if secret == SECRET_FOR_REFRESH:
-
-            weeks = request.get_json('weeks_count')["value"]
-            try:
-                db_weeks = WorkingData.query.filter_by(
-                    name="week_count").first()
-                db_weeks.value = str(weeks)
-                db.session.commit()
-
-            except Exception as err:
-                week_count = get_or_create(session=db.session, model=WorkingData,
-                                           name="week_count", value=str(weeks))
-                db.session.commit()
-
-            return make_response({"status": 'ok'})
-        return make_response({"status": 'wrong_password'}, 401)
-    except:
-        return make_response({"status": 'need_password'}, 401)
-
-
-@app.route('/api/schedule/secret_refresh', methods=["POST"])
-def secret_refresh():
-    """Refresh shedule
-    ---
-    tags:
-      - Closed
-    parameters:
-        - in: header
-          name: X-Auth-Token
-          type: string
-          required: true
-
-    responses:
-      200:
-        description: Return \'ok\' after updating
-        schema:
-          type: object
-          properties:
-            status:
-              type: string
-    """
-    try:
-        secret = request.headers.get('X-Auth-Token')
-        SECRET_FOR_REFRESH = environ.get('SECRET_FOR_REFRESH')
-        if secret == SECRET_FOR_REFRESH:
-            parse_schedule()
-            return make_response({"status": 'ok'})
-        return make_response({"status": 'wrong_password'}, 401)
-    except:
-        return make_response({"status": 'need_password'}, 401)
-
-
 @app.route('/api/schedule/<string:group>/full_schedule', methods=["GET"])
 def full_schedule(group):
     """Current week's schedule for requested group
@@ -611,6 +507,7 @@ def get_week_schedule_by_week_num(group, week):
 
 # NEW ROOTS!
 # --- GROUPS ---
+
 
 @app.route('/api/schedule/groups/', methods=["GET"])
 def get_groups():
@@ -716,6 +613,7 @@ def get_shedule_by_week(group, week):
 
 # --- TEACHERS ---
 
+
 @app.route('/api/schedule/teachers/<string:group>/', methods=["GET"])
 def get_teacher_shedule(teacher):
     """Returns full teacher schedule
@@ -785,6 +683,7 @@ def get_teacher_shedule_by_week(teacher, week):
 
 # --- ROOMS ---
 
+
 @app.route('/api/schedule/rooms/<string:room>/<int:week>/', methods=["GET"])
 def get_room_shedule_by_week(room, week):
     """Returns room schedule by week number
@@ -819,6 +718,8 @@ def get_room_shedule_by_week(room, week):
     print(location)
 
     sch = get_rooms_schedule_by_week(room, week, location)
+    if sch == 'empty':
+        return Response(status=404)
     if sch:
         response = jsonify(sch)
         return make_response(response)
@@ -827,35 +728,44 @@ def get_room_shedule_by_week(room, week):
 
 
 @app.route('/api/schedule/rooms/<string:room>/', methods=["GET"])
-def get_room_shedule(group):
-    """Returns full group schedule
+def get_room_shedule(room):
+    """Returns room schedule by week number
       ---
       tags:
-        - Groups
+        - Rooms
 
       parameters:
-        - name: group
+        - name: room
           in: path
           type: string
           required: true
+        - name: location
+          in: query
+          type: string
+          description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need. This is highly recommended шf room name starts with 'А' or 'Б'"
 
       responses:
         200:
           description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
           schema:
-            $ref: '#/definitions/FullSchedule'
+            $ref: '#/definitions/Week'
 
         503:
             description: Retry-After:100
     """
+    location = request.args.get('location')
+    print(location)
 
-    sch = get_full_sem_schedule(group)
-
+    sch = get_rooms_schedule(room, location)
+    if sch == 'empty':
+        return Response(status=404)
     if sch:
         response = jsonify(sch)
         return make_response(response)
     res = Response(headers={'Retry-After': 200}, status=503)
     return res
+
+# --- DIFFERENT ---
 
 
 @app.route('/api/schedule/current_week/', methods=["GET"])
@@ -882,3 +792,107 @@ def get_current_week():
         return make_response(response)
     res = Response(headers={'Retry-After': 200}, status=503)
     return res
+
+
+@app.route('/refresh', methods=["POST"])
+def refresh():
+    """Refresh shedule
+    ---
+    tags:
+      - Closed
+    responses:
+      200:
+        description: Return \'ok\' after updating
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+    """
+    parse_schedule()
+    return make_response({"status": 'ok'})
+
+
+@app.route('/api/schedule/set_weeks_count', methods=["POST"])
+def set_weeks_count():
+    """Refresh shedule
+    ---
+    tags:
+      - Closed
+    parameters:
+      - in: body
+        name: weeks_count
+        required: true
+        schema:
+          type: object
+          properties:
+            value:
+              type: integer
+
+      - in: header
+        name: X-Auth-Token
+        type: string
+        required: true
+
+    responses:
+      200:
+        description: Return \'ok\' after updating
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+    """
+    try:
+        secret = request.headers.get('X-Auth-Token')
+        SECRET_FOR_REFRESH = environ.get('SECRET_FOR_REFRESH')
+        if secret == SECRET_FOR_REFRESH:
+
+            weeks = request.get_json('weeks_count')["value"]
+            try:
+                db_weeks = WorkingData.query.filter_by(
+                    name="week_count").first()
+                db_weeks.value = str(weeks)
+                db.session.commit()
+
+            except Exception as err:
+                week_count = get_or_create(session=db.session, model=WorkingData,
+                                           name="week_count", value=str(weeks))
+                db.session.commit()
+
+            return make_response({"status": 'ok'})
+        return make_response({"status": 'wrong_password'}, 401)
+    except:
+        return make_response({"status": 'need_password'}, 401)
+
+
+@app.route('/api/schedule/secret_refresh', methods=["POST"])
+def secret_refresh():
+    """Refresh shedule
+    ---
+    tags:
+      - Closed
+    parameters:
+        - in: header
+          name: X-Auth-Token
+          type: string
+          required: true
+
+    responses:
+      200:
+        description: Return \'ok\' after updating
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+    """
+    try:
+        secret = request.headers.get('X-Auth-Token')
+        SECRET_FOR_REFRESH = environ.get('SECRET_FOR_REFRESH')
+        if secret == SECRET_FOR_REFRESH:
+            parse_schedule()
+            return make_response({"status": 'ok'})
+        return make_response({"status": 'wrong_password'}, 401)
+    except:
+        return make_response({"status": 'need_password'}, 401)

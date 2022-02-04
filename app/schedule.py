@@ -275,7 +275,7 @@ def get_sem_schedule(group, week):
         group = models.Group.query.filter_by(
             name=group.strip().upper()).first()
         if not group:
-            return None
+            return 'empty'
 
         for i in range(0, 6):
 
@@ -333,7 +333,7 @@ def get_full_sem_schedule(group):
         group = models.Group.query.filter_by(
             name=group.strip().upper()).first()
         if not group:
-            return None
+            return 'empty'
 
         week_count = 16
         try:
@@ -428,7 +428,7 @@ def get_full_sem_schedule(group):
     return result
 
 
-def get_rooms_schedule_by_week(room, week, location):
+def get_rooms_schedule_by_week(room, week, location=None):
     result = [{"day_num": 1,
                "name": "Понедельник",
                "lessons": []},
@@ -447,7 +447,7 @@ def get_rooms_schedule_by_week(room, week, location):
               {"day_num": 6,
                "name": "Суббота",
                "lessons": []}]
-               
+
     try:
         if location:
             place_id = models.Place.query.filter_by(
@@ -462,7 +462,7 @@ def get_rooms_schedule_by_week(room, week, location):
                 name=room.strip().upper()).first()
 
         if not room:
-            return None
+            return 'empty'
 
         for i in range(0, 6):
 
@@ -475,8 +475,7 @@ def get_rooms_schedule_by_week(room, week, location):
                 a = models.LessonOnWeek.query.filter_by(
                     week=week, lesson=lesson.id).first()
                 if a:
-                    room = models.Room.query.get(
-                        lesson.room_id)
+
                     res_lesson = {}
 
                     res_lesson["callNumber"] = lesson.call_id
@@ -508,6 +507,113 @@ def get_rooms_schedule_by_week(room, week, location):
                     less.append(res_lesson)
 
             result[i]["lessons"] = less
+
+    except Exception as e:
+        print("Error", e)
+        return None
+
+    return result
+
+
+def get_rooms_schedule(room, location=None):
+    
+    try:
+        if location:
+            place_id = models.Place.query.filter_by(
+                name=location.strip().upper()).first().id
+
+            room = models.Room.query.filter_by(
+                name=room.strip().upper(), place_id=place_id).first()
+            print(room)
+            
+        else:
+            room = models.Room.query.filter_by(
+                name=room.strip().upper()).first()
+
+        if not room:
+            return 'empty'
+
+        week_count = 16
+        try:
+            week_count = int(models.WorkingData.query.filter_by(
+                name="week_count").first().value)
+
+        except Exception as err:
+            print("week_count ERROR! -> ", err)
+
+        result = [{"days": [], "num": 1}, {"days": [], "num": 2}]
+        lens = [0, len([i for i in range(1, week_count+1, 2)]),
+                len([i for i in range(2, week_count+1, 2)])]
+        for j in range(1, 3):
+            max_len = lens[j]
+            week = [{"day_num": 1,
+                    "name": "Понедельник",
+                     "lessons": []},
+                    {"day_num": 2,
+                    "name": "Вторник",
+                     "lessons": []},
+                    {"day_num": 3,
+                    "name": "Среда",
+                     "lessons": []},
+                    {"day_num": 4,
+                    "name": "Чертверг",
+                     "lessons": []},
+                    {"day_num": 5,
+                    "name": "Пятница",
+                     "lessons": []},
+                    {"day_num": 6,
+                    "name": "Суббота",
+                     "lessons": []}]
+            for i in range(0, 6):
+
+                lessons = models.Lesson.query.filter_by(
+                    day_of_week=i+1, room_id=room.id).order_by(models.Lesson.call_id)
+                less = []
+
+                for lesson in lessons:
+                    weeks = models.LessonOnWeek.query.filter_by(
+                        lesson=lesson.id).all()
+                    weeks = [w.week for w in weeks]
+
+                    if not len(weeks):
+                        result[i]["lessons"] = less
+                        continue
+                    if len(weeks) == max_len:
+                        weeks = []
+
+                    res_lesson = {}
+
+                    res_lesson["callNumber"] = lesson.call_id
+                    res_lesson["room"] = room.name
+                    res_lesson["specific_weeks"] = weeks
+
+                    res_lesson["teacher"] = models.Teacher.query.get(
+                        lesson.teacher_id).name
+                    res_lesson["name"] = models.Discipline.query.get(
+                        lesson.discipline_id).name
+                    res_lesson["type"] = models.LessonType.query.get(
+                        lesson.lesson_type_id).name
+
+                    res_lesson["isUsualLocation"] = lesson.is_usual_location
+
+                    if room.place_id:
+
+                        res_lesson["location"] = models.Place.query.get(
+                            room.place_id).name
+                    else:
+                        res_lesson["location"] = ""
+
+                    res_lesson["time"] = rings[lesson.call_id]
+                    if res_lesson["isUsualLocation"]:
+                        res_lesson["fullRoomName"] = res_lesson["room"]
+                    else:
+                        res_lesson["fullRoomName"] = res_lesson["location"] + \
+                            "* " + res_lesson["room"]
+                    less.append(res_lesson)
+
+                week[i]["lessons"] = less
+
+            result[j-1] = week
 
     except Exception as e:
         print("Error", e)
