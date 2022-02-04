@@ -8,7 +8,7 @@ from os import environ
 import datetime as dt
 from datetime import datetime, date, time
 
-from app.schedule import get_full_schedule_by_weeks, get_groups_info, get_rooms_schedule, get_rooms_schedule_by_week, get_schedule_by_week, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched, cur_week, get_sem_schedule, get_full_sem_schedule
+from app.schedule import get_full_schedule_by_weeks, get_groups_info, get_rooms_info, get_rooms_schedule, get_rooms_schedule_by_week, get_schedule_by_week, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups_old, full_sched, cur_week, get_sem_schedule, get_full_sem_schedule
 
 import sys
 from schedule_parser.get_or_create import get_or_create
@@ -29,12 +29,22 @@ def today(group):
         required: true
 
     definitions:
+      Room:
+        type: object
+        properties:
+          name: 
+            type: string
+          place: 
+            type: string
+
       Lesson:
         type: object
         properties:
           callNumber: 
             type: integer
           room: 
+            type: string
+          group: 
             type: string
           name: 
             type: string
@@ -47,33 +57,11 @@ def today(group):
             type: array
             items:
               type: integer
-          location: 
+          place: 
             type: string
-          isUsualLocation: 
+          isUsualPlace: 
             type: string
           fullRoomName:
-            type: string
-
-          time:
-            type: object
-            properties:
-              begin: 
-                type: string
-              end: 
-                type: string
-
-      RoomLesson:
-        type: object
-        properties:
-          callNumber: 
-            type: integer
-          group: 
-            type: string
-          name: 
-            type: string
-          teacher: 
-            type: string
-          type: 
             type: string
 
           time:
@@ -104,13 +92,6 @@ def today(group):
           name: 
             type: string
           degree: 
-            type: string
-      Room:
-        location: object
-        properties:
-          location: 
-            type: integer
-          name: 
             type: string
 
       RoomDay:
@@ -144,21 +125,6 @@ def today(group):
         type: array
         items:
           $ref: '#/definitions/FullWeek'
-
-      RoomWeek:
-        type: array
-        items:
-          $ref: '#/definitions/RoomDay'
-
-      Room:
-        type: object
-        items:
-          name:
-            type: string
-          location: 
-            type: string
-          schedule:
-            $ref: '#/definitions/RoomWeek'
 
       LessonOld:
         type: object
@@ -375,7 +341,7 @@ def groups():
         503:
             description: Retry-After:100
     """
-    res = get_groups()
+    res = get_groups_old()
     if res:
         response = jsonify(res)
 
@@ -540,7 +506,6 @@ def get_groups():
             description: Retry-After:100
     """
     institute = request.args.get('institute')
-    print(institute)
     sch = get_groups_info(institute)
 
     if sch:
@@ -706,7 +671,7 @@ def get_room_shedule_by_week(room, week):
           in: path
           type: integer
           required: true
-        - name: location
+        - name: place
           in: query
           type: string
           description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need."
@@ -720,10 +685,8 @@ def get_room_shedule_by_week(room, week):
         503:
             description: Retry-After:100
     """
-    location = request.args.get('location')
-    print(location)
-
-    sch = get_rooms_schedule_by_week(room, week, location)
+    place = request.args.get('place')
+    sch = get_rooms_schedule_by_week(room, week, place)
     if sch == 'empty':
         return Response(status=404)
     if sch:
@@ -745,7 +708,7 @@ def get_room_shedule(room):
           in: path
           type: string
           required: true
-        - name: location
+        - name: place
           in: query
           type: string
           description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need. This is highly recommended if room name starts with 'А' or 'Б'"
@@ -759,10 +722,9 @@ def get_room_shedule(room):
         503:
             description: Retry-After:100
     """
-    location = request.args.get('location')
-    print(location)
+    place = request.args.get('place')
 
-    sch = get_rooms_schedule(room, location)
+    sch = get_rooms_schedule(room, place)
     if sch == 'empty':
         return Response(status=404)
     if sch:
@@ -780,7 +742,7 @@ def get_rooms():
         - Rooms
 
       parameters:
-        - name: location
+        - name: place
           in: query
           type: string
           description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need. This is highly recommended if room name starts with 'А' or 'Б'"
@@ -797,9 +759,8 @@ def get_rooms():
         503:
             description: Retry-After:100
     """
-    location = request.args.get('location')
-    print(location)
-    sch = get_groups_info(location)
+    place = request.args.get('place')
+    sch = get_rooms_info(place)
 
     if sch:
         response = jsonify(sch)

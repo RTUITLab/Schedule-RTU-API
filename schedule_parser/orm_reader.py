@@ -154,7 +154,7 @@ class Reader:
 
         def data_append_to_lesson(group, period, teacher, day_num,
                                   call,
-                                  week, lesson_type, room, is_usual_location, discipline_name):
+                                  week, lesson_type, room, is_usual_place, discipline_name):
             
                 # print(discipline_name)
                 weeks = list(discipline_name[1])
@@ -172,7 +172,7 @@ class Reader:
                                     teacher_id=teacher, lesson_type_id=lesson_type,
                                     subgroup=None, discipline_id=discipline.id,
                                     room_id=room, group_id=group,
-                                    day_of_week=day_num, is_usual_location=is_usual_location, week=week)
+                                    day_of_week=day_num, is_usual_place=is_usual_place, week=week)
                 db.session.add(lesson)
                 db.session.flush()
                 add_weeks(weeks, lesson.id)
@@ -227,19 +227,19 @@ class Reader:
 
                             db.session.flush()
 
-                            is_usual_location=True
+                            is_usual_place=True
 
                             if room.place_id == self.current_place or not room.place_id:
-                                is_usual_location=True
+                                is_usual_place=True
                             else:
-                                is_usual_location=False
+                                is_usual_place=False
 
-                            # print(is_usual_location, room, room.place_id, self.current_place)
+                            # print(is_usual_place, room, room.place_id, self.current_place)
 
                             data_append_to_lesson(group.id, self.current_period, teacher.id,
                                                     day_num,
                                                     call_num,
-                                                    week, lesson_type, room.id, is_usual_location, dist['name'])
+                                                    week, lesson_type, room.id, is_usual_place, dist['name'])
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
         """
