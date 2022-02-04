@@ -5,9 +5,10 @@ from app import app, db
 
 
 class Call(db.Model):
-    id = db.Column(db.Integer, primary_key=True,  autoincrement=False)
-    name = db.Column(db.String(6), unique=True, nullable=False, index=True)
-    lessons = db.relationship('Lesson', backref='call', lazy='dynamic')
+    id = db.Column(db.Integer, primary_key=True)
+    call_num = db.Column(db.Integer)
+    begin_time = db.Column(db.String(16), unique=True, index=True)
+    end_time = db.Column(db.String(16), unique=True, index=True)
 
     def __repr__(self):
         return '<Call %r>' % self.name
@@ -75,10 +76,20 @@ class Room(db.Model):
         return '<Room %r>' % self.name
 
 
+class Degree(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(16), unique=True, nullable=False, index=True)
+
+    def __repr__(self):
+        return '<Place %r>' % self.name
+
+
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(70), unique=True, nullable=False, index=True)
     lessons = db.relationship('Lesson', backref='group', lazy='dynamic')
+    year = db.Column(db.Integer)
+    degree_id = db.Column(db.Integer, db.ForeignKey('degree.id'))
 
     def __repr__(self):
         return '<Group %r>' % self.name
@@ -95,7 +106,6 @@ class WorkingData(db.Model):
 
 class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-
     call_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
     period_id = db.Column(db.Integer, db.ForeignKey(
         'period.id'), nullable=False)

@@ -37,6 +37,27 @@ def today(group):
           place: 
             type: string
 
+      
+      Group:
+        type: object
+        properties:
+          year: 
+            type: integer
+          name: 
+            type: string
+          degree: 
+            type: string
+      
+      Teacher:
+        type: object
+        properties:
+          id: 
+            type: integer
+          name: 
+            type: string
+      
+      
+
       Lesson:
         type: object
         properties:
@@ -83,28 +104,6 @@ def today(group):
             type: array
             items:
               $ref: '#/definitions/Lesson'
-
-      Group:
-        type: object
-        properties:
-          year: 
-            type: integer
-          name: 
-            type: string
-          degree: 
-            type: string
-
-      RoomDay:
-        type: object
-        properties:
-          day_num: 
-            type: integer
-          name: 
-            type: string
-          lessons: 
-            type: array
-            items:
-              $ref: '#/definitions/RoomLesson'
 
       Week:
         type: array
