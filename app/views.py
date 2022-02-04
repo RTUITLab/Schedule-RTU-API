@@ -105,7 +105,13 @@ def today(group):
             type: string
           degree: 
             type: string
-
+      Room:
+        location: object
+        properties:
+          location: 
+            type: integer
+          name: 
+            type: string
 
       RoomDay:
         type: object
@@ -742,7 +748,7 @@ def get_room_shedule(room):
         - name: location
           in: query
           type: string
-          description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need. This is highly recommended шf room name starts with 'А' or 'Б'"
+          description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need. This is highly recommended if room name starts with 'А' or 'Б'"
 
       responses:
         200:
@@ -765,7 +771,43 @@ def get_room_shedule(room):
     res = Response(headers={'Retry-After': 200}, status=503)
     return res
 
-# --- DIFFERENT ---
+
+@app.route('/api/schedule/rooms/', methods=["GET"])
+def get_rooms():
+    """Returns full group schedule
+      ---
+      tags:
+        - Rooms
+
+      parameters:
+        - name: location
+          in: query
+          type: string
+          description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need. This is highly recommended if room name starts with 'А' or 'Б'"
+
+
+      responses:
+        200:
+          description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Room'
+
+        503:
+            description: Retry-After:100
+    """
+    location = request.args.get('location')
+    print(location)
+    sch = get_groups_info(location)
+
+    if sch:
+        response = jsonify(sch)
+        return make_response(response)
+    res = Response(headers={'Retry-After': 200}, status=503)
+    return res
+
+# --- OTHER ---
 
 
 @app.route('/api/schedule/current_week/', methods=["GET"])

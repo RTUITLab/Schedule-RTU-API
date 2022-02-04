@@ -305,10 +305,10 @@ def get_sem_schedule(group, week):
 
                     res_lesson["isUsualLocation"] = lesson.is_usual_location
 
-                    if room.place_id:
+                    if room.location_id:
 
-                        res_lesson["location"] = models.Place.query.get(
-                            room.place_id).name
+                        res_lesson["location"] = models.Location.query.get(
+                            room.location_id).name
                     else:
                         res_lesson["location"] = ""
 
@@ -404,9 +404,9 @@ def get_full_sem_schedule(group):
 
                     res_lesson["isUsualLocation"] = lesson.is_usual_location
 
-                    if room.place_id:
-                        res_lesson["location"] = models.Place.query.get(
-                            room.place_id).name
+                    if room.location_id:
+                        res_lesson["location"] = models.Location.query.get(
+                            room.location_id).name
                     else:
                         res_lesson["location"] = ""
 
@@ -450,11 +450,11 @@ def get_rooms_schedule_by_week(room, week, location=None):
 
     try:
         if location:
-            place_id = models.Place.query.filter_by(
+            location_id = models.Location.query.filter_by(
                 name=location.strip().upper()).first().id
 
             room = models.Room.query.filter_by(
-                name=room.strip().upper(), place_id=place_id).first()
+                name=room.strip().upper(), location_id=location_id).first()
             print(room)
             
         else:
@@ -491,10 +491,10 @@ def get_rooms_schedule_by_week(room, week, location=None):
 
                     res_lesson["isUsualLocation"] = lesson.is_usual_location
 
-                    if room.place_id:
+                    if room.location_id:
 
-                        res_lesson["location"] = models.Place.query.get(
-                            room.place_id).name
+                        res_lesson["location"] = models.Location.query.get(
+                            room.location_id).name
                     else:
                         res_lesson["location"] = ""
 
@@ -519,11 +519,11 @@ def get_rooms_schedule(room, location=None):
     
     try:
         if location:
-            place_id = models.Place.query.filter_by(
+            location_id = models.Location.query.filter_by(
                 name=location.strip().upper()).first().id
 
             room = models.Room.query.filter_by(
-                name=room.strip().upper(), place_id=place_id).first()
+                name=room.strip().upper(), location_id=location_id).first()
             print(room)
             
         else:
@@ -596,9 +596,9 @@ def get_rooms_schedule(room, location=None):
 
                     res_lesson["isUsualLocation"] = lesson.is_usual_location
 
-                    if room.place_id:
+                    if room.location_id:
 
-                        res_lesson["location"] = models.Place.query.get(
+                        res_lesson["location"] = models.Location.query.get(
                             room.place_id).name
                     else:
                         res_lesson["location"] = ""

@@ -57,18 +57,18 @@ class Discipline(db.Model):
         return '<Discipline %r>' % self.name
 
 
-class Place(db.Model):
+class Location(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(8), unique=True, nullable=False, index=True)
 
     def __repr__(self):
-        return '<Place %r>' % self.name
+        return '<Location %r>' % self.name
 
 
 class Room(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(70), nullable=False, index=True)
-    place_id = db.Column(db.Integer, db.ForeignKey('place.id'), nullable=True)
+    location_id = db.Column(db.Integer, db.ForeignKey('location.id'), nullable=True)
     lessons = db.relationship('Lesson', backref='room', lazy='dynamic')
 
     def __repr__(self):
