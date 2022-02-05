@@ -1,10 +1,15 @@
 import re
 
+from sqlalchemy import null
+
 
 def format_teacher_name(cell):
     # TODO add re.sub here
     cell = str(cell)
     cell = re.sub(r'( ){3,}', '  ', cell)
+    cell.strip()
+    if not len(cell):
+        return [None]
     res = re.split(r'\n|\\\\|\\|(?!\d)\/(?!\d)|(?<!\d)\/(?=\d)', cell)
     if len(res) > 1:
         res = [x.strip() for x in res if len(x.strip())]
@@ -13,7 +18,12 @@ def format_teacher_name(cell):
 
 
 def format_lesson_type(cell):
+    cell.strip()
+    if not len(cell):
+        return [None]
+
     result = re.split(';|\n|\\\\|\\|\s{1,}', cell)
+
     result = [x.strip() for x in result if len(x.strip())]
 
     # print(result, "result")
@@ -39,6 +49,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
                     and not re.match(r'^ИВЦ-\d{3}$', room_name)
                     and not re.match(r'^\w{1}-\d{1}$', room_name)
                     and not re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name))
+                    
         if re.match(r'^\D\d', room_name) and not re.match(r"^\w-\d", room_name):
             room_name = re.sub(r'^(\w)', r'\g<1>-', room_name)
         # if re.match(r'^А', room_name) and not "А-" in room_name:
@@ -78,8 +89,9 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
 
     string = re.sub(r'( ){3,}', '  ', string)
 
-    string = string.replace('*', '').upper()
-
+    string = string.replace('*', '').upper().strip()
+    if not len(string):
+        return [None]
     for pattern in notes_dict:
         regex_result = re.findall(pattern, string, flags=re.A)
         for reg in regex_result:
@@ -186,6 +198,9 @@ def format_name(temp_name, week, week_count):
         discipl = result[name_num]
         clean_discipline_name = re.sub(r"\d+н|(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|,| н |н\.| кр |кр\.|^кр |^н |(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|(?<!\w)нед\.*(?!\w)|(?<=\d)нед\.*(?!\w)",
                                        "", discipl).strip()
+        if len(clean_discipline_name) < 3:
+            print("Something wrong with", temp_name, "! discipl ->", discipl, "|clean_discipline_name->", clean_discipline_name)
+            return ""
         if clean_discipline_name[0] == "н":
             clean_discipline_name=clean_discipline_name[1:]
         

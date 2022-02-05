@@ -732,3 +732,9 @@ def get_rooms_info(place=None):
     except Exception as e:
         print("Error", e)
         return None
+
+
+def get_lessons(week=None, specific_week=None, group=None, teacher=None, room=None, discipline=None):
+    res = []
+
+    return res
