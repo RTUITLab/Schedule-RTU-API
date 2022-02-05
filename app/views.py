@@ -8,7 +8,7 @@ from os import environ
 import datetime as dt
 from datetime import datetime, date, time
 
-from app.schedule import get_full_schedule_by_weeks, get_groups_info, get_schedule_by_week, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups, full_sched, cur_week, get_sem_schedule, get_full_sem_schedule
+from app.schedule import get_full_schedule_by_weeks, get_groups_info, get_rooms_info, get_schedule_by_week, today_sch, tomorrow_sch, week_sch, next_week_sch, get_groups_old, full_sched, cur_week, get_lessons_list
 
 import sys
 from schedule_parser.get_or_create import get_or_create
@@ -29,61 +29,125 @@ def today(group):
         required: true
 
     definitions:
-      Lesson:
+
+      teacher:
         type: object
         properties:
-          callNumber: 
+          id: 
             type: integer
-          room: 
+          name: 
+            type: string
+
+      call:
+        type: object
+        properties:
+          id: 
+            type: integer
+          call_num: 
+            type: integer
+          begin_time: 
+            type: string
+          end_time: 
+            type: string
+
+      discipline:
+        type: object
+        properties:
+          id: 
+            type: integer
+          name: 
+            type: string
+      
+      place:
+        type: object
+        properties:
+          id: 
+            type: integer
+          short_name: 
             type: string
           name: 
             type: string
+
+      room:
+        type: object
+        properties:
+          name: 
+            type: string
+          place: 
+            $ref: '#/definitions/place'
+
+      lesson_type:
+        type: object
+        properties:
+          id: 
+            type: integer
+          short_name: 
+            type: string
+          name: 
+            type: string
+      
+      period:
+        type: object
+        properties:
+          id: 
+            type: integer
+          short_name: 
+            type: string
+          name: 
+            type: string
+
+      degree:
+        type: object
+        properties:
+          id: 
+            type: integer
+          name: 
+            type: string
+
+      group:
+        type: object
+        properties:
+          id: 
+            type: integer
+          year: 
+            type: integer
+          name: 
+            type: string
+          degree: 
+            type: string
+
+      lesson:
+        type: object
+        properties:
+          call: 
+            $ref: '#/definitions/call'
+          period: 
+            $ref: '#/definitions/place'
+          discipline:
+            $ref: '#/definitions/discipline'
+          group: 
+            $ref: '#/definitions/group'
           teacher: 
-            type: string
-          type: 
-            type: string
+            $ref: '#/definitions/teacher'
+          lesson_type: 
+            $ref: '#/definitions/lesson_type'
+          subgroup:
+            type: integer
+          room:
+            $ref: '#/definitions/room'
+          day_of_week:
+            type: integer
+          week:
+            type: integer
 
           specific_weeks:
             type: array
             items:
               type: integer
-          location: 
-            type: string
-          isUsualLocation: 
-            type: string
-          fullRoomName:
+          is_usual_place: 
             type: string
 
-          time:
-            type: object
-            properties:
-              begin: 
-                type: string
-              end: 
-                type: string
-
-      RoomLesson:
-        type: object
-        properties:
-          callNumber: 
-            type: integer
-          group: 
-            type: string
-          name: 
-            type: string
-          teacher: 
-            type: string
-          type: 
-            type: string
-
-          time:
-            type: object
-            properties:
-              begin: 
-                type: string
-              end: 
-                type: string
-
+          
       Day:
         type: object
         properties:
@@ -95,29 +159,6 @@ def today(group):
             type: array
             items:
               $ref: '#/definitions/Lesson'
-      
-      Group:
-        type: object
-        properties:
-          year: 
-            type: integer
-          name: 
-            type: string
-          degree: 
-            type: string
-
-
-      RoomDay:
-        type: object
-        properties:
-          day_num: 
-            type: integer
-          name: 
-            type: string
-          lessons: 
-            type: array
-            items:
-              $ref: '#/definitions/RoomLesson'
 
       Week:
         type: array
@@ -138,21 +179,6 @@ def today(group):
         type: array
         items:
           $ref: '#/definitions/FullWeek'
-
-      RoomWeek:
-        type: array
-        items:
-          $ref: '#/definitions/RoomDay'
-
-      Room:
-        type: object
-        items:
-          name:
-            type: string
-          location: 
-            type: string
-          schedule:
-            $ref: '#/definitions/RoomWeek'
 
       LessonOld:
         type: object
@@ -369,10 +395,10 @@ def groups():
         503:
             description: Retry-After:100
     """
-    res = get_groups()
+    res = get_groups_old()
     if res:
         response = jsonify(res)
-        
+
         # return "tomorrow for{} is {}".format(group, res)
         return make_response(response)
     res = Response(headers={'Retry-After': 200}, status=503)
@@ -407,110 +433,6 @@ def next_week(group):
         return make_response(response)
     res = Response(headers={'Retry-After': 200}, status=503)
     return res
-
-
-@app.route('/refresh', methods=["POST"])
-def refresh():
-    """Refresh shedule
-    ---
-    tags:
-      - Closed
-    responses:
-      200:
-        description: Return \'ok\' after updating
-        schema:
-          type: object
-          properties:
-            status:
-              type: string
-    """
-    parse_schedule()
-    return make_response({"status": 'ok'})
-
-
-@app.route('/api/schedule/set_weeks_count', methods=["POST"])
-def set_weeks_count():
-    """Refresh shedule
-    ---
-    tags:
-      - Closed
-    parameters:
-      - in: body
-        name: weeks_count
-        required: true
-        schema:
-          type: object
-          properties:
-            value:
-              type: integer
-
-      - in: header
-        name: X-Auth-Token
-        type: string
-        required: true
-
-    responses:
-      200:
-        description: Return \'ok\' after updating
-        schema:
-          type: object
-          properties:
-            status:
-              type: string
-    """
-    try:
-        secret = request.headers.get('X-Auth-Token')
-        SECRET_FOR_REFRESH = environ.get('SECRET_FOR_REFRESH')
-        if secret == SECRET_FOR_REFRESH:
-
-            weeks = request.get_json('weeks_count')["value"]
-            try:
-                db_weeks = WorkingData.query.filter_by(
-                    name="week_count").first()
-                db_weeks.value = str(weeks)
-                db.session.commit()
-
-            except Exception as err:
-                week_count = get_or_create(session=db.session, model=WorkingData,
-                                           name="week_count", value=str(weeks))
-                db.session.commit()
-
-            return make_response({"status": 'ok'})
-        return make_response({"status": 'wrong_password'}, 401)
-    except:
-        return make_response({"status": 'need_password'}, 401)
-
-
-@app.route('/api/schedule/secret_refresh', methods=["POST"])
-def secret_refresh():
-    """Refresh shedule
-    ---
-    tags:
-      - Closed
-    parameters:
-        - in: header
-          name: X-Auth-Token
-          type: string
-          required: true
-
-    responses:
-      200:
-        description: Return \'ok\' after updating
-        schema:
-          type: object
-          properties:
-            status:
-              type: string
-    """
-    try:
-        secret = request.headers.get('X-Auth-Token')
-        SECRET_FOR_REFRESH = environ.get('SECRET_FOR_REFRESH')
-        if secret == SECRET_FOR_REFRESH:
-            parse_schedule()
-            return make_response({"status": 'ok'})
-        return make_response({"status": 'wrong_password'}, 401)
-    except:
-        return make_response({"status": 'need_password'}, 401)
 
 
 @app.route('/api/schedule/<string:group>/full_schedule', methods=["GET"])
@@ -609,54 +531,22 @@ def get_week_schedule_by_week_num(group, week):
     res = Response(headers={'Retry-After': 200}, status=503)
     return res
 
-
-@app.route('/api/schedule/groups/<string:group>/<int:week>/', methods=["GET"])
-def get_shedule_by_week(group, week):
-    """Returns group schedule by week number
-      ---
-      tags:
-        - Groups
-
-      parameters:
-        - name: group
-          in: path
-          type: string
-          required: true
-        - name: week
-          in: path
-          type: integer
-          required: true
-
-      responses:
-        200:
-          description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
-          schema:
-            $ref: '#/definitions/Week'
-
-        503:
-            description: Retry-After:100
-    """
-
-    sch = get_sem_schedule(group, week)
-
-    if sch:
-        response = jsonify(sch)
-        return make_response(response)
-    res = Response(headers={'Retry-After': 200}, status=503)
-    return res
+# NEW ROOTS!
+# --- GROUPS ---
 
 
-@app.route('/api/schedule/groups/', methods=["GET"])
+@app.route('/api/group/', methods=["GET"])
 def get_groups():
     """Returns full group schedule
       ---
       tags:
-        - Groups
+        - Group
 
       parameters:
         - name: institute
           in: query
           type: string
+          description: "You can choose ИИТ. Please enter this parameter to make sure you get the room that you need."
 
       responses:
         200:
@@ -664,13 +554,12 @@ def get_groups():
           schema:
             type: array
             items:
-              $ref: '#/definitions/Group'
+              $ref: '#/definitions/group'
 
         503:
             description: Retry-After:100
     """
     institute = request.args.get('institute')
-    print(institute)
     sch = get_groups_info(institute)
 
     if sch:
@@ -678,42 +567,151 @@ def get_groups():
         return make_response(response)
     res = Response(headers={'Retry-After': 200}, status=503)
     return res
-    
 
-@app.route('/api/schedule/groups/<string:group>/', methods=["GET"])
-def get_shedule(group):
+
+@app.route('/api/lesson/', methods=["GET"])
+def get_lessons():
     """Returns full group schedule
       ---
       tags:
-        - Groups
+        - Lesson
 
       parameters:
         - name: group
-          in: path
+          in: query
           type: string
           required: true
+
+        - name: specific_week
+          in: query
+          type: integer
+          required: true
+
 
       responses:
         200:
           description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
           schema:
-            $ref: '#/definitions/FullSchedule'
+            type: array
+            items:
+              $ref: '#/definitions/lesson'
+
 
         503:
             description: Retry-After:100
     """
+    group = request.args.get('group')
+    specific_week = request.args.get('specific_week')
+    sch = get_lessons_list(group=group, specific_week=specific_week)
 
-    sch = get_full_sem_schedule(group)
-
-    if sch:
+    if sch != None:
         response = jsonify(sch)
         return make_response(response)
     res = Response(headers={'Retry-After': 200}, status=503)
     return res
 
 
-# @app.route('/api/schedule/<string:room>/<int:week>/', methods=["GET"])
-# def get_room_shedule(group, week):
+# @app.route('/api/lesson/<int:id>/', methods=["GET"])
+# def get_lesson_by_id(id):
+#     """Returns group schedule by week number
+#       ---
+#       tags:
+#         - Lesson
+
+#       responses:
+#         200:
+#           description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
+#           schema:
+#             $ref: '#/definitions/lesson'
+
+#         503:
+#             description: Retry-After:100
+#     """
+
+#     sch = get_lessons(id)
+
+#     if sch:
+#         response = jsonify(sch)
+#         return make_response(response)
+#     res = Response(headers={'Retry-After': 200}, status=503)
+#     return res
+
+
+# # --- TEACHERS ---
+
+
+# @app.route('/api/schedule/teachers/<string:group>/', methods=["GET"])
+# def get_teacher_shedule(teacher):
+#     """Returns full teacher schedule
+#       ---
+#       tags:
+#         - Teachers
+
+#       parameters:
+#         - name: group
+#           in: path
+#           type: string
+#           required: true
+
+#       responses:
+#         200:
+#           description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
+#           schema:
+#             $ref: '#/definitions/FullTeacherSchedule'
+
+#         503:
+#             description: Retry-After:100
+#     """
+
+#     sch = get_full_sem_schedule(teacher)
+
+#     if sch:
+#         response = jsonify(sch)
+#         return make_response(response)
+#     res = Response(headers={'Retry-After': 200}, status=503)
+#     return res
+
+
+# @app.route('/api/schedule/groups/<string:group>/<int:week>/', methods=["GET"])
+# def get_teacher_shedule_by_week(teacher, week):
+#     """Returns teacher schedule by week number
+#       ---
+#       tags:
+#         - Teachers
+
+#       parameters:
+#         - name: group
+#           in: path
+#           type: string
+#           required: true
+#         - name: week
+#           in: path
+#           type: integer
+#           required: true
+
+#       responses:
+#         200:
+#           description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
+#           schema:
+#             $ref: '#/definitions/Week'
+
+#         503:
+#             description: Retry-After:100
+#     """
+
+#     sch = get_sem_schedule(group, week)
+
+#     if sch:
+#         response = jsonify(sch)
+#         return make_response(response)
+#     res = Response(headers={'Retry-After': 200}, status=503)
+#     return res
+
+# # --- ROOMS ---
+
+
+# @app.route('/api/schedule/rooms/<string:room>/<int:week>/', methods=["GET"])
+# def get_room_shedule_by_week(room, week):
 #     """Returns room schedule by week number
 #       ---
 #       tags:
@@ -727,6 +725,11 @@ def get_shedule(group):
 #         - name: week
 #           in: path
 #           type: integer
+#           required: true
+#         - name: place
+#           in: query
+#           type: string
+#           description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need."
 
 #       responses:
 #         200:
@@ -737,8 +740,10 @@ def get_shedule(group):
 #         503:
 #             description: Retry-After:100
 #     """
-
-#     sch = get_sem_schedule(group, week)
+#     place = request.args.get('place')
+#     sch = get_rooms_schedule_by_week(room, week, place)
+#     if sch == 'empty':
+#         return Response(status=404)
 #     if sch:
 #         response = jsonify(sch)
 #         return make_response(response)
@@ -746,9 +751,84 @@ def get_shedule(group):
 #     return res
 
 
-@app.route('/api/schedule/current_week/', methods=["GET"])
+# @app.route('/api/schedule/rooms/<string:room>/', methods=["GET"])
+# def get_room_shedule(room):
+#     """Returns room schedule by week number
+#       ---
+#       tags:
+#         - Rooms
+
+#       parameters:
+#         - name: room
+#           in: path
+#           type: string
+#           required: true
+#         - name: place
+#           in: query
+#           type: string
+#           description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need. This is highly recommended if room name starts with 'А' or 'Б'"
+
+#       responses:
+#         200:
+#           description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
+#           schema:
+#             $ref: '#/definitions/Week'
+
+#         503:
+#             description: Retry-After:100
+#     """
+#     place = request.args.get('place')
+
+#     sch = get_rooms_schedule(room, place)
+#     if sch == 'empty':
+#         return Response(status=404)
+#     if sch:
+#         response = jsonify(sch)
+#         return make_response(response)
+#     res = Response(headers={'Retry-After': 200}, status=503)
+#     return res
+
+
+# @app.route('/api/schedule/rooms/', methods=["GET"])
+# def get_rooms():
+#     """Returns full group schedule
+#       ---
+#       tags:
+#         - Rooms
+
+#       parameters:
+#         - name: place
+#           in: query
+#           type: string
+#           description: "You can choose В-78, В-86, С-20, МП-1 or СГ-22. Please enter this parameter to make sure you get the room that you need. This is highly recommended if room name starts with 'А' or 'Б'"
+
+
+#       responses:
+#         200:
+#           description: Return array with days of weeks - array[0] is Monday, array[1] is Tuesday and so on. Array lenght is 6. Day is an object with key "lessons".
+#           schema:
+#             type: array
+#             items:
+#               $ref: '#/definitions/Room'
+
+#         503:
+#             description: Retry-After:100
+#     """
+#     place = request.args.get('place')
+#     sch = get_rooms_info(place)
+
+#     if sch:
+#         response = jsonify(sch)
+#         return make_response(response)
+#     res = Response(headers={'Retry-After': 200}, status=503)
+#     return res
+
+# # --- OTHER ---
+
+
+@app.route('/api/current_week/', methods=["GET"])
 def get_current_week():
-    """Returns group schedule by week number
+    """Returns current week
       ---
       tags:
         - General
@@ -770,3 +850,107 @@ def get_current_week():
         return make_response(response)
     res = Response(headers={'Retry-After': 200}, status=503)
     return res
+
+
+@app.route('/refresh/', methods=["POST"])
+def refresh():
+    """Refresh shedule
+    ---
+    tags:
+      - Closed
+    responses:
+      200:
+        description: Return \'ok\' after updating
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+    """
+    parse_schedule()
+    return make_response({"status": 'ok'})
+
+
+@app.route('/api/set_weeks_count/', methods=["POST"])
+def set_weeks_count():
+    """Refresh shedule
+    ---
+    tags:
+      - Closed
+    parameters:
+      - in: body
+        name: weeks_count
+        required: true
+        schema:
+          type: object
+          properties:
+            value:
+              type: integer
+
+      - in: header
+        name: X-Auth-Token
+        type: string
+        required: true
+
+    responses:
+      200:
+        description: Return \'ok\' after updating
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+    """
+    try:
+        secret = request.headers.get('X-Auth-Token')
+        SECRET_FOR_REFRESH = environ.get('SECRET_FOR_REFRESH')
+        if secret == SECRET_FOR_REFRESH:
+
+            weeks = request.get_json('weeks_count')["value"]
+            try:
+                db_weeks = WorkingData.query.filter_by(
+                    name="week_count").first()
+                db_weeks.value = str(weeks)
+                db.session.commit()
+
+            except Exception as err:
+                week_count = get_or_create(session=db.session, model=WorkingData,
+                                           name="week_count", value=str(weeks))
+                db.session.commit()
+
+            return make_response({"status": 'ok'})
+        return make_response({"status": 'wrong_password'}, 401)
+    except:
+        return make_response({"status": 'need_password'}, 401)
+
+
+@app.route('/api/secret_refresh/', methods=["POST"])
+def secret_refresh():
+    """Refresh shedule
+    ---
+    tags:
+      - Closed
+    parameters:
+        - in: header
+          name: X-Auth-Token
+          type: string
+          required: true
+
+    responses:
+      200:
+        description: Return \'ok\' after updating
+        schema:
+          type: object
+          properties:
+            status:
+              type: string
+    """
+    try:
+        secret = request.headers.get('X-Auth-Token')
+        SECRET_FOR_REFRESH = environ.get('SECRET_FOR_REFRESH')
+        if secret == SECRET_FOR_REFRESH:
+            parse_schedule()
+            return make_response({"status": 'ok'})
+        return make_response({"status": 'wrong_password'}, 401)
+    except:
+        return make_response({"status": 'need_password'}, 401)

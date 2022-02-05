@@ -5,9 +5,10 @@ from app import app, db
 
 
 class Call(db.Model):
-    id = db.Column(db.Integer, primary_key=True,  autoincrement=False)
-    name = db.Column(db.String(6), unique=True, nullable=False, index=True)
-    lessons = db.relationship('Lesson', backref='call', lazy='dynamic')
+    id = db.Column(db.Integer, primary_key=True)
+    call_num = db.Column(db.Integer)
+    begin_time = db.Column(db.String(16), unique=True, index=True)
+    end_time = db.Column(db.String(16), unique=True, index=True)
 
     def __repr__(self):
         return '<Call %r>' % self.name
@@ -15,7 +16,8 @@ class Call(db.Model):
 
 class Period(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
-    name = db.Column(db.String(8), unique=True, nullable=False, index=True)
+    short_name = db.Column(db.String(8), unique=True, index=True)
+    name = db.Column(db.String(40), unique=True, nullable=False, index=True)
     lessons = db.relationship('Lesson', backref='period', lazy='dynamic')
 
     def __repr__(self):
@@ -24,7 +26,7 @@ class Period(db.Model):
 
 class Teacher(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), unique=True, nullable=False, index=True)
+    name = db.Column(db.String(100), unique=True, nullable=False, index=True)
     lessons = db.relationship('Lesson', backref='teacher', lazy='dynamic')
 
     def __repr__(self):
@@ -33,7 +35,8 @@ class Teacher(db.Model):
 
 class LessonType(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=False)
-    name = db.Column(db.String(20), unique=True, nullable=False, index=True)
+    short_name = db.Column(db.String(3), unique=True, index=True)
+    name = db.Column(db.String(255), unique=True, nullable=False, index=True)
 
     def __repr__(self):
         return '<Lesson_Type %r>' % self.name
@@ -59,7 +62,8 @@ class Discipline(db.Model):
 
 class Place(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(8), unique=True, nullable=False, index=True)
+    short_name = db.Column(db.String(8), unique=True, index=True)
+    name = db.Column(db.String(255), unique=True, nullable=False, index=True)
 
     def __repr__(self):
         return '<Place %r>' % self.name
@@ -75,10 +79,20 @@ class Room(db.Model):
         return '<Room %r>' % self.name
 
 
+class Degree(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(16), unique=True, nullable=False, index=True)
+
+    def __repr__(self):
+        return '<Place %r>' % self.name
+
+
 class Group(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(70), unique=True, nullable=False, index=True)
     lessons = db.relationship('Lesson', backref='group', lazy='dynamic')
+    year = db.Column(db.Integer)
+    degree_id = db.Column(db.Integer, db.ForeignKey('degree.id'))
 
     def __repr__(self):
         return '<Group %r>' % self.name
@@ -95,18 +109,17 @@ class WorkingData(db.Model):
 
 class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-
     call_id = db.Column(db.Integer, db.ForeignKey('call.id'), nullable=False)
     period_id = db.Column(db.Integer, db.ForeignKey(
         'period.id'), nullable=False)
     teacher_id = db.Column(db.Integer, db.ForeignKey(
-        'teacher.id'), nullable=False)
+        'teacher.id'), nullable=True)
     lesson_type_id = db.Column(db.Integer, db.ForeignKey(
-        'lesson_type.id'), nullable=False)
+        'lesson_type.id'), nullable=True)
     subgroup = db.Column(db.Integer, nullable=True)
     discipline_id = db.Column(db.Integer, db.ForeignKey(
         'discipline.id'), nullable=False)
-    room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=False)
+    room_id = db.Column(db.Integer, db.ForeignKey('room.id'), nullable=True)
     group_id = db.Column(db.Integer, db.ForeignKey('group.id'), nullable=False)
     day_of_week = db.Column(db.Integer, nullable=False)
 
@@ -115,7 +128,7 @@ class Lesson(db.Model):
     week_id = db.relationship(
         'LessonOnWeek', backref='lessons', lazy='dynamic')
 
-    is_usual_location = db.Column(db.Boolean, default=True)
+    is_usual_place = db.Column(db.Boolean, default=True)
 
     def __repr__(self):
         return '<Post %r>' % self.id
