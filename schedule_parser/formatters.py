@@ -243,8 +243,9 @@ def format_name(temp_name, week, week_count):
                 for i in weeks:
                     result_weeks.add(int(i))
         elif flag:
-            for i in range(week, week_count+1, 2):
-                result_weeks.add(i)
+            # for i in range(week, week_count+1, 2):
+            #     result_weeks.add(i)
+            result_weeks = []
             # print(week)
         result[name_num] = [clean_discipline_name, result_weeks]
         # print(discipl, "| result[name_num] -> ", result[name_num])
