@@ -561,7 +561,8 @@ def get_groups():
     """
     institute = request.args.get('institute')
     sch = get_groups_info(institute)
-
+    if sch == 'empty':
+        return Response(status=404)
     if sch:
         response = jsonify(sch)
         return make_response(response)
@@ -585,8 +586,6 @@ def get_lessons():
         - name: specific_week
           in: query
           type: integer
-          required: true
-
 
       responses:
         200:
@@ -603,7 +602,8 @@ def get_lessons():
     group = request.args.get('group')
     specific_week = request.args.get('specific_week')
     sch = get_lessons_list(group=group, specific_week=specific_week)
-
+    if sch == 'empty':
+        return Response(status=404)
     if sch != None:
         response = jsonify(sch)
         return make_response(response)

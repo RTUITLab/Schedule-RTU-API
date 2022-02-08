@@ -345,10 +345,93 @@ def get_sem_schedule_by_week(group, specific_week):
                 },
                 "week": 0
             }
-            a = models.LessonOnWeek.query.filter_by(
-                week=specific_week, lesson=lesson.id).first()
-            if a:
+            if specific_week:
+                a = models.LessonOnWeek.query.filter_by(
+                    week=specific_week, lesson=lesson.id).first()
+                if a:
 
+                    call = models.Call.query.get(lesson.call_id)
+                    less["call"] = {
+                        "begin_time": call.begin_time,
+                        "call_num": call.call_num,
+                        "end_time": call.end_time,
+                        "id": call.id
+                    }
+                    less["day_of_week"] = lesson.day_of_week
+                    discipline = models.Discipline.query.get(
+                        lesson.discipline_id)
+                    less["discipline"] = {
+                        "id": discipline.id,
+                        "name": discipline.name
+                    }
+                    degree = models.Degree.query.get(
+                        group.degree_id)
+                    less["group"] = {
+                        "degree": degree.name,
+                        "id": group.id,
+                        "name": group.name,
+                        "year": group.year
+                    }
+
+                    period = models.Period.query.get(
+                        lesson.period_id)
+
+                    less["period"] = {
+                        "id": period.id,
+                        "name": period.name,
+                        "short_name": period.short_name
+                    }
+
+                    l_type = models.LessonType.query.filter_by(
+                        id=lesson.lesson_type_id).first()
+
+                    less["lesson_type"] = None
+                    if l_type:
+                        less["lesson_type"] = {
+                            "id": l_type.id,
+                            "name": l_type.name,
+                            "short_name": l_type.short_name
+                        }
+                    less["room"] = None
+                    room = models.Room.query.filter_by(
+                        id=lesson.room_id).first()
+                    if room:
+                        r_info = {
+                            "id": room.id,
+                            "name": room.name,
+                            "place": None}
+                        place = models.Place.query.filter_by(
+                            id=room.place_id).first()
+                        if place:
+                            r_info = {
+                                "id": room.id,
+                                "name": room.name,
+                                "place": {
+                                    "id": place.id,
+                                    "name": place.name,
+                                    "short_name": place.short_name
+                                }}
+
+                        less["room"] = r_info
+
+                    teacher = models.Teacher.query.filter_by(
+                        id=lesson.teacher_id).first()
+                    less["teacher"] = None
+                    if teacher:
+                        less["teacher"] = {
+                            "id": teacher.id,
+                            "name": teacher.name
+                        },
+
+                    less["is_usual_place"] = lesson.is_usual_place
+                    less["specific_weeks"] = [specific_week]
+                    less["subgroup"] = lesson.subgroup
+                    less["week"] = lesson.week
+
+                    result.append(less)
+                    
+            else:
+                
                 call = models.Call.query.get(lesson.call_id)
                 less["call"] = {
                     "begin_time": call.begin_time,
@@ -421,9 +504,11 @@ def get_sem_schedule_by_week(group, specific_week):
                         "id": teacher.id,
                         "name": teacher.name
                     },
-
+                weeks = models.LessonOnWeek.query.filter_by(
+                        lesson=lesson.id).all()
+                weeks = [w.week for w in weeks]
                 less["is_usual_place"] = lesson.is_usual_place
-                less["specific_weeks"] = [specific_week]
+                less["specific_weeks"] = weeks
                 less["subgroup"] = lesson.subgroup
                 less["week"] = lesson.week
 
