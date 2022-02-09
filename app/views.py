@@ -581,7 +581,14 @@ def get_lessons():
         - name: group
           in: query
           type: string
-          required: true
+
+        - name: room
+          in: query
+          type: string
+
+        - name: teacher
+          in: query
+          type: string
 
         - name: specific_week
           in: query
@@ -600,16 +607,20 @@ def get_lessons():
             description: Retry-After:100
     """
     group = request.args.get('group')
+    teacher = request.args.get('teacher')
+    room = request.args.get('room')
     specific_week = request.args.get('specific_week')
-    sch = get_lessons_list(group=group, specific_week=specific_week)
-    if sch == 'empty':
-        return Response(status=404)
-    if sch != None:
-        response = jsonify(sch)
-        return make_response(response)
-    res = Response(headers={'Retry-After': 200}, status=503)
-    return res
 
+    if group or teacher or room:
+      sch = get_lessons_list(group=group, specific_week=specific_week, teacher=teacher, room=room, week=None)
+      if sch == 'empty':
+          return Response(status=404)
+      if sch != None:
+          response = jsonify(sch)
+          return make_response(response)
+      res = Response(headers={'Retry-After': 200}, status=503)
+      return res
+    return Response(status=404)
 
 # @app.route('/api/lesson/<int:id>/', methods=["GET"])
 # def get_lesson_by_id(id):

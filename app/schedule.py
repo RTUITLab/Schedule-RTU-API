@@ -286,7 +286,7 @@ def get_group_year(group):
     return year
 
 
-def get_sem_schedule_by_week(group, specific_week, week):
+def get_sem_schedule_by_week(group, specific_week, week, teacher, room):
     result = []
     week_count = 16
     try:
@@ -298,9 +298,9 @@ def get_sem_schedule_by_week(group, specific_week, week):
 
     try:
         
-        lessons = db.session.query(models.Lesson).order_by(models.Lesson.week,
+        lessons = models.Lesson.query.order_by(models.Lesson.week,
              models.Lesson.day_of_week,
-             models.Lesson.call_id)
+             models.Lesson.call_id).all()
         
         if not week and specific_week:
 
@@ -310,7 +310,7 @@ def get_sem_schedule_by_week(group, specific_week, week):
                 week = 2
             
         if week:  
-            lessons = lessons.filter_by(week=week)
+            lessons = [lesson for lesson in lessons if lesson.week == week]
         
         if group:
             group = models.Group.query.filter_by(
@@ -318,11 +318,21 @@ def get_sem_schedule_by_week(group, specific_week, week):
             if not group:
                 return 'empty'
 
-            lessons = db.session.query(models.Lesson).filter_by(
-                group_id=group.id)
+            lessons = [lesson for lesson in lessons if lesson.group_id == group.id]
+
+
+        if teacher:
+            print("hi")
+            search = "%{}%".format(teacher)
+            teacher = models.Teacher.query.filter(models.Teacher.name.like(search)).first()
+            print("hi2")
+            if not teacher:
+                return 'empty'
+
+            lessons = [lesson for lesson in lessons if lesson.teacher_id == teacher.id]
         less = []
 
-        for lesson in lessons.all():
+        for lesson in lessons:
             less = {
                 "call": {
                     "begin_time": "string",
@@ -375,13 +385,14 @@ def get_sem_schedule_by_week(group, specific_week, week):
             
             if specific_week:
 
-                weeks = db.session.query(models.LessonOnWeek).filter_by(week=specific_week)
+                weeks = models.LessonOnWeek.query.filter_by(lesson=lesson.id)
                 if weeks:
-                    week = weeks.filter_by(lesson=lesson.id)
-                    if week:
+                    w = [x for x in weeks if x.week == specific_week]
+                    if not w:
                         flag = false
             
             if flag:
+                group = models.Group.query.get(lesson.group_id)
                 call = models.Call.query.get(lesson.call_id)
                 less["call"] = {
                     "begin_time": call.begin_time,
@@ -548,5 +559,5 @@ def get_rooms_info(place=None):
 
 def get_lessons_list(week=None, specific_week=None, group=None, teacher=None, room=None, discipline=None):
     res = []
-    res = get_sem_schedule_by_week(group, specific_week, week)
+    res = get_sem_schedule_by_week(group=group, specific_week=specific_week, week=week, teacher=teacher, room=room)
     return res
