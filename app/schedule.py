@@ -289,6 +289,9 @@ def get_group_year(group):
 def get_sem_schedule_by_week(group, specific_week, week, teacher, room):
     result = []
     week_count = 16
+    if room:
+        room = room.upper()
+
     try:
         week_count = int(models.WorkingData.query.filter_by(
             name="week_count").first().value)
@@ -297,11 +300,42 @@ def get_sem_schedule_by_week(group, specific_week, week, teacher, room):
         print("week_count ERROR! -> ", err) 
 
     try:
-        
-        lessons = models.Lesson.query.order_by(models.Lesson.week,
-             models.Lesson.day_of_week,
-             models.Lesson.call_id).all()
-        
+        if group or teacher or room:
+
+            if group:
+                gr = models.Group.query.filter_by(
+                name=group.strip().upper()).first()
+                if not gr:
+                    return 'empty'
+                lessons = models.Lesson.query.order_by(models.Lesson.week,
+                models.Lesson.day_of_week,
+                models.Lesson.call_id).filter_by(group_id=gr.id)
+                
+                    
+            if teacher:
+                search = "%{}%".format(teacher)
+                t = models.Teacher.query.filter(models.Teacher.name.like(search)).first()
+                if not t:
+                    return 'empty'
+                lessons = models.Lesson.query.order_by(models.Lesson.week,
+                models.Lesson.day_of_week,
+                models.Lesson.call_id).filter_by(teacher_id=t.id)
+                
+
+            if room:
+                search = "%{}%".format(room)
+                r = models.Room.query.filter(models.Room.name.like(search)).first()
+                if not r:
+                    return 'empty'
+                lessons = models.Lesson.query.order_by(models.Lesson.week,
+                models.Lesson.day_of_week,
+                models.Lesson.call_id).filter_by(room_id=r.id)
+                
+        else:
+            lessons = models.Lesson.query.order_by(models.Lesson.week,
+                models.Lesson.day_of_week,
+                models.Lesson.call_id).all()
+            
         if not week and specific_week:
 
             if specific_week and int(specific_week)%2:
@@ -319,7 +353,14 @@ def get_sem_schedule_by_week(group, specific_week, week, teacher, room):
                 return 'empty'
 
             lessons = [lesson for lesson in lessons if lesson.group_id == group.id]
+        
+        if room:
+            search = "%{}%".format(room)
+            room = models.Room.query.filter(models.Room.name.like(search)).first()
+            if not room:
+                return 'empty'
 
+            lessons = [lesson for lesson in lessons if lesson.room_id == room.id]
 
         if teacher:
             print("hi")
@@ -331,7 +372,7 @@ def get_sem_schedule_by_week(group, specific_week, week, teacher, room):
 
             lessons = [lesson for lesson in lessons if lesson.teacher_id == teacher.id]
         less = []
-
+        
         for lesson in lessons:
             less = {
                 "call": {
@@ -436,8 +477,8 @@ def get_sem_schedule_by_week(group, specific_week, week, teacher, room):
                         "short_name": l_type.short_name
                     }
                 less["room"] = None
-                room = models.Room.query.filter_by(
-                    id=lesson.room_id).first()
+                # room = models.Room.query.filter_by(
+                #     id=lesson.room_id).first()
                 if room:
                     r_info = {
                         "id": room.id,
