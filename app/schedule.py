@@ -356,17 +356,15 @@ def get_sem_schedule_by_week(group, specific_week, week, teacher, room):
         
         if room:
             search = "%{}%".format(room)
-            room = models.Room.query.filter(models.Room.name.like(search)).first()
+            r = models.Room.query.filter(models.Room.name.like(search)).first()
             if not room:
                 return 'empty'
 
             lessons = [lesson for lesson in lessons if lesson.room_id == room.id]
 
         if teacher:
-            print("hi")
             search = "%{}%".format(teacher)
-            teacher = models.Teacher.query.filter(models.Teacher.name.like(search)).first()
-            print("hi2")
+            t = models.Teacher.query.filter(models.Teacher.name.like(search)).first()
             if not teacher:
                 return 'empty'
 
@@ -479,6 +477,8 @@ def get_sem_schedule_by_week(group, specific_week, week, teacher, room):
                 less["room"] = None
                 # room = models.Room.query.filter_by(
                 #     id=lesson.room_id).first()
+                room = models.Room.query.filter_by(
+                    id=lesson.room_id).first()
                 if room:
                     r_info = {
                         "id": room.id,
