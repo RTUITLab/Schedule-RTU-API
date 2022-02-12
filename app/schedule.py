@@ -78,21 +78,40 @@ def return_one_day(today, gr):
 
         lessons = models.Lesson.query.filter_by(
             group_id=group.id, day_of_week=day_of_week)
-
+        
         for lesson in lessons:
-            a = models.LessonOnWeek.query.filter_by(
-                week=week, lesson=lesson.id).first()
+            flag = True
+            a = models.LessonOnWeek.query.filter_by(lesson=lesson.id).first()
             if a:
+                a = models.LessonOnWeek.query.filter_by(
+                week=week, lesson=lesson.id).first()
+                if not a:
+                    flag = False
+            if flag:
                 res_lesson = {}
+                room = models.Room.query.get(lesson.room_id)
+                if room:
+                    res_lesson["classRoom"] = room.name
+                else:
+                    res_lesson["classRoom"] = ""
 
-                res_lesson["classRoom"] = models.Room.query.get(
-                    lesson.room_id).name
-                res_lesson["teacher"] = models.Teacher.query.get(
-                    lesson.teacher_id).name
+                t = models.Teacher.query.get(
+                        lesson.teacher_id)
+
+                if t:
+                    res_lesson["teacher"] = t.name
+                else:
+                    res_lesson["teacher"] = ""
+
                 res_lesson["name"] = models.Discipline.query.get(
                     lesson.discipline_id).name
-                res_lesson["type"] = models.LessonType.query.get(
-                    lesson.lesson_type_id).name
+                
+                typ = models.LessonType.query.get(
+                        lesson.lesson_type_id)
+                if typ:
+                    res_lesson["type"] = typ.name
+                else:
+                    res_lesson["type"] = ""
 
                 day[lesson.call_id-1]['lesson'] = res_lesson
 
