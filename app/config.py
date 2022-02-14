@@ -3,13 +3,13 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
     # database settings
-    database_url: str = "sqlite:///./sql_app.db"
+    database_url: str
 
     # main app settings
-    debug: bool = False
+    debug: bool 
 
     # proxy settings
-    root_path: str = '/api'
+    root_path: str = ''
 
     class Config:
         env_file = ".env"
