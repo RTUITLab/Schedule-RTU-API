@@ -1,11 +1,9 @@
 from urllib import request
 import requests
 import traceback
-import subprocess
 import os
 import os.path
 import datetime
-import re
 from bs4 import BeautifulSoup
 import ssl
 import certifi

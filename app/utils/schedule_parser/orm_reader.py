@@ -8,7 +8,6 @@ import datetime as dt
 from datetime import datetime
 
 from itertools import cycle
-from app import db
 from .get_or_create import get_or_create
 from . import models
 from .formatters import format_lesson_type, format_name, format_room_name, format_teacher_name
@@ -16,7 +15,7 @@ from .formatters import format_lesson_type, format_name, format_room_name, forma
 
 class Reader:
 
-    def __init__(self):
+    def __init__(self, db):
         self.week_count = 16
 
         offset = dt.timedelta(hours=3)
@@ -28,7 +27,7 @@ class Reader:
                 name="week_count").first().value)
 
         except Exception as err:
-            self.week_count = int(get_or_create(session=db.session, model=models.WorkingData,
+            self.week_count = int(get_or_create(session=db, model=models.WorkingData,
                                                 name="week_count", value="16")).value
 
             print("week_count ERROR! -> ", err)
@@ -155,7 +154,7 @@ class Reader:
                 try:
                     self.read(path_to_xlsx_file)
                     # TODO move truncate here
-                    db.session.commit()
+                    db.commit()
                 except Exception as err:
                     print(err, traceback.format_exc(), "in", file_name)
                     continue

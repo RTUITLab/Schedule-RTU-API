@@ -1,21 +1,6 @@
 from pydantic import BaseModel
 
 
-class MessageBase(BaseModel):
-    message: str
-
-
-class MessageCreate(MessageBase):
-    pass
-
-
-class MessageDB(MessageBase):
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
 class CallBase(BaseModel):
     call_num: int
     begin_time: str
@@ -139,7 +124,7 @@ class WorkingDataOut(WorkingDataBase):
 
 
 class LessonBase(BaseModel):
-    subgroup: int
+    subgroup: int | None = None
     day_of_week: int
     week: int
     is_usual_place: bool
@@ -154,7 +139,7 @@ class LessonOut(LessonBase):
     discipline: DisciplineOut
     room: RoomOut | None = None
     groups: list[GroupOut]
-    weeks: list[int]
+    specific_weeks: list[int]
 
     class Config:
         orm_mode = True
