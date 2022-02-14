@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 
 
 class CallBase(BaseModel):
@@ -105,7 +105,7 @@ class GroupBase(BaseModel):
 
 class GroupOut(GroupBase):
     id: int
-    degree: GroupBase
+    degree: DegreeOut
 
     class Config:
         orm_mode = True
@@ -130,6 +130,12 @@ class LessonBase(BaseModel):
     is_usual_place: bool
 
 
+class SpecificWeek(BaseModel):
+    week: int
+    lesson_id: int
+    class Config:
+        orm_mode = True
+
 class LessonOut(LessonBase):
     id: int
     call: CallOut
@@ -139,7 +145,11 @@ class LessonOut(LessonBase):
     discipline: DisciplineOut
     room: RoomOut | None = None
     groups: list[GroupOut]
-    specific_weeks: list[int]
+    specific_weeks: list[SpecificWeek]
+
+    @validator('specific_weeks')
+    def specific_weeks_to_id(cls, v):
+        return [x.week for x in v]
 
     class Config:
         orm_mode = True
