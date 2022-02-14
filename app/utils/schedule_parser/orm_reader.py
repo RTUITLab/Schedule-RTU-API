@@ -9,7 +9,7 @@ from datetime import datetime
 
 from itertools import cycle
 from .get_or_create import get_or_create
-from . import models
+from ...database import models
 from .formatters import format_lesson_type, format_name, format_room_name, format_teacher_name
 
 
@@ -17,17 +17,17 @@ class Reader:
 
     def __init__(self, db):
         self.week_count = 16
-
+        self.db = db
         offset = dt.timedelta(hours=3)
         time_zone = dt.timezone(offset, name='МСК')
         self.today = datetime.now(tz=time_zone)
 
         try:
-            self.week_count = int(models.WorkingData.query.filter_by(
+            self.week_count = int(self.db.query(models.WorkingData).filter_by(
                 name="week_count").first().value)
 
         except Exception as err:
-            self.week_count = int(get_or_create(session=db, model=models.WorkingData,
+            self.week_count = int(get_or_create(session=self.db, model=models.WorkingData,
                                                 name="week_count", value="16")).value
 
             print("week_count ERROR! -> ", err)
@@ -154,7 +154,7 @@ class Reader:
                 try:
                     self.read(path_to_xlsx_file)
                     # TODO move truncate here
-                    db.commit()
+                    self.db.commit()
                 except Exception as err:
                     print(err, traceback.format_exc(), "in", file_name)
                     continue
@@ -181,8 +181,8 @@ class Reader:
 
         def add_weeks(weeks, lesson):
             for week in weeks:
-                week_l = models.LessonOnWeek(week=week, lesson=lesson)
-                db.session.add(week_l)
+                week_l = models.SpecificWeek(week=week, lesson_id=lesson)
+                self.db.add(week_l)
 
         def get_group_degree(group):
             if group[2] == "Б":
@@ -228,29 +228,39 @@ class Reader:
             # print(discipline_name[0])
 
             discipline = get_or_create(
-                session=db.session, model=models.Discipline, name=discipline_name[0])
-            db.session.flush()
+                session=self.db, model=models.Discipline, name=discipline_name[0])
+            self.db.flush()
 
-            lesson = models.Lesson(call_id=call, period_id=period,
-                                   teacher_id=teacher, lesson_type_id=lesson_type,
-                                   subgroup=None, discipline_id=discipline.id,
-                                   room_id=room, group_id=group,
-                                   day_of_week=day_num, is_usual_place=is_usual_place, week=week)
-            db.session.add(lesson)
-            db.session.flush()
+            lesson = get_or_create(session=self.db,
+                                   model=models.Lesson,
+                                   call_id=call,
+                                   period_id=period,
+                                   teacher_id=teacher,
+                                   lesson_type_id=lesson_type,
+                                   subgroup=None,
+                                   discipline_id=discipline.id,
+                                   room_id=room,
+                                #    group_id=group.id,
+                                   day_of_week=day_num,
+                                   is_usual_place=is_usual_place,
+                                   week=week)
+            
+            self.db.add(lesson)
+            self.db.flush()
+            lesson.groups.append(group)
             add_weeks(weeks, lesson.id)
 
-        append_from_array(self.places, db.session, models.Place)
+        append_from_array(self.places, self.db, models.Place)
         append_from_array(self.lesson_types_for_creation,
-                          db.session, models.LessonType)
-        append_from_array(self.periods_for_creation, db.session, models.Period)
+                          self.db, models.LessonType)
+        append_from_array(self.periods_for_creation, self.db, models.Period)
 
         for el in self.calls:
             id, time, call_num = el
-            get_or_create(session=db.session, model=models.Call, id=id, call_num=call_num,
+            get_or_create(session=self.db, model=models.Call, id=id, call_num=call_num,
                           begin_time=time["begin_time"], end_time=time["end_time"])
 
-        append_from_dict(self.degrees, db.session, models.Degree)
+        append_from_dict(self.degrees, self.db, models.Degree)
 
         stack = ""
 
@@ -261,10 +271,10 @@ class Reader:
                 print("Add schedule for ", group_name)
                 group_name = group_name[0]
 
-                group = get_or_create(session=db.session,
-                                      model=models.Group, 
-                                      name=group_name, 
-                                      year=get_group_year(group_name), 
+                group = get_or_create(session=self.db,
+                                      model=models.Group,
+                                      name=group_name,
+                                      year=get_group_year(group_name),
                                       degree_id=get_group_degree(group_name))
 
             for n_day, day_item in sorted(value.items()):
@@ -294,13 +304,13 @@ class Reader:
 
                             if dist['teacher']:
                                 teacher = get_or_create(
-                                    session=db.session, model=models.Teacher, name=dist['teacher'][:99])
+                                    session=self.db, model=models.Teacher, name=dist['teacher'][:99])
                                 teacher = teacher.id
                             else:
                                 teacher = None
                             if dist['room']:
                                 room = get_or_create(
-                                    session=db.session, model=models.Room, name=dist['room'][0], place_id=dist['room'][1])
+                                    session=self.db, model=models.Room, name=dist['room'][0], place_id=dist['room'][1])
                                 if room.place_id == self.current_place or not room.place_id:
                                     is_usual_place = True
                                 else:
@@ -310,11 +320,11 @@ class Reader:
                             else:
                                 room = None
 
-                            db.session.flush()
+                            self.db.flush()
 
                             # print(is_usual_place, room, room.place_id, self.current_place)
 
-                            data_append_to_lesson(group.id, self.current_period, teacher,
+                            data_append_to_lesson(group, self.current_period, teacher,
                                                   day_num,
                                                   call_num,
                                                   week, lesson_type, room, is_usual_place, dist['name'])

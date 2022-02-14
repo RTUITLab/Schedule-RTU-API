@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, status
 
 from ..database import crud, schemas
 from ..dependencies import get_db
-from utils.schedule_parser.main import parse_schedule
+from ..utils.schedule_parser.main import parse_schedule
 
 
 router = APIRouter(

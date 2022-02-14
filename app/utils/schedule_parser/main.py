@@ -8,12 +8,13 @@ from .downloader import Downloader
 from sqlalchemy import MetaData
 from sqlalchemy import create_engine
 from os import environ 
+from ...dependencies import get_settings
 
 
 def parse_schedule(db):
     global Downloader
     try:
-        engine = create_engine(environ.get('CONNECTION_STRING'),
+        engine = create_engine(get_settings().database_url,
                             encoding='utf-8', echo=True)
         
         meta = MetaData()

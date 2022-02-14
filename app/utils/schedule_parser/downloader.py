@@ -64,7 +64,7 @@ class Downloader:
 
         count_file = 0
         # Сохранение файлов
-        print(self.base_file_dir)
+        # print(self.base_file_dir)
         if not os.path.exists(self.base_file_dir):
             os.makedirs(self.base_file_dir)
         else:
@@ -82,9 +82,9 @@ class Downloader:
             try:
                 if os.path.splitext(file_name)[1].replace('.', '') in self.file_type and "заоч" not in os.path.splitext(file_name)[0].replace('.', ''):
                     subdir = self.get_dir(file_name.upper())
-                    print(subdir)
+                    # print(subdir)
                     path_to_file = os.path.join(self.base_file_dir, subdir, file_name)
-                    print(path_to_file)
+                    # print(path_to_file)
 
                     if not os.path.isdir(os.path.join(self.base_file_dir, subdir)):
                         os.makedirs(os.path.join(self.base_file_dir, subdir), exist_ok=False)
