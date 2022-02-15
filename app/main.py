@@ -1,18 +1,23 @@
 import importlib
 
 from importlib import resources
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request, Response, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
 from migrate import automigrate
 
 from app.database.database import SessionLocal
-from app.dependencies import get_settings
+from app.dependencies import get_settings, get_db
 
 
 settings = get_settings()
 
-app = FastAPI(root_path=settings.root_path)
+app = FastAPI(
+    title="Schedule-RTU API",
+    version="5.0.0",
+    dependencies=[Depends(get_db)],
+    redoc_url=None,
+    root_path=settings.root_path)
 
 # include all routers
 plugins = [f[:-3] for f in resources.contents("app.routers")
