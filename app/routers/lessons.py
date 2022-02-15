@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status, Query
 from typing import List
 
 from ..database import crud, schemas
@@ -10,11 +10,23 @@ router = APIRouter(
     tags=["Lessons"]
 )
 
+class CustomQueryParams:
+    def __init__(
+        self,
+        foo: str = Query(..., description="Cool Description for foo"),
+        bar: str = Query(..., description="Cool Description for bar"),
+    ):
+        self.foo = foo
+        self.bar = bar
+
 
 @router.get('/', summary="Read list of lessons",
             response_model=List[schemas.LessonOut], 
-            status_code=status.HTTP_200_OK)
-async def read_lessons(db=Depends(get_db)):
+            status_code=status.HTTP_200_OK
+            )
+async def read_lessons(db=Depends(get_db),
+                model: schemas.GroupQuery = Depends()):
+    print(model.group)
     return crud.get_lessons(db=db)
 
 

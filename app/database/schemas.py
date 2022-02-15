@@ -1,4 +1,5 @@
-from pydantic import BaseModel, validator
+from email.headerregistry import Group
+from pydantic import BaseModel, validator, Field
 
 
 class CallBase(BaseModel):
@@ -153,3 +154,19 @@ class LessonOut(LessonBase):
 
     class Config:
         orm_mode = True
+
+class GroupQuery(BaseModel):
+    group_name: str | None = Field(None, description="descr text") 
+    teacher_name: str | None = None
+    room_name: str | None = None
+    discipline_name: str | None = None
+
+    specific_week: int | None = None
+    week: int | None = None
+    day_of_week: int | None = None
+
+    period_id: int | None = None
+    lesson_type_id: int | None = None
+    call_id: int | None = None
+
+    is_usual_place: bool | None = None
