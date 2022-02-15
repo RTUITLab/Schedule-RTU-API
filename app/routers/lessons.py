@@ -60,12 +60,18 @@ class CommonQueryParams:
 async def read_lessons(db=Depends(get_db),
                        commons: CommonQueryParams = Depends(CommonQueryParams)):
 
-    filters = {}
-    if commons.group_name:
-        # filters[] = 
-        pass
-
-    return crud.get_lessons()
+    return crud.get_lessons(db=db,
+                            group_name=commons.group_name,
+                            teacher_name=commons.teacher_name,
+                            room_name=commons.room_name,
+                            discipline_name=commons.discipline_name,
+                            specific_week=commons.specific_week,
+                            week=commons.week,
+                            day_of_week=commons.day_of_week,
+                            period_id=commons.period_id,
+                            lesson_type_id=commons.lesson_type_id,
+                            call_id=commons.call_id,
+                            is_usual_place=commons.is_usual_place)
 
 
 # @router.post('/', status_code=201, summary="Create new message")

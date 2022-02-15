@@ -82,7 +82,7 @@ class RoomBase(BaseModel):
 class RoomOut(RoomBase):
     id: int
     name: str
-    place: PlaceOut
+    place: PlaceOut | None = None
 
     class Config:
         orm_mode = True
