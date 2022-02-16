@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, status, Query
+from fastapi import APIRouter, Depends, status, Query, HTTPException
 from typing import List
 
 from ..database import crud, schemas
-from ..dependencies import get_db
+from ..dependencies import get_db 
 
 
 router = APIRouter(
@@ -59,10 +59,26 @@ class CommonQueryParams:
             )
 async def read_lessons(db=Depends(get_db),
                        commons: CommonQueryParams = Depends(CommonQueryParams)):
+    group = None
+    teacher_id = None
+    room_id = None
+    discipline_id = None
+    if commons.group_name:
+        query = crud.get_groups(db=db, name=commons.group_name)
+        if not query:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group not found")
+        else:
+            group = query[0]
+    if commons.teacher_name:
+        query = crud.get_teachers(db=db, name=commons.teacher_name)
+        if not query:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Group not found")
+        else:
+            teacher_id = query[0].id
 
     return crud.get_lessons(db=db,
-                            group_name=commons.group_name,
-                            teacher_name=commons.teacher_name,
+                            group=group,
+                            teacher_id=teacher_id,
                             room_name=commons.room_name,
                             discipline_name=commons.discipline_name,
                             specific_week=commons.specific_week,
