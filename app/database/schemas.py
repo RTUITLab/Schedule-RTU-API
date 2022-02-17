@@ -132,7 +132,7 @@ class LessonBase(BaseModel):
 
 
 class SpecificWeek(BaseModel):
-    week: int
+    secific_week: int
     lesson_id: int
     class Config:
         orm_mode = True
@@ -147,10 +147,11 @@ class LessonOut(LessonBase):
     room: RoomOut | None = None
     groups: list[GroupOut]
     specific_weeks: list[SpecificWeek]
+    every_week: bool
 
     @validator('specific_weeks')
     def specific_weeks_to_id(cls, v):
-        return [x.week for x in v]
+        return [x.secific_week for x in v]
 
     class Config:
         orm_mode = True

@@ -56,8 +56,8 @@ class LessonType(DataBase):
 
 
 class SpecificWeek(DataBase):
-    __tablename__ = "lesson_on_week"
-    week = Column(Integer, primary_key=True, autoincrement=False)
+    __tablename__ = "specific_week"
+    secific_week = Column(Integer, primary_key=True, autoincrement=False)
     lesson_id = Column(Integer, ForeignKey('lesson.id'), primary_key=True)
     lesson = relationship('Lesson', back_populates='specific_weeks')
 
@@ -168,6 +168,7 @@ class Lesson(DataBase):
                     secondary=lesson_group,
                     back_populates="lessons")
     specific_weeks = relationship("SpecificWeek", back_populates="lesson")
+    every_week = Column(Boolean, default=True)
 
     def __repr__(self):
         return '<Lesson %r>' % self.id

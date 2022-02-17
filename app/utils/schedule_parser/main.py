@@ -20,7 +20,7 @@ def parse_schedule(db):
         meta = MetaData()
 
         connection = engine.connect()
-        connection.execute( '''TRUNCATE TABLE lesson_on_week CASCADE''' )
+        connection.execute( '''TRUNCATE TABLE specific_week CASCADE''' )
         connection.execute( '''TRUNCATE TABLE lesson CASCADE''' )
         connection.execute( '''TRUNCATE TABLE discipline CASCADE''' )
         connection.execute( '''TRUNCATE TABLE "group" CASCADE''' )

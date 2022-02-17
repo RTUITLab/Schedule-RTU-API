@@ -181,7 +181,8 @@ class Reader:
 
         def add_weeks(weeks, lesson):
             for week in weeks:
-                week_l = models.SpecificWeek(week=week, lesson_id=lesson)
+                week_l = models.SpecificWeek(
+                    secific_week=week, lesson_id=lesson)
                 self.db.add(week_l)
 
         def get_group_degree(group):
@@ -230,21 +231,37 @@ class Reader:
             discipline = get_or_create(
                 session=self.db, model=models.Discipline, name=discipline_name[0])
             self.db.flush()
+            if not weeks:
+                lesson = get_or_create(session=self.db,
+                                       model=models.Lesson,
+                                       call_id=call,
+                                       period_id=period,
+                                       teacher_id=teacher,
+                                       lesson_type_id=lesson_type,
+                                       subgroup=None,
+                                       discipline_id=discipline.id,
+                                       room_id=room,
+                                       #    group_id=group.id,
+                                       day_of_week=day_num,
+                                       is_usual_place=is_usual_place,
+                                       every_week=True,
+                                       week=week)
+            else:
+                lesson = get_or_create(session=self.db,
+                                       model=models.Lesson,
+                                       call_id=call,
+                                       period_id=period,
+                                       teacher_id=teacher,
+                                       lesson_type_id=lesson_type,
+                                       subgroup=None,
+                                       discipline_id=discipline.id,
+                                       room_id=room,
+                                       #    group_id=group.id,
+                                       day_of_week=day_num,
+                                       is_usual_place=is_usual_place,
+                                       every_week=False,
+                                       week=week)
 
-            lesson = get_or_create(session=self.db,
-                                   model=models.Lesson,
-                                   call_id=call,
-                                   period_id=period,
-                                   teacher_id=teacher,
-                                   lesson_type_id=lesson_type,
-                                   subgroup=None,
-                                   discipline_id=discipline.id,
-                                   room_id=room,
-                                #    group_id=group.id,
-                                   day_of_week=day_num,
-                                   is_usual_place=is_usual_place,
-                                   week=week)
-            
             self.db.add(lesson)
             self.db.flush()
             lesson.groups.append(group)

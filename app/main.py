@@ -23,8 +23,9 @@ app = FastAPI(
 plugins = [f[:-3] for f in resources.contents("app.routers")
            if f.endswith(".py") and f[0] != "_"]
 for plugin in plugins:
-    router = importlib.import_module(f"app.routers.{plugin}")
-    app.include_router(router.router)
+    if not "query" in plugin:
+        router = importlib.import_module(f"app.routers.{plugin}")
+        app.include_router(router.router)
 
 # setup middleware
 if settings.debug:
@@ -48,6 +49,6 @@ async def db_session_middleware(request: Request, call_next):
     return response
 
 
-@app.on_event("startup")
-async def startup_event():
-    automigrate()
+# @app.on_event("startup")
+# async def startup_event():
+#     automigrate()

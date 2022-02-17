@@ -5,7 +5,7 @@ from sqlalchemy import null
 
 def format_teacher_name(cell):
     # TODO add re.sub here
-    cell = str(cell)
+    cell = str(cell).title()
     cell = re.sub(r'( ){3,}', '  ', cell)
     cell.strip()
     if not len(cell):
@@ -49,7 +49,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
                     and not re.match(r'^ИВЦ-\d{3}$', room_name)
                     and not re.match(r'^\w{1}-\d{1}$', room_name)
                     and not re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name))
-                    
+
         if re.match(r'^\D\d', room_name) and not re.match(r"^\w-\d", room_name):
             room_name = re.sub(r'^(\w)', r'\g<1>-', room_name)
         # if re.match(r'^А', room_name) and not "А-" in room_name:
@@ -167,7 +167,7 @@ def format_name(temp_name, week, week_count):
     """
     temp_name = re.sub(r'(\. \. )+|(\.\.\.)+|…+', '', temp_name)
     temp_name = re.sub(r'( ){3,}', '  ', temp_name)
-    temp_name = temp_name.strip()
+    temp_name = temp_name.strip().capitalize()
     # print(temp_name, "temp_name")
     if len(temp_name) < 3:
         return ""
@@ -199,11 +199,12 @@ def format_name(temp_name, week, week_count):
         clean_discipline_name = re.sub(r"\d+н|(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|,| н |н\.| кр |кр\.|^кр |^н |(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|(?<!\w)нед\.*(?!\w)|(?<=\d)нед\.*(?!\w)",
                                        "", discipl).strip()
         if len(clean_discipline_name) < 3:
-            print("Something wrong with", temp_name, "! discipl ->", discipl, "|clean_discipline_name->", clean_discipline_name)
+            print("Something wrong with", temp_name, "! discipl ->",
+                  discipl, "|clean_discipline_name->", clean_discipline_name)
             return ""
         if clean_discipline_name[0] == "н":
-            clean_discipline_name=clean_discipline_name[1:]
-        
+            clean_discipline_name = clean_discipline_name[1:]
+
         weeks = re.findall(
             r"(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", discipl)
         weeks = [i.strip() for i in weeks]
@@ -219,7 +220,7 @@ def format_name(temp_name, week, week_count):
                         weeks.pop(indx)
                         end = int(weeks.pop(indx))
                         start = int(weeks.pop(indx - 1))
-                        
+
                         # print("start", start, "  end", end)
                         if start % 2 == 1 and week == 2 or start % 2 == 0 and week == 1:
                             start += 1
@@ -249,7 +250,6 @@ def format_name(temp_name, week, week_count):
             # print(week)
         result[name_num] = [clean_discipline_name, result_weeks]
         # print(discipl, "| result[name_num] -> ", result[name_num])
-
 
     # if "кр." in discipline_name:
     #     exc = discipline_name.split("н.")[0]
