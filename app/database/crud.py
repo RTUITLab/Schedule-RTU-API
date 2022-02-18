@@ -1,5 +1,6 @@
+from tkinter import N
 from sqlalchemy.orm import Session
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
 
 from . import models, schemas
 
@@ -10,22 +11,40 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
         for k, v in kwargs.items()
         if v
     }
-    print(kwargs)
+    specific_week = None
+    group = None
     if "specific_week" in kwargs:
         specific_week = kwargs.pop("specific_week")
-        if specific_week%2:
+        if specific_week % 2:
             week = 1
         else:
             week = 2
-        query = db.query(models.Lesson)\
-            .filter_by(**kwargs).join(models.SpecificWeek, or_(models.Lesson.every_week, models.SpecificWeek.secific_week==specific_week))\
-            .filter(models.Lesson.week==week)\
-            .offset(skip).limit(limit).all()
-        print(query)
+        if not "week" in kwargs:
+            kwargs["week"] = week
+    if "group" in kwargs:
+        group = kwargs.pop("group")
 
-    else:
-        query = db.query(models.Lesson).filter_by(
-            **kwargs).offset(skip).limit(limit).all()
+    print(kwargs)
+    query = db.query(models.Lesson).filter_by(
+        **kwargs)
+
+    if group:
+        query = query.join(models.Lesson.groups.and_(
+            models.Group.id == group.id))
+
+    # if specific_week:
+
+    #     query = query.join(models.SpecificWeek, or_(models.Lesson.every_week, (models.SpecificWeek.secific_week == specific_week) & (
+    #         models.SpecificWeek.lesson_id == models.Lesson.id)))
+    print(query)
+    query = query.offset(skip).limit(limit).all()
+    
+    if specific_week:
+        res = []
+        for less in query:
+            if specific_week in less.specific_weeks or less.every_week:
+                res.append(less)
+        query = res
 
     return query
 
