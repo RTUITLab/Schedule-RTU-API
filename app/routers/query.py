@@ -28,7 +28,12 @@ class LessonQueryParams:
             None, description="id звонков (номеров пар), не изменяется, id интересующего звонка можно посмотреть в '/call/'"),
 
         is_usual_place: bool = Query(
-            None, description="Cool Description for bar"),
+            None, description="Пара проводиться в кампусе, который является основным местом проведения занятий для этой группы"),
+
+        skip: int = Query(
+            None, description="Сколько объектов необходимо пропустить для ответа. Параметр для выгрузки расписания по частям."),
+        limit: int = Query(
+            None, description="Максимальное количество объектов в ответе. Не больше 1000. Не рекомендуется использовать значения больше 200 при работе c openapi. Параметр для выгрузки расписания по частям."),
     ):
         self.group_name = group_name
         self.teacher_name = teacher_name
@@ -41,3 +46,5 @@ class LessonQueryParams:
         self.lesson_type_id = lesson_type_id
         self.call_id = call_id
         self.is_usual_place = is_usual_place
+        self.skip = skip
+        self.limit = limit

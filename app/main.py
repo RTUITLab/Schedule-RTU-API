@@ -42,19 +42,16 @@ if settings.debug:
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
     response = Response("Internal server error", status_code=500)
+    start_time = time.time()
     try:
         request.state.db = SessionLocal()
         response = await call_next(request)
     finally:
         request.state.db.close()
+    process_time = time.time() - start_time
+    response.headers["X-Process-Time"] = str(process_time)
     return response
 
-@app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    print("Time took to process the request and return response is {} sec".format(time.time() - start_time))
-    return response
 
 # @app.on_event("startup")
 # async def startup_event():

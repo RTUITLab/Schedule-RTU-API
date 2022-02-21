@@ -24,7 +24,6 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
     if "group" in kwargs:
         group = kwargs.pop("group")
 
-    print(kwargs)
     query = db.query(models.Lesson).filter_by(
         **kwargs)
 
@@ -36,7 +35,7 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
 
     #     query = query.join(models.SpecificWeek, or_(models.Lesson.every_week, (models.SpecificWeek.secific_week == specific_week) & (
     #         models.SpecificWeek.lesson_id == models.Lesson.id)))
-    print(query)
+
     query = query.offset(skip).limit(limit).all()
     
     if specific_week:
