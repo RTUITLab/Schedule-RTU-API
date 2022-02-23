@@ -30,6 +30,37 @@ def format_lesson_type(cell):
     return result
 
 
+def room_fixer(room_name):
+    if re.match(r'[А-Я]\d', room_name) and not re.match(r"[А-Я]-\d", room_name):
+        room_name = re.sub(r'(\w)', r'\g<1>-', room_name)
+        # if re.match(r'^А', room_name) and not "А-" in room_name:
+        #     room_name = re.sub(r'А', 'А-', room_name)
+        # if re.match(r'^Г', room_name) and not "Г-" in room_name:
+        #     room_name = re.sub(r'Г', 'Г-', room_name)
+    if re.match(r'[А-Я]{1}-\d{3}\w{1}', room_name):
+        # print('convert', room_name, 'to', re.sub(
+        #     r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name))
+        room_name = re.sub(
+            r'([А-Я]{1}-\d{3})(\w{1})', r'\g<1>-\g<2>', room_name)
+
+    if re.match(r'[А-Я]{1}-\d{3}\.\w{1}', room_name):
+        # print('convert', room_name, 'to',
+        #       re.sub(r'\.', '-', room_name))
+        room_name = re.sub(r'\.', '-', room_name)
+
+    if re.match(r'[А-Я]{1}-\d{3}\(\w{1}\)', room_name):
+        # print('convert', room_name, 'to', re.sub(
+        #     r'\((\w{1})\)', '-\g<1>', room_name))
+        room_name = re.sub(r'\((\w{1})\)', '-\g<1>', room_name)
+
+    if re.match(r'ИВЦ-\d{3}\.\w{1}', room_name):
+        # print('convert', room_name, 'to',
+        #       re.sub(r'\.', '-', room_name))
+        room_name = re.sub(r'\.', '-', room_name)
+
+    return room_name
+
+
 def format_room_name(cell, correct_max_len, notes_dict, current_place):
     def check_room_for_78(room_name):
         return (re.match(r'^\w{1}-\d{1,3}$', room_name)
@@ -42,46 +73,19 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
                 or re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name)
                 or re.match(r'^ИВЦ-\d{3}.\w{1}$', room_name))
 
-    def format_78(room_name):
-        def check_re(room_name):
-            return (not re.match(r'^\w{1}-\d{1,3}$', room_name)
-                    and not re.match(r'^\w{1}-\d{3}-\w{1}$', room_name)
-                    and not re.match(r'^ИВЦ-\d{3}$', room_name)
-                    and not re.match(r'^\w{1}-\d{1}$', room_name)
-                    and not re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name))
+    # def format_78(room_name):
+    #     def check_re(room_name):
+    #         return (not re.match(r'^\w{1}-\d{1,3}$', room_name)
+    #                 and not re.match(r'^\w{1}-\d{3}-\w{1}$', room_name)
+    #                 and not re.match(r'^ИВЦ-\d{3}$', room_name)
+    #                 and not re.match(r'^\w{1}-\d{1}$', room_name)
+    #                 and not re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name))
 
-        if re.match(r'^\D\d', room_name) and not re.match(r"^\w-\d", room_name):
-            room_name = re.sub(r'^(\w)', r'\g<1>-', room_name)
-        # if re.match(r'^А', room_name) and not "А-" in room_name:
-        #     room_name = re.sub(r'А', 'А-', room_name)
-        # if re.match(r'^Г', room_name) and not "Г-" in room_name:
-        #     room_name = re.sub(r'Г', 'Г-', room_name)
+    #     room_fixer(room_name)
+    #     # if check_re(room_name):
+    #     #     print('not match', room_name)
 
-        if re.match(r'^\w{1}-\d{3}\w{1}$', room_name):
-            # print('convert', room_name, 'to', re.sub(
-            #     r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name))
-            room_name = re.sub(
-                r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name)
-
-        if re.match(r'^\w{1}-\d{3}\.\w{1}$', room_name):
-            # print('convert', room_name, 'to',
-            #       re.sub(r'\.', '-', room_name))
-            room_name = re.sub(r'\.', '-', room_name)
-
-        if re.match(r'^\w{1}-\d{3}\(\w{1}\)$', room_name):
-            # print('convert', room_name, 'to', re.sub(
-            #     r'\((\w{1})\)', '-\g<1>', room_name))
-            room_name = re.sub(r'\((\w{1})\)', '-\g<1>', room_name)
-
-        if re.match(r'^ИВЦ-\d{3}\.\w{1}$', room_name):
-            # print('convert', room_name, 'to',
-            #       re.sub(r'\.', '-', room_name))
-            room_name = re.sub(r'\.', '-', room_name)
-
-        # if check_re(room_name):
-        #     print('not match', room_name)
-
-        return room_name
+    #     return room_name
 
     if isinstance(cell, float):
         cell = int(cell)
@@ -145,7 +149,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
             if (notes_dict[res] == 1):
                 if re.match(r'^\d{2,}', room):
                     all_rooms.append([room.strip(), notes_dict[res]])
-                room = format_78(room)
+                room = room_fixer(room)
 
             all_rooms.append([room.strip(), notes_dict[res]])
         else:
@@ -153,9 +157,9 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
                 all_rooms.append([room, None])
             elif current_place == 3 and check_room_for_78(room) or current_place == 3 and room[0] == "Е":
                 # print("78 in strom!", room)
-                all_rooms.append([format_78(room), 1])
+                all_rooms.append([room_fixer(room), 1])
             elif current_place == 1:
-                all_rooms.append([format_78(room), 1])
+                all_rooms.append([room_fixer(room), 1])
             else:
                 all_rooms.append([room, current_place])
     # print(all_rooms, "<- all_rooms")
@@ -250,47 +254,5 @@ def format_name(temp_name, week, week_count):
             # print(week)
         result[name_num] = [clean_discipline_name, result_weeks]
         # print(discipl, "| result[name_num] -> ", result[name_num])
-
-    # if "кр." in discipline_name:
-    #     exc = discipline_name.split("н.")[0]
-    #     less = discipline_name.split("н.")[1].strip()
-    #     regex_num = re.compile(r'\d+')
-    #     weeks = [int(item) for item in regex_num.findall(exc)]
-
-    #     # usless
-    #     # if "-" in exc:
-    #     #     weeks = range(2, 16, 2)
-    #     #     .extend(L)
-    #     #     weeks = range(2, 16, 2)
-    #     # else:
-    #     #     pass
-
-    # elif " н." in discipline_name or " н " in discipline_name or ("н." in discipline_name and "Ин." not in discipline_name):
-    #     if " н." in discipline_name:
-    #         exc = discipline_name.split(" н.")[0]
-    #         less = discipline_name.split(" н.")[1].strip()
-    #     elif "н." in discipline_name:
-    #         exc = discipline_name.split("н.")[0]
-    #         less = discipline_name.split("н.")[1].strip()
-    #     elif " н " in discipline_name:
-    #         exc = discipline_name.split(" н ")[0]
-    #         less = discipline_name.split(" н ")[1].strip()
-    #     regex_num = re.compile(r'\d+')
-    #     weeks = [int(item) for item in regex_num.findall(exc)]
-
-        # if "-" in exc:
-
-        #     weeks = list(range(weeks[0], weeks[1], 17))
-        #     pass
-
-    # else:
-    #     less = discipline_name
-    #     if int(week) % 2 == 1:
-    #         weeks = list(range(1, 17, 2))
-
-    #     else:
-    #         weeks = list(range(2, 17, 2))
-    # print(temp_name, "<- temp_name")
-    # print(result)
 
     return result

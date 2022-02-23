@@ -21,7 +21,9 @@ async def read_lessons(db=Depends(get_db),
     teacher_id = None
     room_id = None
     discipline_id = None
-
+    if not (queries.limit or queries.group_name or queries.teacher_name or queries.room_name or queries.discipline_name or queries.limit > 1000):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="You should set limit/group/teacher/room/discipline. There are over 24,000 lesson records in the database.")
     if queries.group_name:
         query = crud.get_groups(db=db, name=queries.group_name)
         if not query:
@@ -53,9 +55,7 @@ async def read_lessons(db=Depends(get_db),
                 status_code=status.HTTP_404_NOT_FOUND, detail="Discipline not found")
         else:
             discipline_id = query[0].id
-    if not (queries.limit or group or teacher_id or room_id or discipline_id):
-        raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="You should set limit/group/teacher/room/discipline. There are over 24,000 lesson records in the database.")
+
     return crud.get_lessons(db=db,
                             limit=queries.limit,
                             skip=queries.skip,

@@ -35,7 +35,7 @@ def parse_schedule(db):
         print("truncate")
 
         Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
-        Download.download()
+        # Download.download()
 
         print("downloaded")
         try:
