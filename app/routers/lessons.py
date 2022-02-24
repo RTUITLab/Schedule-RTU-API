@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Header
 from typing import List
 
+from app.utils.gen_rooms import gen_rooms
+
 from ..database import crud, schemas
 from ..dependencies import get_db
 from .query import LessonQueryParams
@@ -81,3 +83,7 @@ async def read_lessons(db=Depends(get_db),
 # @router.delete('/{id}/', status_code=204, summary="Delete message by id")
 # async def delete_message_by_id(id: int, db=Depends(get_db)):
 #     return crud.delete_message_by_id(db=db, id=id)
+@router.get("/gen")
+async def root(db=Depends(get_db)):
+    gen_rooms(db=db)
+    return {"message": "Hello World"}

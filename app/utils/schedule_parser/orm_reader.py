@@ -57,6 +57,7 @@ class Reader:
             [5, "экз", "Экзамен"],
             [6, "кр", "Курсовая работа"],
             [7, "зд", "Дифференцированный зачет"],
+            [8, "срс", "Самостоятельная работа студента"],
             # [4],
             # ["зач": 5],
             # ["экз": 6],
@@ -112,6 +113,7 @@ class Reader:
             "пр": 2,
             "лр": 3,
             "лаб": 3,
+            "срс": 8,
             "": None,
         }
 
@@ -159,11 +161,6 @@ class Reader:
                     print(err, traceback.format_exc(), "in", file_name)
                     continue
 
-    def get_lesson_num_from_time(self, time_str):
-        if time_str in self.time_dict:
-            return self.time_dict[time_str]
-        else:
-            return 0
 
     def write_to_db(self, timetable):
 
@@ -300,6 +297,7 @@ class Reader:
                     for n_week, item in sorted(lesson_item.items()):
                         day_num = n_day.split("_")[1]
                         call_num = n_lesson.split("_")[1]
+                        
                         week = n_week.split("_")[1]
                         for dist in item:
 
@@ -316,6 +314,8 @@ class Reader:
                                     lesson_type = self.lesson_types["лр"]
                                 elif "лек" in dist['type'].lower():
                                     lesson_type = self.lesson_types["лк"]
+                                elif "срс" in dist['type'].lower():
+                                    lesson_type = self.lesson_types["срс"]
 
                             is_usual_place = True
 
@@ -365,9 +365,10 @@ class Reader:
             for lesson_range in cell_range[day_num]:
                 lesson_num = lesson_range[0]
                 time = lesson_range[1]
+                
                 if "18:30" in time:
                     lesson_num = 8
-                if "19:40" in time:
+                if "20:10" in time:
                     lesson_num = 9
                 week_num = lesson_range[2]
                 string_index = lesson_range[3]
@@ -379,7 +380,8 @@ class Reader:
                 # Получение данных об одной паре
                 tmp_name = str(sheet.cell(
                     string_index, discipline_col_num).value)
-
+                if lesson_num ==  9:
+                    print(time, group_name, tmp_name, day_num)
                 tmp_name = format_name(tmp_name, week_num, self.week_count)
 
                 if isinstance(tmp_name, list) and tmp_name:

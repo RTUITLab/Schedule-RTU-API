@@ -31,29 +31,59 @@ def format_lesson_type(cell):
 
 
 def room_fixer(room_name):
-    if re.match(r'[А-Я]\d', room_name) and not re.match(r"[А-Я]-\d", room_name):
-        room_name = re.sub(r'(\w)', r'\g<1>-', room_name)
-        # if re.match(r'^А', room_name) and not "А-" in room_name:
-        #     room_name = re.sub(r'А', 'А-', room_name)
-        # if re.match(r'^Г', room_name) and not "Г-" in room_name:
-        #     room_name = re.sub(r'Г', 'Г-', room_name)
-    if re.match(r'[А-Я]{1}-\d{3}\w{1}', room_name):
+    if "КАФ." in room_name:
+        room_name = re.sub(
+            r'КАФ.', r'КАФ', room_name)
+    if "НА" in room_name:
+        room_name = re.sub(
+            r'НА', r'', room_name).strip()
+
+    if "КАФЕДРА" in room_name:
+        room_name = re.sub(
+            r'КАФЕДРА', r'КАФ', room_name)
+    
+    # and not re.match(r"[А-Я]-\d", room_name)
+
+    if re.search(r'[А-Я]\d{1,3}', room_name):
+        room_name = re.sub(r'([А-Я])(\d)', r'\g<1>-\g<2>', room_name)
+    
+    # if re.search(r'\d [А-Я],', room_name):
+    #     room_name = re.sub(r'(\d) ([А-Я],)', r'\g<1>-\g<2>', room_name)
+    
+    if re.search(r'КБ-1', room_name) and not re.match(r"КБ-1 *№", room_name):
+        room_name = re.sub(r'(КБ-1)', r'\g<1> №', room_name)
+
+    if re.search(r'КБ-1', room_name) and not re.match(r"КБ-1 № +\d", room_name):
+        room_name = re.sub(r'(КБ-1 №) +(\d)', r'\g<1>\g<2>', room_name)
+
+    # if re.match(r'\d{3}', room_name):
+    #     print(room_name) 
+
+    # if re.match(r'\d{3}-[А-Я]{1}', room_name):
+    #     print(room_name, re.sub(r'(\d{3})-([А-Я]{1})', r'\g<1>\g<2>', room_name))
+    #     room_name = re.sub(r'(\d{3})-([А-Я]{1})', r'\g<1>\g<2>', room_name)
+    if re.search(r'[А-Я]{1}-\d{1,3}[А-Я]{1}', room_name):
+        room_name = re.sub(
+            r'([А-Я]{1}-\d{1,3})([А-Я]{1})', r'\g<1>-\g<2>', room_name)
+
+    if re.search(r'[А-Я]{1}-\d{3}\w{1}', room_name):
         # print('convert', room_name, 'to', re.sub(
         #     r'(^\w{1}-\d{3})(\w{1})$', r'\g<1>-\g<2>', room_name))
         room_name = re.sub(
             r'([А-Я]{1}-\d{3})(\w{1})', r'\g<1>-\g<2>', room_name)
 
-    if re.match(r'[А-Я]{1}-\d{3}\.\w{1}', room_name):
+    if re.search(r'[А-Я]{1}-\d{3}\.\w{1}', room_name):
         # print('convert', room_name, 'to',
         #       re.sub(r'\.', '-', room_name))
         room_name = re.sub(r'\.', '-', room_name)
+    
 
-    if re.match(r'[А-Я]{1}-\d{3}\(\w{1}\)', room_name):
+    if re.search(r'[А-Я]{1}-\d{3}\(\w{1}\)', room_name):
         # print('convert', room_name, 'to', re.sub(
         #     r'\((\w{1})\)', '-\g<1>', room_name))
         room_name = re.sub(r'\((\w{1})\)', '-\g<1>', room_name)
 
-    if re.match(r'ИВЦ-\d{3}\.\w{1}', room_name):
+    if re.search(r'ИВЦ-\d{3}\.\w{1}', room_name):
         # print('convert', room_name, 'to',
         #       re.sub(r'\.', '-', room_name))
         room_name = re.sub(r'\.', '-', room_name)
@@ -73,47 +103,39 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
                 or re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name)
                 or re.match(r'^ИВЦ-\d{3}.\w{1}$', room_name))
 
-    # def format_78(room_name):
-    #     def check_re(room_name):
-    #         return (not re.match(r'^\w{1}-\d{1,3}$', room_name)
-    #                 and not re.match(r'^\w{1}-\d{3}-\w{1}$', room_name)
-    #                 and not re.match(r'^ИВЦ-\d{3}$', room_name)
-    #                 and not re.match(r'^\w{1}-\d{1}$', room_name)
-    #                 and not re.match(r'^ИВЦ-\d{3}-\w{1}$', room_name))
-
-    #     room_fixer(room_name)
-    #     # if check_re(room_name):
-    #     #     print('not match', room_name)
-
-    #     return room_name
-
     if isinstance(cell, float):
         cell = int(cell)
     string = str(cell)
 
     string = re.sub(r'( ){3,}', '  ', string)
 
-    string = string.replace('*', '').upper().strip()
+    string = string.replace('*', ' ').upper().strip()
+    string = string.replace('\n', ' ')
+    string = string.replace('ЛАБ', '')
+    string = string.replace('ПР', '')
+    if current_place == 2 and "ЕСЬ" in string:
+        return [None]
     if not len(string):
         return [None]
-    for pattern in notes_dict:
-        regex_result = re.findall(pattern, string, flags=re.A)
-        for reg in regex_result:
-            pattern = re.compile(r"%s *\n" % reg)
-            # print(pattern.findall(string), "<- Found in ", string,)
-            string = pattern.sub(reg, string)
-    if current_place == 2:
-        rooms = re.split(
-            r'(?<!КБ-1)(?<!КБ)(?<!КАФ)(?<!КАФ.)\n|\\\\|\\|\/|\t|\s{3,}|,', string)
-        if len(rooms) < correct_max_len:
-            rooms = re.split(
-                r'(?<!КБ-1)(?<!КБ)(?<!КАФ)(?<!КАФ.)\s|\\\\|\\|\/|,', string)
+
+    # # Убирает лишние символы между корпусом и аудиторией
+    # for pattern in notes_dict:
+    #     regex_result = re.findall(pattern, string, flags=re.A)
+    #     for reg in regex_result:
+    #         pattern = re.compile(r"%s *\n" % reg)
+    #         string = pattern.sub(reg, string)
+    
+    if current_place == 2 and ":" in string:
+        rooms = [string.split(":")[0]]
     else:
-        rooms = re.split(
-            r'(?<!КБ-1)(?<!КБ)(?<!КАФ)\n|\\\\|\\|\/|\t|\s{3,}|,', string)
-        if len(rooms) < correct_max_len:
-            rooms = re.split(
-                r'(?<!КБ-1)(?<!КБ)(?<!КАФ)\s|\\\\|\\|\/|,', string)
+        string = room_fixer(string)
+        rooms = re.findall(
+            r'(МП-1)*(В78)*(С-20)*(СГ-22)*(СГ)*(В-86)*(В-78)* *(КАФ +[А-Я]+|КБ-1 *№\d*/\d*|КБ-1 *№\d*|ИВЦ-\d{3}-\w{1}|ИВЦ-\d{3}|[А-Я]{1}-\d{3}-\w{1}|\d{3}-[А-Я]{1}|[А-Я]{1}-\d{2,3}|\d{3}-[А-Я]{1}|\d{3}\.\d|\d{3}\w|\d{3}|[А-Я]{1}-\d-\w|[А-Я]{1}-\d|[А-Я]+|\d{2})',
+            string)
+        # print(string, rooms)
+        rooms = [" ".join(y.strip() for y in x if y.strip()) for x in rooms]
+        if not rooms:
+            print("!!! Nothing was found in", string)
 
     # print(rooms)
     all_rooms = []
@@ -127,16 +149,6 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
 
         res = None
         room = rooms[room_num].strip()
-        if "КАФ." in room:
-            room = re.sub(
-                r'КАФ.', r'КАФ', room)
-        if "НА" in room:
-            room = re.sub(
-                r'НА', r'', room).strip()
-
-        if "КАФЕДРА" in room:
-            room = re.sub(
-                r'КАФЕДРА', r'КАФ', room)
 
         for pattern in notes_dict.keys():
             regex_result = re.findall(pattern, room)
