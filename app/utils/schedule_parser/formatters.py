@@ -183,7 +183,7 @@ def format_name(temp_name, week, week_count):
     """
     temp_name = re.sub(r'(\. \. )+|(\.\.\.)+|…+', '', temp_name)
     temp_name = re.sub(r'( ){3,}', '  ', temp_name)
-    temp_name = temp_name.strip().capitalize()
+    temp_name = temp_name.strip()
     # print(temp_name, "temp_name")
     if len(temp_name) < 3:
         return ""
@@ -222,7 +222,7 @@ def format_name(temp_name, week, week_count):
             clean_discipline_name = clean_discipline_name[1:]
 
         weeks = re.findall(
-            r"(?<!\+)\d+(?! *п/г)(?! *гр)(?! *\+)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", discipl)
+            r"(?<!подг) *(?<!\+)\d+(?!с)(?!С)(?! *п/г)(?! *гр)(?! *\+)(?! *подг)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", discipl)
         weeks = [i.strip() for i in weeks]
         # weeks = " ".join(weeks).strip()
         result_weeks = set()

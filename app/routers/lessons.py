@@ -14,11 +14,11 @@ router = APIRouter(
 )
 
 
-@router.get('/', summary="Получение списка уроков (расписания) ",
+@router.get('/', summary="Получение списка пар (расписания) ",
             response_model=List[schemas.LessonOut],
             status_code=status.HTTP_200_OK)
-async def read_lessons(db=Depends(get_db),
-                       queries: LessonQueryParams = Depends(LessonQueryParams)):
+async def get_lessons(db=Depends(get_db),
+                      queries: LessonQueryParams = Depends(LessonQueryParams)):
     group = None
     teacher_id = None
     room_id = None
@@ -74,16 +74,23 @@ async def read_lessons(db=Depends(get_db),
                             is_usual_place=queries.is_usual_place)
 
 
-# @router.post('/', status_code=201, summary="Create new message")
-# async def create_message(new_message: schemas.MessageCreate,
-#                          db=Depends(get_db)):
-#     return crud.create_message(db=db, new_message=new_message)
+@router.get('/{id}/', summary="Получение пары по id",
+            response_model=schemas.LessonOut,
+            status_code=status.HTTP_200_OK)
+async def get_lesson(id: int, db=Depends(get_db)):
+
+    if crud.get_lessons(db=db, id=id):
+        return crud.get_lessons(db=db, id=id)[0]
+
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                        detail="Lesson not found")
 
 
 # @router.delete('/{id}/', status_code=204, summary="Delete message by id")
 # async def delete_message_by_id(id: int, db=Depends(get_db)):
 #     return crud.delete_message_by_id(db=db, id=id)
-@router.get("/gen")
-async def root(db=Depends(get_db)):
-    gen_rooms(db=db)
-    return {"message": "Hello World"}
+
+# @router.get("/gen")
+# async def root(db=Depends(get_db)):
+#     gen_rooms(db=db)
+#     return {"message": "Hello World"}
