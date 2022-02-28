@@ -13,6 +13,7 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
     }
     specific_week = None
     group = None
+    place_id = None
     if "specific_week" in kwargs:
         specific_week = kwargs.pop("specific_week")
         if specific_week % 2:
@@ -21,6 +22,9 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
             week = 2
         if not "week" in kwargs:
             kwargs["week"] = week
+    if "place_id" in kwargs:
+        place_id = kwargs.pop("place_id")
+        
     if "group" in kwargs:
         group = kwargs.pop("group")
 
@@ -36,14 +40,26 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
     #     query = query.join(models.SpecificWeek, or_(models.Lesson.every_week, (models.SpecificWeek.secific_week == specific_week) & (
     #         models.SpecificWeek.lesson_id == models.Lesson.id)))
 
+    if place_id:
+        query = query.join(models.Room).join(models.Place).filter(models.Place.id == place_id)
+        # res = []
+        # for less in query:
+        #     print(less.room)
+        #     if less.room and less.room.place and less.room.place.id == place_id:
+        #         res.append(less)
+        # query = res
+
     query = query.offset(skip).limit(limit).all()
-    
+
     if specific_week:
         res = []
         for less in query:
             if specific_week in less.specific_weeks or less.every_week:
                 res.append(less)
         query = res
+    
+    query = query[skip:limit]
+
 
     return query
 
@@ -92,6 +108,6 @@ def get_disciplines(db: Session, skip: int = 0, limit: int | None = None, name: 
     return query
 
 
-def get_specific_week(db: Session, **kwargs):
-    query = db.query(models.Lesson).filter_by(**kwargs).all()
+def get_simpe_model(db: Session, model, **kwargs):
+    query = db.query(model).filter_by(**kwargs).all()
     return query

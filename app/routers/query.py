@@ -21,19 +21,20 @@ class LessonQueryParams:
             None, description="Номера дней недели идут по порядку: 1 - понедельник, 2 - вторник и т.д."),
 
         period_id: int | None = Query(
-            None, description="id периода, не изменяется, id интересующего периода можно посмотреть в '/period/'"),
+            None, description="id периода, не изменяется, id интересующего периода можно посмотреть в '/periods/'"),
         lesson_type_id: int | None = Query(
-            None, description="id типов урока, не изменяется, id интересующего типа урока можно посмотреть в '/lesson_type/'"),
+            None, description="id типа урока, не изменяется, id интересующего типа урока можно посмотреть в '/lesson_types/'"),
         call_id: int | None = Query(
-            None, description="id звонков (номеров пар), не изменяется, id интересующего звонка можно посмотреть в '/call/'"),
-
+            None, description="id звонка (номеров пар), не изменяется, id интересующего звонка можно посмотреть в '/calls/'"),
+        place_id: int | None = Query(
+            None, description="id кампуса, не изменяется, id интересующего кампуса можно посмотреть в '/places/'"),
         is_usual_place: bool = Query(
             None, description="Пара проводиться в кампусе, который является основным местом проведения занятий для этой группы"),
 
         skip: int = Query(
             None, description="Сколько объектов необходимо пропустить для ответа. Параметр для выгрузки расписания по частям."),
         limit: int = Query(
-            None, description="Максимальное количество объектов в ответе. Не больше 1000. Не рекомендуется использовать значения больше 200 при работе c openapi. Параметр для выгрузки расписания по частям."),
+            None, description="Максимальное количество объектов в ответе. Не больше 700. Не рекомендуется использовать значения больше 200 при работе c openapi. Параметр для выгрузки расписания по частям."),
     ):
         self.group_name = group_name
         self.teacher_name = teacher_name
@@ -45,6 +46,7 @@ class LessonQueryParams:
         self.period_id = period_id
         self.lesson_type_id = lesson_type_id
         self.call_id = call_id
+        self.place_id = place_id
         self.is_usual_place = is_usual_place
         self.skip = skip
         self.limit = limit

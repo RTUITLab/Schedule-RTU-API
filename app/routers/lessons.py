@@ -1,20 +1,18 @@
 from fastapi import APIRouter, Depends, status, HTTPException, Header
 from typing import List
 
-from app.utils.gen_rooms import gen_rooms
-
-from ..database import crud, schemas
+from ..database import crud, schemas, models
 from ..dependencies import get_db
 from .query import LessonQueryParams
 
 
 router = APIRouter(
-    prefix="/lesson",
-    tags=["Lessons"]
+    prefix="/lessons",
+    tags=["Пары (получение расписания)"]
 )
 
 
-@router.get('/', summary="Получение списка пар (расписания) ",
+@router.get('/', summary="Получение списка пар (расписания)",
             response_model=List[schemas.LessonOut],
             status_code=status.HTTP_200_OK)
 async def get_lessons(db=Depends(get_db),
@@ -23,9 +21,19 @@ async def get_lessons(db=Depends(get_db),
     teacher_id = None
     room_id = None
     discipline_id = None
-    if not (queries.limit or queries.group_name or queries.teacher_name or queries.room_name or queries.discipline_name or queries.limit > 1000):
+    place_id = None
+    if not (queries.limit and queries.limit <= 700 or queries.group_name or queries.teacher_name or queries.room_name or queries.discipline_name):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="You should set limit/group/teacher/room/discipline. There are over 24,000 lesson records in the database.")
+
+    if queries.place_id:
+        query = crud.get_simpe_model(db=db, model=models.Place)
+        if not query:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Place not found")
+        else:
+            place_id = query[0].id
+
     if queries.group_name:
         query = crud.get_groups(db=db, name=queries.group_name)
         if not query:
@@ -71,7 +79,8 @@ async def get_lessons(db=Depends(get_db),
                             period_id=queries.period_id,
                             lesson_type_id=queries.lesson_type_id,
                             call_id=queries.call_id,
-                            is_usual_place=queries.is_usual_place)
+                            is_usual_place=queries.is_usual_place,
+                            place_id=place_id)
 
 
 @router.get('/{id}/', summary="Получение пары по id",
