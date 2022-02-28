@@ -380,8 +380,8 @@ class Reader:
                 # Получение данных об одной паре
                 tmp_name = str(sheet.cell(
                     string_index, discipline_col_num).value)
-                if lesson_num ==  9:
-                    print(time, group_name, tmp_name, day_num)
+                # if lesson_num ==  9:
+                #     print(time, group_name, tmp_name, day_num)
                 tmp_name = format_name(tmp_name, week_num, self.week_count)
 
                 if isinstance(tmp_name, list) and tmp_name:

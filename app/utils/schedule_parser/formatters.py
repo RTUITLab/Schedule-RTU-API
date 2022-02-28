@@ -128,6 +128,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
     if current_place == 2 and ":" in string:
         rooms = [string.split(":")[0]]
     else:
+        string2 = string
         string = room_fixer(string)
         rooms = re.findall(
             r'(МП-1)*(В78)*(С-20)*(СГ-22)*(СГ)*(В-86)*(В-78)* *(КАФ +[А-Я]+|КБ-1 *№\d*/\d*|КБ-1 *№\d*|ИВЦ-\d{3}-\w{1}|ИВЦ-\d{3}|[А-Я]{1}-\d{3}-\w{1}|\d{3}-[А-Я]{1}|[А-Я]{1}-\d{2,3}|\d{3}-[А-Я]{1}|\d{3}\.\d|\d{3}\w|\d{3}|[А-Я]{1}-\d-\w|[А-Я]{1}-\d|[А-Я]+|\d{2})',
@@ -135,7 +136,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
         # print(string, rooms)
         rooms = [" ".join(y.strip() for y in x if y.strip()) for x in rooms]
         if not rooms:
-            print("!!! Nothing was found in", string)
+            print("!!! Nothing was found in", string, string2)
 
     # print(rooms)
     all_rooms = []
@@ -181,6 +182,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
 def format_name(temp_name, week, week_count):
     """
     """
+    
     temp_name = re.sub(r'(\. \. )+|(\.\.\.)+|…+', '', temp_name)
     # temp_name = re.sub(r'( ){3,}', ' ', temp_name)
 
@@ -191,17 +193,21 @@ def format_name(temp_name, week, week_count):
         return ""
     # print(temp_name)
     temp_name = temp_name.replace('кроме', 'кр. ')
+    temp_name2 = temp_name
     result = []
     if(re.match(r'\d|кр', temp_name)):
         result = []
         match = re.search(r'((кр\.*)*(\nкр\.*)*(^кр\.*)*( кр\.* )* *\d,* *н*-*)*((?!кр )(?!кр\.)\D|\d *(?=п/г)|\d *(?=гр\.*)|\d *(?=подгр*\.*))*',temp_name)
         while match[0]:
-            print(match[0].strip())
+            # print(match[0].strip())
             result.append(match[0].strip())
             temp_name = temp_name[match.end(0):]
             match = re.search(r'((кр\.*)*(\nкр\.*)*(^кр\.*)*( кр\.* )* *\d,* *н*-*)*((?!кр )(?!кр\.)\D|\d *(?=п/г)|\d *(?=гр\.*)|\d *(?=подгр*\.*))*', temp_name)
-        print("------")
+        # print("------")
         # print(result)
+    elif re.findall(
+            r"(?<!подг) *(?<!\+)\d+(?!с)(?!С)(?! *п/г)(?! *гр)(?! *\+)(?! *подг)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", temp_name):
+        print(temp_name2, "In the end")
     else:
         result = re.split(r';|\n|\\\\|\\|(?<!п)/(?!г)|(?<!п)/|/(?!г)', temp_name)
 
@@ -229,7 +235,7 @@ def format_name(temp_name, week, week_count):
         clean_discipline_name = re.sub(r"п/гр|п/г|\(.*\d+.*\)|\(.*I+.*\)|,|\d+н| н |н\.|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|\d+(?!с)(?!С)|\+|(?<!\w)нед\.*(?!\w)|(?<=\d)нед\.*(?!\w)|подгр*\.*|;| кр |кр\.|^кр | гр\.| гр ",
                                        "", discipl).strip()
         if len(clean_discipline_name) < 3:
-            print("Something wrong with", temp_name, "! discipl ->",
+            print("Something wrong with", temp_name2, "! discipl ->",
                   discipl, "|clean_discipline_name->", clean_discipline_name)
             return ""
         if len(clean_discipline_name) > 2 and clean_discipline_name[0] == "н" and (clean_discipline_name[1] == " " or clean_discipline_name[1].isupper()):
