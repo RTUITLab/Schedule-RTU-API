@@ -87,9 +87,9 @@ async def get_lessons(db=Depends(get_db),
             response_model=schemas.LessonOut,
             status_code=status.HTTP_200_OK)
 async def get_lesson(id: int, db=Depends(get_db)):
-
-    if crud.get_lessons(db=db, id=id):
-        return crud.get_lessons(db=db, id=id)[0]
+    lesson =  crud.get_lessons(db=db, id=id)
+    if lesson:
+        return lesson
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Lesson not found")

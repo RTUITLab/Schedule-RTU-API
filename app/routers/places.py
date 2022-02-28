@@ -1,10 +1,10 @@
-from fastapi import APIRouter, Depends, status, HTTPException, Header
+from pyexpat import model
+from statistics import mode
+from fastapi import APIRouter, Depends, status, HTTPException
 from typing import List
 
 from ..database import crud, schemas, models
 from ..dependencies import get_db
-from .query import LessonQueryParams
-
 
 router = APIRouter(
     prefix="/places",
@@ -13,21 +13,20 @@ router = APIRouter(
 
 
 @router.get('/', summary="Получение списка кампусов",
-            response_model=List[schemas.LessonOut],
+            response_model=List[schemas.PlaceOut],
             status_code=status.HTTP_200_OK)
-async def get_lessons(db=Depends(get_db),
-                      queries: LessonQueryParams = Depends(LessonQueryParams)):
+async def get_places(db=Depends(get_db)):
 
-    return crud.get_simpe_model(db=db,)
+    return crud.get_simpe_model(db=db, model=models.Place)
 
 
-@router.get('/{id}/', summary="Получение пары по id",
-            response_model=schemas.LessonOut,
+@router.get('/{id}/', summary="Получение кампуса по id",
+            response_model=schemas.PlaceOut,
             status_code=status.HTTP_200_OK)
-async def get_lesson(id: int, db=Depends(get_db)):
-
-    if crud.get_lessons(db=db, id=id):
-        return crud.get_lessons(db=db, id=id)[0]
+async def get_places(id: int, db=Depends(get_db)):
+    place = crud.get_simpe_model(db=db, id=id, model=models.Place)
+    if place:
+        return place
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
-                        detail="Lesson not found")
+                        detail="Place not found")
