@@ -1,5 +1,3 @@
-from pyexpat import model
-from statistics import mode
 from fastapi import APIRouter, Depends, status, HTTPException
 from typing import List
 

@@ -65,6 +65,16 @@ class SpecificWeek(DataBase):
         return '<SpecificWeeks %r>' % self.week 
 
 
+class Subgroup(DataBase):
+    __tablename__ = "subgroup"
+    subgroup = Column(Integer, primary_key=True, autoincrement=False)
+    lesson_id = Column(Integer, ForeignKey('lesson.id'), primary_key=True)
+    lesson = relationship('Lesson', back_populates='subgroups')
+
+    def __repr__(self):
+        return '<Subgroup %r>' % self.subgroup 
+
+
 class Discipline(DataBase):
     __tablename__ = "discipline"
     id = Column(Integer, primary_key=True)
@@ -149,7 +159,6 @@ class Lesson(DataBase):
         'teacher.id'), nullable=True)
     lesson_type_id = Column(Integer, ForeignKey(
         'lesson_type.id'), nullable=True)
-    subgroup = Column(Integer, nullable=True)
     discipline_id = Column(Integer, ForeignKey(
         'discipline.id'), nullable=False)
     room_id = Column(Integer, ForeignKey('room.id'), nullable=True)
@@ -168,6 +177,7 @@ class Lesson(DataBase):
                     secondary=lesson_group,
                     back_populates="lessons")
     specific_weeks = relationship("SpecificWeek", back_populates="lesson")
+    subgroups = relationship("Subgroup", back_populates="lesson")
     every_week = Column(Boolean, default=True)
 
     def __repr__(self):

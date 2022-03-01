@@ -187,12 +187,14 @@ def format_name(temp_name, week, week_count):
     # temp_name = re.sub(r'( ){3,}', ' ', temp_name)
 
     temp_name = temp_name.strip()
-
+    
     # print(temp_name, "temp_name")
     if len(temp_name) < 3:
         return ""
     # print(temp_name)
     temp_name = temp_name.replace('кроме', 'кр. ')
+    temp_name = temp_name.replace('II', '2')
+    temp_name = temp_name.replace('I', '1')
     temp_name2 = temp_name
     result = []
     if(re.match(r'\d|кр', temp_name)):

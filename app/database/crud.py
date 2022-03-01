@@ -1,3 +1,5 @@
+import sys
+
 from tkinter import N
 from sqlalchemy.orm import Session
 from sqlalchemy import or_, and_
@@ -59,8 +61,6 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
         query = res
     
     query = query[skip:limit]
-
-
     return query
 
 
@@ -89,12 +89,14 @@ def get_teachers(db: Session, skip: int = 0, limit: int | None = None, name: str
 
 def get_rooms(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None):
     # TODO need to format name
+   
     if name:
         search = "%{}%".format(name.upper())
         query = db.query(models.Room).filter(
             models.Room.name.like(search)).offset(skip).limit(limit).all()
     else:
         query = db.query(models.Room).offset(skip).limit(limit).all()
+    
     return query
 
 

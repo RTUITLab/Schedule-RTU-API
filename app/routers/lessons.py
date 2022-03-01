@@ -11,10 +11,76 @@ router = APIRouter(
     tags=["Пары (получение расписания)"]
 )
 
+lesson_example = {
+    "day_of_week": 1,
+    "week": 1,
+    "is_usual_place": None,
+    "id": 32,
+    "call": {
+        "call_num": 1,
+        "begin_time": "9:00",
+        "end_time": "10:30",
+        "id": 1
+    },
+    "period": {
+        "short_name": "semester",
+        "name": "Учебный семестр",
+        "id": 1
+    },
+    "teacher": None,
+    "lesson_type": {
+        "short_name": "лр",
+        "name": "Лабораторная работа",
+        "id": 3
+    },
+    "discipline": {
+        "name": "Физика",
+        "id": 2
+    },
+    "room": {
+        "name": "В-328",
+        "id": 4,
+        "place": {
+            "id": 1,
+            "short_name": "В-78",
+            "name": "Проспект Вернадского, д.78"
+        }
+    },
+    "groups": [
+        {
+            "name": "ИКБО-01-21",
+            "year": 1,
+            "id": 14,
+            "degree": {
+                "name": "Бакалавриат",
+                "id": 1
+            }
+        }
+    ],
+    "specific_weeks": [
+        3,
+        7,
+        11,
+        15
+    ],
+    "subgroups": [1],
+    "every_week": False
+}
+
 
 @router.get('/', summary="Получение списка пар (расписания)",
             response_model=List[schemas.LessonOut],
-            status_code=status.HTTP_200_OK)
+            status_code=status.HTTP_200_OK,
+            responses={404: {"detail": "Lesson not found"},
+                       200: {
+                "description": "Lesson item",
+                "content":
+                {
+                    "application/json": {
+                        "example": [lesson_example],
+                    }
+                },
+            }})
 async def get_lessons(db=Depends(get_db),
                       queries: LessonQueryParams = Depends(LessonQueryParams)):
     group = None
@@ -85,9 +151,19 @@ async def get_lessons(db=Depends(get_db),
 
 @router.get('/{id}/', summary="Получение пары по id",
             response_model=schemas.LessonOut,
-            status_code=status.HTTP_200_OK)
+            responses={404: {"detail": "Lesson not found"},
+                       200: {
+                "description": "Lesson item",
+                "content":
+                {
+                    "application/json": {
+                        "example": lesson_example,
+                    }
+                },
+            }}
+            )
 async def get_lesson(id: int, db=Depends(get_db)):
-    lesson =  crud.get_lessons(db=db, id=id)
+    lesson = crud.get_lessons(db=db, id=id)
     if lesson:
         return lesson
 
