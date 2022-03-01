@@ -3,7 +3,7 @@ import re
 from sqlalchemy import null
 
 
-def format_teacher_name(cell):
+def format_teacher_name(cell: str):
     # TODO add re.sub here
     cell = str(cell).title()
     cell = re.sub(r'( ){3,}', '  ', cell)
@@ -17,7 +17,7 @@ def format_teacher_name(cell):
     return res
 
 
-def format_lesson_type(cell):
+def format_lesson_type(cell: str):
     cell.strip()
     if not len(cell):
         return [None]
@@ -30,7 +30,7 @@ def format_lesson_type(cell):
     return result
 
 
-def room_fixer(room_name):
+def room_fixer(room_name: str):
     if "КАФ." in room_name:
         room_name = re.sub(
             r'КАФ.', r'КАФ', room_name)
@@ -91,7 +91,7 @@ def room_fixer(room_name):
     return room_name
 
 
-def format_room_name(cell, correct_max_len, notes_dict, current_place):
+def format_room_name(cell: str, notes_dict: dict, current_place: int):
     def check_room_for_78(room_name):
         return (re.match(r'^\w{1}-\d{1,3}$', room_name)
                 or re.match(r'^\w{1}-\d{1,3}\w{1}$', room_name)
@@ -179,7 +179,7 @@ def format_room_name(cell, correct_max_len, notes_dict, current_place):
     return all_rooms
 
 
-def format_name(temp_name, week, week_count):
+def format_name(temp_name: str, week: int, week_countweek: int):
     """
     """
     

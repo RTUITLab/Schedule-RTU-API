@@ -5,7 +5,7 @@ from ..database import crud, schemas, models
 from ..dependencies import get_db
 
 router = APIRouter(
-    prefix="/places",
+    prefix="/groups",
     tags=["Группа"]
 )
 

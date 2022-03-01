@@ -6,8 +6,9 @@ import xlrd
 
 import datetime as dt
 from datetime import datetime
-
+from sqlalchemy.orm import Session
 from itertools import cycle
+
 from .get_or_create import get_or_create
 from ...database import models
 from .formatters import format_lesson_type, format_name, format_room_name, format_teacher_name
@@ -15,7 +16,7 @@ from .formatters import format_lesson_type, format_name, format_room_name, forma
 
 class Reader:
 
-    def __init__(self, db):
+    def __init__(self, db: Session):
         self.week_count = 16
         self.db = db
         offset = dt.timedelta(hours=3)
@@ -161,7 +162,6 @@ class Reader:
                     print(err, traceback.format_exc(), "in", file_name)
                     continue
 
-
     def write_to_db(self, timetable):
 
         def append_from_array(array, session, model):
@@ -295,7 +295,7 @@ class Reader:
                     for n_week, item in sorted(lesson_item.items()):
                         day_num = n_day.split("_")[1]
                         call_num = n_lesson.split("_")[1]
-                        
+
                         week = n_week.split("_")[1]
                         for dist in item:
 
@@ -363,7 +363,7 @@ class Reader:
             for lesson_range in cell_range[day_num]:
                 lesson_num = lesson_range[0]
                 time = lesson_range[1]
-                
+
                 if "18:30" in time:
                     lesson_num = 8
                 if "20:10" in time:
@@ -387,12 +387,12 @@ class Reader:
                     lesson_type = format_lesson_type(sheet.cell(
                         string_index, discipline_col_num + 1).value)
 
-                    correct_max_len = max(len(tmp_name), len(lesson_type))
+                    # correct_max_len = max(len(tmp_name), len(lesson_type))
 
                     teacher = format_teacher_name(sheet.cell(
                         string_index, discipline_col_num + 2).value)
                     room = format_room_name(sheet.cell(
-                        string_index, discipline_col_num + 3).value, correct_max_len, self.notes_dict, self.current_place)
+                        string_index, discipline_col_num + 3).value, self.notes_dict, self.current_place)
 
                     # TODO need to fix
                     max_len = max(len(tmp_name), len(teacher),
