@@ -2,7 +2,7 @@ import sys
 
 from tkinter import N
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func
 
 from . import models, schemas
 
@@ -59,29 +59,28 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
             if specific_week in less.specific_weeks or less.every_week:
                 res.append(less)
         query = res
-    
-    query = query[skip:limit]
+    if not limit:
+        query = query[:600]
+    else:
+        query = query[skip:limit]
     return query
 
 
-def get_groups(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
-    kwargs = {
-        k: v
-        for k, v in kwargs.items()
-        if v
-    }
-    print(kwargs)
-    query = db.query(models.Group).filter_by(
-        **kwargs).offset(skip).limit(limit).all()
-
+def get_groups(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None):
+    if name:
+        search = "%{}%".format(name)
+        query = db.query(models.Group).filter(
+            models.Group.name.ilike(search)).offset(skip).limit(limit).all()
+    else:
+        query = db.query(models.Group).offset(skip).limit(limit).all()
     return query
 
 
 def get_teachers(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None):
     if name:
-        search = "%{}%".format(name.title())
+        search = "%{}%".format(name)
         query = db.query(models.Teacher).filter(
-            models.Teacher.name.like(search)).offset(skip).limit(limit).all()
+            models.Teacher.name.ilike(search)).offset(skip).limit(limit).all()
     else:
         query = db.query(models.Teacher).offset(skip).limit(limit).all()
     return query
@@ -93,7 +92,7 @@ def get_rooms(db: Session, skip: int = 0, limit: int | None = None, name: str | 
     if name:
         search = "%{}%".format(name.upper())
         query = db.query(models.Room).filter(
-            models.Room.name.like(search)).offset(skip).limit(limit).all()
+            models.Room.name.ilike(search)).offset(skip).limit(limit).all()
     else:
         query = db.query(models.Room).offset(skip).limit(limit).all()
     
@@ -102,9 +101,9 @@ def get_rooms(db: Session, skip: int = 0, limit: int | None = None, name: str | 
 
 def get_disciplines(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None):
     if name:
-        search = "%{}%".format(name.capitalize())
+        search = "%{}%".format(name)
         query = db.query(models.Discipline).filter(
-            models.Discipline.name.like(search)).offset(skip).limit(limit).all()
+            models.Discipline.name.ilike(search)).offset(skip).limit(limit).all()
     else:
         query = db.query(models.Discipline).offset(skip).limit(limit).all()
     return query

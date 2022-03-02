@@ -34,7 +34,7 @@ class LessonQueryParams:
         skip: int = Query(
             None, description="Сколько объектов необходимо пропустить для ответа. Параметр для выгрузки расписания по частям."),
         limit: int = Query(
-            None, description="Максимальное количество объектов в ответе. Не больше 700. Не рекомендуется использовать значения больше 200 при работе c openapi. Параметр для выгрузки расписания по частям."),
+            None, description="Максимальное количество объектов в ответе. Не больше 600. Не рекомендуется использовать значения больше 200 при работе c openapi. Параметр для выгрузки расписания по частям."),
     ):
         self.group_name = group_name
         self.teacher_name = teacher_name
@@ -50,3 +50,44 @@ class LessonQueryParams:
         self.is_usual_place = is_usual_place
         self.skip = skip
         self.limit = limit
+
+
+class DisciplineQueryParams:
+    def __init__(
+        self,
+        name: str | None = Query(
+            None, description="Название дисциплины. Название можно вводить не полностью - в любом случае будет возвращен список совпадений")):
+        self.name = name
+
+
+class TeacherQueryParams:
+    def __init__(
+        self,
+        name: str | None = Query(
+            None, description="Фамилия и инициалы преподавателя. Можно вводить только фамилию или только инициалы - в любом случае будет возвращен список совпадений")):
+        self.name = name
+
+
+class GroupQueryParams:
+    def __init__(
+        self,
+        name: str | None = Query(
+            None, description="Название группы"),
+        year: int | None = Query(
+            None, description="Курс группы (1-4)"),
+        degree_id: int | None = Query(
+            None, description="id академической степени группы, не изменяется, id интересующей степени можно посмотреть в '/degrees/'")):
+        self.name = name
+        self.year = year
+        self.degree_id = degree_id
+
+
+class RoomsQueryParams:
+    def __init__(
+        self,
+        name: str | None = Query(
+            None, description="Название аудитории"),
+        place_id: int | None = Query(
+            None, description="id кампуса, не изменяется, id интересующего кампуса можно посмотреть в '/places/'")):
+        self.name = name
+        self.place_id = place_id

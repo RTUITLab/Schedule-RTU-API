@@ -70,6 +70,10 @@ lesson_example = {
 
 @router.get('/', summary="Получение списка пар (расписания)",
             response_model=List[schemas.LessonOut],
+            description='Одним запросом межет быть возвращено не более 600 пар. Для того, чтобы получить большее \
+                        количество используйте несколько запросов с параметрами skip и limit. При работе с OpenAPI и попытке\
+                        получения более 200 записей может возникнуть долгая загрузка Response body\
+                        для более точного поиска рекомендуется использовать параметры с id вместо name (например discipline_id вместо discipline_name)',
             status_code=status.HTTP_200_OK,
             responses={404: {"detail": "Lesson not found"},
                        200: {
@@ -88,9 +92,6 @@ async def get_lessons(db=Depends(get_db),
     room_id = None
     discipline_id = None
     place_id = None
-    if not (queries.limit and queries.limit <= 700 or queries.group_name or queries.teacher_name or queries.room_name or queries.discipline_name):
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN, detail="You should set limit/group/teacher/room/discipline. There are over 24,000 lesson records in the database.")
 
     if queries.place_id:
         query = crud.get_simpe_model(db=db, model=models.Place)
