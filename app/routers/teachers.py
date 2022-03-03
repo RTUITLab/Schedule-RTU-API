@@ -6,7 +6,7 @@ from ..dependencies import get_db
 from .query import TeacherQueryParams
 
 router = APIRouter(
-    prefix="/places",
+    prefix="/teachers",
     tags=["Преподаватели"]
 )
 

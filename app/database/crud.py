@@ -66,13 +66,18 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
     return query
 
 
-def get_groups(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None):
+def get_groups(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None, **kwargs):
+    kwargs = {
+        k: v
+        for k, v in kwargs.items()
+        if v
+    }
     if name:
         search = "%{}%".format(name)
-        query = db.query(models.Group).filter(
+        query = db.query(models.Group).filter_by(**kwargs).filter(
             models.Group.name.ilike(search)).offset(skip).limit(limit).all()
     else:
-        query = db.query(models.Group).offset(skip).limit(limit).all()
+        query = db.query(models.Group).filter_by(**kwargs).offset(skip).limit(limit).all()
     return query
 
 

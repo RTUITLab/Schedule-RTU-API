@@ -233,9 +233,7 @@ class Reader:
                                        model=models.Lesson,
                                        call_id=call,
                                        period_id=period,
-                                       teacher_id=teacher,
                                        lesson_type_id=lesson_type,
-
                                        discipline_id=discipline.id,
                                        room_id=room,
                                        day_of_week=day_num,
@@ -247,7 +245,6 @@ class Reader:
                                        model=models.Lesson,
                                        call_id=call,
                                        period_id=period,
-                                       teacher_id=teacher,
                                        lesson_type_id=lesson_type,
                                        discipline_id=discipline.id,
                                        room_id=room,
@@ -259,6 +256,7 @@ class Reader:
 
             self.db.add(lesson)
             self.db.flush()
+            lesson.teachers.append(teacher)
             lesson.groups.append(group)
             add_weeks(weeks, lesson.id)
 
@@ -320,7 +318,7 @@ class Reader:
                             if dist['teacher']:
                                 teacher = get_or_create(
                                     session=self.db, model=models.Teacher, name=dist['teacher'][:99])
-                                teacher = teacher.id
+                                teacher = teacher
                             else:
                                 teacher = None
                             if dist['room']:

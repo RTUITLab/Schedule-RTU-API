@@ -27,16 +27,6 @@ class Period(DataBase):
         return '<Period %r>' % self.name
 
 
-class Teacher(DataBase):
-    __tablename__ = "teacher"
-    id = Column(Integer, primary_key=True)
-    name = Column(String(100), unique=True, nullable=False, index=True)
-    lessons = relationship('Lesson', back_populates='teacher')
-
-    def __repr__(self):
-        return '<Teacher %r>' % self.name
-
-
 class LessonType(DataBase):
     __tablename__ = "lesson_type"
     id = Column(Integer, primary_key=True, autoincrement=False)
@@ -111,10 +101,28 @@ class Degree(DataBase):
     def __repr__(self):
         return '<Place %r>' % self.name
 
+
+lesson_teacher = Table('lesson_teacher', DataBase.metadata,
+    Column('lesson_id', ForeignKey('lesson.id'), primary_key=True),
+    Column('teacher_id', ForeignKey('teacher.id'), primary_key=True)
+)
+
+
+class Teacher(DataBase):
+    __tablename__ = "teacher"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), unique=True, nullable=False, index=True)
+    lessons = relationship('Lesson', secondary=lesson_teacher, back_populates='teachers')
+
+    def __repr__(self):
+        return '<Teacher %r>' % self.name
+
+
 lesson_group = Table('lesson_group', DataBase.metadata,
     Column('lesson_id', ForeignKey('lesson.id'), primary_key=True),
     Column('group_id', ForeignKey('group.id'), primary_key=True)
 )
+
 
 class Group(DataBase):
     __tablename__ = "group"
@@ -148,8 +156,6 @@ class Lesson(DataBase):
     call_id = Column(Integer, ForeignKey('call.id'), nullable=False)
     period_id = Column(Integer, ForeignKey(
         'period.id'), nullable=False)
-    teacher_id = Column(Integer, ForeignKey(
-        'teacher.id'), nullable=True)
     lesson_type_id = Column(Integer, ForeignKey(
         'lesson_type.id'), nullable=True)
     discipline_id = Column(Integer, ForeignKey(
@@ -162,7 +168,9 @@ class Lesson(DataBase):
 
     call = relationship("Call", back_populates="lessons")
     period = relationship("Period", back_populates="lessons")
-    teacher = relationship("Teacher", back_populates="lessons")
+    teachers = relationship("Teacher",
+                    secondary=lesson_teacher,
+                    back_populates="lessons")
     lesson_type = relationship("LessonType", back_populates="lessons")
     discipline = relationship("Discipline", back_populates="lessons")
     room = relationship("Room", back_populates="lessons")

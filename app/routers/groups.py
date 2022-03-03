@@ -1,6 +1,8 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from typing import List
 
+from .query import GroupQueryParams
+
 from ..database import crud, schemas, models
 from ..dependencies import get_db
 
@@ -10,15 +12,14 @@ router = APIRouter(
 )
 
 
-@router.get('/', summary="Получение списка преподавателей",
+@router.get('/', summary="Получение списка групп",
             response_model=List[schemas.GroupOut],
             status_code=status.HTTP_200_OK)
-async def get_many(db=Depends(get_db)):
+async def get_many(db=Depends(get_db), queries: GroupQueryParams = Depends(GroupQueryParams)):
+    return crud.get_groups(db=db, name=queries.name, year=queries.year, degree_id=queries.degree_id)
 
-    return crud.get_simpe_model(db=db, model=models.Group)
 
-
-@router.get('/{id}/', summary="Получение преподавателя по id",
+@router.get('/{id}/', summary="Получение группы по id",
             response_model=schemas.GroupOut,
             status_code=status.HTTP_200_OK)
 async def get_one(id: int, db=Depends(get_db)):
