@@ -5,6 +5,9 @@ from sqlalchemy import null
 
 def format_teacher_name(cell: str):
     # TODO add re.sub here
+    """
+    Форматирование ячейки с преподаваиелями. Возвращает список найденных преподавателей.
+    """
     cell = str(cell).title()
     cell = re.sub(r'( ){3,}', '  ', cell)
     cell.strip()
@@ -18,6 +21,9 @@ def format_teacher_name(cell: str):
 
 
 def format_lesson_type(cell: str):
+    """
+    Форматирование ячейки с типом занятия. Возвращает список найденных типов.
+    """
     cell.strip()
     if not len(cell):
         return [None]
@@ -31,6 +37,9 @@ def format_lesson_type(cell: str):
 
 
 def room_fixer(room_name: str):
+    """
+    Приводит все названия аудиторий к единому стилю оформления.
+    """
     if "КАФ." in room_name:
         room_name = re.sub(
             r'КАФ.', r'КАФ', room_name)
@@ -92,6 +101,9 @@ def room_fixer(room_name: str):
 
 
 def format_room_name(cell: str, notes_dict: dict, current_place: int):
+    """
+    Форматирование ячейки с названием аудитории. Возвращает список найденных аудиторий и их кампусами.
+    """
     def check_room_for_78(room_name):
         return (re.match(r'^\w{1}-\d{1,3}$', room_name)
                 or re.match(r'^\w{1}-\d{1,3}\w{1}$', room_name)
@@ -179,8 +191,9 @@ def format_room_name(cell: str, notes_dict: dict, current_place: int):
     return all_rooms
 
 
-def format_name(temp_name: str, week: int, week_countweek: int):
+def format_name(temp_name: str, week: int, week_count: int):
     """
+    Форматирование ячейки с названием дисциплины. Возвращает список найденных дисциплин с неделями, на которых онипроводятся.
     """
     
     temp_name = re.sub(r'(\. \. )+|(\.\.\.)+|…+', '', temp_name)

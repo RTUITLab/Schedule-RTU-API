@@ -225,62 +225,53 @@ class Reader:
 
             # print(discipline_name[0])
 
+            every_week = bool(weeks)
             discipline = get_or_create(
                 session=self.db, model=models.Discipline, name=discipline_name[0])
             self.db.flush()
 
             if lesson_type == 1:
-                if not weeks:
-                    lesson = get_or_create(session=self.db,
-                                        model=models.Lesson,
-                                        call_id=call,
+                query = self.db.query(models.Lesson).filter_by(call_id=call,
                                         period_id=period,
                                         lesson_type_id=lesson_type,
                                         discipline_id=discipline.id,
                                         room_id=room,
                                         day_of_week=day_num,
                                         is_usual_place=is_usual_place,
-                                        every_week=True,
+                                        every_week=every_week,
                                         week=week)
+                if teacher:
+                    query.join(models.Lesson.teachers.and_(models.Teacher.id == teacher[0].id))
+                
+                instance = query.first()
+                if instance:
+                    lesson = instance
                 else:
-                    lesson = get_or_create(session=self.db,
-                                        model=models.Lesson,
-                                        call_id=call,
+                    lesson = models.Lesson(call_id=call,
                                         period_id=period,
                                         lesson_type_id=lesson_type,
                                         discipline_id=discipline.id,
                                         room_id=room,
-                                        #    group_id=group.id,
                                         day_of_week=day_num,
                                         is_usual_place=is_usual_place,
-                                        every_week=False,
+                                        every_week=every_week,
                                         week=week)
+
             else:
-                if not weeks:
-                    lesson = models.Lesson(call_id=call,
-                                        period_id=period,
-                                        lesson_type_id=lesson_type,
-                                        discipline_id=discipline.id,
-                                        room_id=room,
-                                        #    group_id=group.id,
-                                        day_of_week=day_num,
-                                        is_usual_place=is_usual_place,
-                                        every_week=True,
-                                        week=week)
-                else:
-                    lesson = models.Lesson(call_id=call,
-                                        period_id=period,
-                                        lesson_type_id=lesson_type,
-                                        discipline_id=discipline.id,
-                                        room_id=room,
-                                        #    group_id=group.id,
-                                        day_of_week=day_num,
-                                        is_usual_place=is_usual_place,
-                                        every_week=False,
-                                        week=week)
+                lesson = models.Lesson(call_id=call,
+                                    period_id=period,
+                                    lesson_type_id=lesson_type,
+                                    discipline_id=discipline.id,
+                                    room_id=room,
+                                    day_of_week=day_num,
+                                    is_usual_place=is_usual_place,
+                                    every_week=every_week,
+                                    week=week)
+
             self.db.add(lesson)
             self.db.flush()
-            lesson.teachers.append(teacher)
+            for t in teacher:
+                lesson.teachers.append(t)
             lesson.groups.append(group)
             add_weeks(weeks, lesson.id)
 
@@ -340,8 +331,7 @@ class Reader:
                             is_usual_place = True
 
                             if dist['teacher']:
-                                teacher = get_or_create(
-                                    session=self.db, model=models.Teacher, name=dist['teacher'][:99])
+                                teacher = [get_or_create(session=self.db, model=models.Teacher, name=t) for t in dist['teacher'] if t]
                                 teacher = teacher
                             else:
                                 teacher = None
@@ -417,26 +407,27 @@ class Reader:
                         string_index, discipline_col_num + 3).value, self.notes_dict, self.current_place)
 
                     # TODO need to fix
-                    max_len = max(len(tmp_name), len(teacher),
-                                  len(room), len(lesson_type))
+                    max_len = max(len(tmp_name), len(room), len(lesson_type))
+
                     if len(tmp_name) < max_len:
                         tmp_name = cycle(tmp_name)
-                    if len(teacher) < max_len:
-                        teacher = cycle(teacher)
                     if len(room) < max_len:
                         room = cycle(room)
                     if len(lesson_type) < max_len:
                         lesson_type = cycle(lesson_type)
 
-                    lesson_tuple = list(
-                        zip(tmp_name, teacher, room, lesson_type))
+                    if len(teacher) > max_len and max_len == 1:
+                        lesson_tuple = [(tmp_name[0], [t for t in teacher], room[0], lesson_type[0])]
+                    else: 
+                        teacher = cycle([[t] for t in teacher])
+                        lesson_tuple = list(zip(tmp_name, teacher, room, lesson_type))    
 
                     for tuple_item in lesson_tuple:
                         name = tuple_item[0]
                         teacher = tuple_item[1]
                         room = tuple_item[2]
                         lesson_type = tuple_item[3]
-
+                        
                         one_lesson = {"date": None, "time": time, "name": name, "type": lesson_type,
                                       "teacher": teacher, "room": room}
 
