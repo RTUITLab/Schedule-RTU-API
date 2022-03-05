@@ -228,32 +228,56 @@ class Reader:
             discipline = get_or_create(
                 session=self.db, model=models.Discipline, name=discipline_name[0])
             self.db.flush()
-            if not weeks:
-                lesson = get_or_create(session=self.db,
-                                       model=models.Lesson,
-                                       call_id=call,
-                                       period_id=period,
-                                       lesson_type_id=lesson_type,
-                                       discipline_id=discipline.id,
-                                       room_id=room,
-                                       day_of_week=day_num,
-                                       is_usual_place=is_usual_place,
-                                       every_week=True,
-                                       week=week)
-            else:
-                lesson = get_or_create(session=self.db,
-                                       model=models.Lesson,
-                                       call_id=call,
-                                       period_id=period,
-                                       lesson_type_id=lesson_type,
-                                       discipline_id=discipline.id,
-                                       room_id=room,
-                                       #    group_id=group.id,
-                                       day_of_week=day_num,
-                                       is_usual_place=is_usual_place,
-                                       every_week=False,
-                                       week=week)
 
+            if lesson_type == 1:
+                if not weeks:
+                    lesson = get_or_create(session=self.db,
+                                        model=models.Lesson,
+                                        call_id=call,
+                                        period_id=period,
+                                        lesson_type_id=lesson_type,
+                                        discipline_id=discipline.id,
+                                        room_id=room,
+                                        day_of_week=day_num,
+                                        is_usual_place=is_usual_place,
+                                        every_week=True,
+                                        week=week)
+                else:
+                    lesson = get_or_create(session=self.db,
+                                        model=models.Lesson,
+                                        call_id=call,
+                                        period_id=period,
+                                        lesson_type_id=lesson_type,
+                                        discipline_id=discipline.id,
+                                        room_id=room,
+                                        #    group_id=group.id,
+                                        day_of_week=day_num,
+                                        is_usual_place=is_usual_place,
+                                        every_week=False,
+                                        week=week)
+            else:
+                if not weeks:
+                    lesson = models.Lesson(call_id=call,
+                                        period_id=period,
+                                        lesson_type_id=lesson_type,
+                                        discipline_id=discipline.id,
+                                        room_id=room,
+                                        #    group_id=group.id,
+                                        day_of_week=day_num,
+                                        is_usual_place=is_usual_place,
+                                        every_week=True,
+                                        week=week)
+                else:
+                    lesson = models.Lesson(call_id=call,
+                                        period_id=period,
+                                        lesson_type_id=lesson_type,
+                                        discipline_id=discipline.id,
+                                        room_id=room,
+                                        #    group_id=group.id,
+                                        day_of_week=day_num,
+                                        is_usual_place=is_usual_place,
+                                        every_week=False,
+                                        week=week)
             self.db.add(lesson)
             self.db.flush()
             lesson.teachers.append(teacher)
