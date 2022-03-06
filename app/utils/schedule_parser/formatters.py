@@ -220,9 +220,10 @@ def format_name(temp_name: str, week: int, week_count: int):
             match = re.search(r'((кр\.*)*(\nкр\.*)*(^кр\.*)*( кр\.* )* *\d,* *н*-*)*((?!кр )(?!кр\.)\D|\d *(?=п/г)|\d *(?=гр\.*)|\d *(?=подгр*\.*))*', temp_name)
         # print("------")
         # print(result)
-    elif re.findall(
-            r"(?<!подг) *(?<!\+)\d+(?!с)(?!С)(?! *п/г)(?! *гр)(?! *\+)(?! *подг)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", temp_name):
-        print(temp_name2, "In the end")
+
+    # elif re.findall(
+    #         r"(?<!подг) *(?<!\+)\d+(?!с)(?!С)(?! *п/г)(?! *гр)(?! *\+)(?! *подг)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", temp_name):
+    #     print(temp_name2, "In the end")
     else:
         result = re.split(r';|\n|\\\\|\\|(?<!п)/(?!г)|(?<!п)/|/(?!г)', temp_name)
 
@@ -258,6 +259,10 @@ def format_name(temp_name: str, week: int, week_count: int):
 
         weeks = re.findall(
             r"(?<!подг) *(?<!\+)\d+(?!с)(?!С)(?! *п/г)(?! *гр)(?! *\+)(?! *подг)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", discipl)
+        subs = set()
+        subgroups = re.findall(r"(?:\d,*\+* *)+(?=подг*р*\.*| *Подгруппа| *подгруппа|гр*|п/гр*|п)|(?<=Подгруппа) *\d|(?<=подгруппа) *\d", discipl)
+        for i in subgroups:
+            subs.update(re.findall(r"\d", i))
         weeks = [i.strip() for i in weeks]
         # weeks = " ".join(weeks).strip()
         result_weeks = set()
@@ -299,7 +304,7 @@ def format_name(temp_name: str, week: int, week_count: int):
             #     result_weeks.add(i)
             result_weeks = []
             # print(week)
-        result[name_num] = [clean_discipline_name, result_weeks]
+        result[name_num] = [clean_discipline_name, result_weeks, list(subs)]
         # print(discipl, "| result[name_num] -> ", result[name_num])
 
     return result

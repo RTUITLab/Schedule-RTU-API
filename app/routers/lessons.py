@@ -88,7 +88,7 @@ lesson_example = {
 async def get_lessons(db=Depends(get_db),
                       queries: LessonQueryParams = Depends(LessonQueryParams)):
     group = None
-    teacher_id = None
+    teacher = None
     room_id = None
     discipline_id = None
     place_id = None
@@ -115,7 +115,7 @@ async def get_lessons(db=Depends(get_db),
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, detail="Teacher not found")
         else:
-            teacher_id = query[0].id
+            teacher = query[0]
 
     if queries.room_name:
         query = crud.get_rooms(db=db, name=queries.room_name)
@@ -137,7 +137,7 @@ async def get_lessons(db=Depends(get_db),
                             limit=queries.limit,
                             skip=queries.skip,
                             group=group,
-                            teacher_id=teacher_id,
+                            teacher=teacher,
                             room_id=room_id,
                             discipline_id=discipline_id,
                             specific_week=queries.specific_week,

@@ -232,47 +232,61 @@ class Reader:
 
             if lesson_type == 1:
                 query = self.db.query(models.Lesson).filter_by(call_id=call,
-                                        period_id=period,
-                                        lesson_type_id=lesson_type,
-                                        discipline_id=discipline.id,
-                                        room_id=room,
-                                        day_of_week=day_num,
-                                        is_usual_place=is_usual_place,
-                                        every_week=every_week,
-                                        week=week)
+                                                               period_id=period,
+                                                               lesson_type_id=lesson_type,
+                                                               discipline_id=discipline.id,
+                                                               room_id=room,
+                                                               day_of_week=day_num,
+                                                               is_usual_place=is_usual_place,
+                                                               every_week=every_week,
+                                                               week=week)
                 if teacher:
-                    query.join(models.Lesson.teachers.and_(models.Teacher.id == teacher[0].id))
-                
+                    query.join(models.Lesson.teachers.and_(
+                        models.Teacher.id == teacher[0].id))
+
                 instance = query.first()
                 if instance:
                     lesson = instance
                 else:
                     lesson = models.Lesson(call_id=call,
-                                        period_id=period,
-                                        lesson_type_id=lesson_type,
-                                        discipline_id=discipline.id,
-                                        room_id=room,
-                                        day_of_week=day_num,
-                                        is_usual_place=is_usual_place,
-                                        every_week=every_week,
-                                        week=week)
+                                           period_id=period,
+                                           lesson_type_id=lesson_type,
+                                           discipline_id=discipline.id,
+                                           room_id=room,
+                                           day_of_week=day_num,
+                                           is_usual_place=is_usual_place,
+                                           every_week=every_week,
+                                           week=week)
 
             else:
                 lesson = models.Lesson(call_id=call,
-                                    period_id=period,
-                                    lesson_type_id=lesson_type,
-                                    discipline_id=discipline.id,
-                                    room_id=room,
-                                    day_of_week=day_num,
-                                    is_usual_place=is_usual_place,
-                                    every_week=every_week,
-                                    week=week)
+                                       period_id=period,
+                                       lesson_type_id=lesson_type,
+                                       discipline_id=discipline.id,
+                                       room_id=room,
+                                       day_of_week=day_num,
+                                       is_usual_place=is_usual_place,
+                                       every_week=every_week,
+                                       week=week)
 
             self.db.add(lesson)
             self.db.flush()
+
             for t in teacher:
                 lesson.teachers.append(t)
             lesson.groups.append(group)
+            for sub in discipline_name[2]:
+                try:
+                    subgroup = models.Subgroup(
+                        subgroup=sub, lesson_id=lesson.id)
+                    self.db.add(subgroup)
+                    self.db.flush()
+                except:
+                    self.db.rollback()
+                    print("----------")
+                    print("ROLLBACK ON SUBGROUP APPEND")
+                    print("----------")
+
             add_weeks(weeks, lesson.id)
 
         append_from_array(self.places, self.db, models.Place)
@@ -290,71 +304,77 @@ class Reader:
         stack = ""
 
         for group_name, value in sorted(timetable.items()):
+            try:
+                group_name = re.findall(r"([А-Я]+-\w+-\w+)", group_name, re.I)
+                if len(group_name) > 0:
+                    print("Add schedule for ", group_name)
+                    group_name = group_name[0]
 
-            group_name = re.findall(r"([А-Я]+-\w+-\w+)", group_name, re.I)
-            if len(group_name) > 0:
-                print("Add schedule for ", group_name)
-                group_name = group_name[0]
+                    group = get_or_create(session=self.db,
+                                          model=models.Group,
+                                          name=group_name,
+                                          year=get_group_year(group_name),
+                                          degree_id=get_group_degree(group_name))
 
-                group = get_or_create(session=self.db,
-                                      model=models.Group,
-                                      name=group_name,
-                                      year=get_group_year(group_name),
-                                      degree_id=get_group_degree(group_name))
+                for n_day, day_item in sorted(value.items()):
 
-            for n_day, day_item in sorted(value.items()):
+                    for n_lesson, lesson_item in sorted(day_item.items()):
+                        for n_week, item in sorted(lesson_item.items()):
+                            day_num = n_day.split("_")[1]
+                            call_num = n_lesson.split("_")[1]
 
-                for n_lesson, lesson_item in sorted(day_item.items()):
-                    for n_week, item in sorted(lesson_item.items()):
-                        day_num = n_day.split("_")[1]
-                        call_num = n_lesson.split("_")[1]
+                            week = n_week.split("_")[1]
+                            for dist in item:
 
-                        week = n_week.split("_")[1]
-                        for dist in item:
+                                lesson_type = None
 
-                            lesson_type = None
+                                if dist['type']:
+                                    if "пр" in dist['type'].lower():
+                                        lesson_type = self.lesson_types["пр"]
+                                    elif "лк" in dist['type'].lower():
+                                        lesson_type = self.lesson_types["лк"]
+                                    elif "лаб" in dist['type'].lower():
+                                        lesson_type = self.lesson_types["лр"]
+                                    elif "лр" in dist['type'].lower():
+                                        lesson_type = self.lesson_types["лр"]
+                                    elif "лек" in dist['type'].lower():
+                                        lesson_type = self.lesson_types["лк"]
+                                    elif "срс" in dist['type'].lower():
+                                        lesson_type = self.lesson_types["срс"]
 
-                            if dist['type']:
-                                if "пр" in dist['type'].lower():
-                                    lesson_type = self.lesson_types["пр"]
-                                elif "лк" in dist['type'].lower():
-                                    lesson_type = self.lesson_types["лк"]
-                                elif "лаб" in dist['type'].lower():
-                                    lesson_type = self.lesson_types["лр"]
-                                elif "лр" in dist['type'].lower():
-                                    lesson_type = self.lesson_types["лр"]
-                                elif "лек" in dist['type'].lower():
-                                    lesson_type = self.lesson_types["лк"]
-                                elif "срс" in dist['type'].lower():
-                                    lesson_type = self.lesson_types["срс"]
+                                is_usual_place = True
 
-                            is_usual_place = True
-
-                            if dist['teacher']:
-                                teacher = [get_or_create(session=self.db, model=models.Teacher, name=t) for t in dist['teacher'] if t]
-                                teacher = teacher
-                            else:
-                                teacher = None
-                            if dist['room']:
-                                room = get_or_create(
-                                    session=self.db, model=models.Room, name=dist['room'][0], place_id=dist['room'][1])
-                                if room.place_id == self.current_place or not room.place_id:
-                                    is_usual_place = True
+                                if dist['teacher']:
+                                    teacher = [get_or_create(
+                                        session=self.db, model=models.Teacher, name=t) for t in dist['teacher'] if t]
+                                    teacher = teacher
                                 else:
-                                    is_usual_place = False
-                                room = room.id
+                                    teacher = None
+                                if dist['room']:
+                                    room = get_or_create(
+                                        session=self.db, model=models.Room, name=dist['room'][0], place_id=dist['room'][1])
+                                    if room.place_id == self.current_place or not room.place_id:
+                                        is_usual_place = True
+                                    else:
+                                        is_usual_place = False
+                                    room = room.id
 
-                            else:
-                                room = None
+                                else:
+                                    room = None
 
-                            self.db.flush()
+                                self.db.flush()
 
-                            # print(is_usual_place, room, room.place_id, self.current_place)
+                                # print(is_usual_place, room, room.place_id, self.current_place)
 
-                            data_append_to_lesson(group, self.current_period, teacher,
-                                                  day_num,
-                                                  call_num,
-                                                  week, lesson_type, room, is_usual_place, dist['name'])
+                                data_append_to_lesson(group, self.current_period, teacher,
+                                                      day_num,
+                                                      call_num,
+                                                      week, lesson_type, room, is_usual_place, dist['name'])
+            except:
+                self.db.rollback()
+                print("----------")
+                print("ROLLBACK ON SCHEDULE APPEND")
+                print("----------")
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
         """
@@ -417,17 +437,19 @@ class Reader:
                         lesson_type = cycle(lesson_type)
 
                     if len(teacher) > max_len and max_len == 1:
-                        lesson_tuple = [(tmp_name[0], [t for t in teacher], room[0], lesson_type[0])]
-                    else: 
+                        lesson_tuple = [
+                            (tmp_name[0], [t for t in teacher], room[0], lesson_type[0])]
+                    else:
                         teacher = cycle([[t] for t in teacher])
-                        lesson_tuple = list(zip(tmp_name, teacher, room, lesson_type))    
+                        lesson_tuple = list(
+                            zip(tmp_name, teacher, room, lesson_type))
 
                     for tuple_item in lesson_tuple:
                         name = tuple_item[0]
                         teacher = tuple_item[1]
                         room = tuple_item[2]
                         lesson_type = tuple_item[3]
-                        
+
                         one_lesson = {"date": None, "time": time, "name": name, "type": lesson_type,
                                       "teacher": teacher, "room": room}
 

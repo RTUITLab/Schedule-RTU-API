@@ -15,6 +15,7 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
     }
     specific_week = None
     group = None
+    teacher = None
     place_id = None
     if "specific_week" in kwargs:
         specific_week = kwargs.pop("specific_week")
@@ -29,6 +30,9 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
         
     if "group" in kwargs:
         group = kwargs.pop("group")
+    
+    if "teacher" in kwargs:
+        group = kwargs.pop("teacher")
 
     query = db.query(models.Lesson).filter_by(
         **kwargs)
@@ -36,6 +40,9 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
     if group:
         query = query.join(models.Lesson.groups.and_(
             models.Group.id == group.id))
+    if teacher:
+        query = query.join(models.Lesson.teachers.and_(
+            models.Teacher.id == teacher.id))
 
     # if specific_week:
 

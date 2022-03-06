@@ -147,7 +147,7 @@ class LessonOut(LessonBase):
     id: int
     call: CallOut
     period: PeriodOut
-    teacher: TeacherOut | None = None
+    teachers: list[TeacherOut] 
     lesson_type: LessonTypeOut | None = None
     discipline: DisciplineOut
     room: RoomOut | None = None

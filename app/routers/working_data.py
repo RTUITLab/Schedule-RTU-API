@@ -16,7 +16,7 @@ router = APIRouter(
             status_code=status.HTTP_200_OK)
 async def read_lessons(background_tasks: BackgroundTasks, db=Depends(get_db)):
     background_tasks.add_task(parse_schedule, db)
-    return {}
+    return {"detail": "Parsing started"}
 
 
 # @router.post('/', status_code=201, summary="Create new message")
