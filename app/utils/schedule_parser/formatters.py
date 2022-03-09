@@ -8,14 +8,15 @@ def format_teacher_name(cell: str):
     """
     Форматирование ячейки с преподаваиелями. Возвращает список найденных преподавателей.
     """
+    
     cell = str(cell).title()
     cell = re.sub(r'( ){3,}', '  ', cell)
     cell.strip()
     if not len(cell):
         return [None]
-    res = re.split(r'\n|\\\\|\\|(?!\d)\/(?!\d)|(?<!\d)\/(?=\d)', cell)
+    res = re.findall(r'[А-Я]*[а-я]+ [А-Я]\.*,* *[А-Я]{1,2}\.*(?!\S{2,})|[А-Я]+[а-я]+', cell)
     if len(res) > 1:
-        res = [x.strip() for x in res if len(x.strip())]
+        res = [re.sub(r',', '.', x.strip()) for x in res if len(x.strip())]
     # print(res)
     return res
 

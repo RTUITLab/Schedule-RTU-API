@@ -331,15 +331,11 @@ class Reader:
                                 if dist['type']:
                                     if "пр" in dist['type'].lower():
                                         lesson_type = self.lesson_types["пр"]
-                                    elif "лк" in dist['type'].lower():
+                                    elif "лк" in dist['type'].lower() or "лек" in dist['type'].lower():
                                         lesson_type = self.lesson_types["лк"]
-                                    elif "лаб" in dist['type'].lower():
+                                    elif "лаб" in dist['type'].lower() or "лр" in dist['type'].lower():
                                         lesson_type = self.lesson_types["лр"]
-                                    elif "лр" in dist['type'].lower():
-                                        lesson_type = self.lesson_types["лр"]
-                                    elif "лек" in dist['type'].lower():
-                                        lesson_type = self.lesson_types["лк"]
-                                    elif "срс" in dist['type'].lower():
+                                    elif "срс" in dist['type'].lower() or "с/р" in dist['type'].lower():
                                         lesson_type = self.lesson_types["срс"]
 
                                 is_usual_place = True
