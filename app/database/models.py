@@ -150,6 +150,31 @@ class WorkingData(DataBase):
         return '<WorkingData %r>' % self.name
 
 
+class Institute(DataBase):
+    __tablename__ = "institute"
+    id = Column(Integer, primary_key=True)
+    name = Column(String(80), unique=True, nullable=False, index=True)
+    short_name = Column(String(8), unique=True, index=True)
+
+    def __repr__(self):
+        return '<Institute %r>' % self.name
+
+
+class FileHash(DataBase):
+    __tablename__ = "date_of_modification"
+    id = Column(Integer, primary_key=True)
+    institute_id = Column(Integer, ForeignKey('institute.id'), nullable=True)
+    year = Column(Integer)
+    degree_id = Column(Integer, ForeignKey('degree.id'))
+    place_id = Column(Integer, ForeignKey('place.id'), nullable=True)
+    period_id = Column(Integer, ForeignKey('period.id'), nullable=False)
+
+    hash = Column(String(20), nullable=False)
+
+    def __repr__(self):
+        return '<DateOfModification %r>' % self.name
+
+
 class Lesson(DataBase):
     __tablename__ = "lesson"
     id = Column(Integer, primary_key=True)

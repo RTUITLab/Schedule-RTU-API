@@ -1,15 +1,16 @@
-from urllib import request
 import requests
 import traceback
 import os
 import os.path
 import datetime
-from bs4 import BeautifulSoup
 import ssl
 import certifi
-
+import os
 import shutil
+import hashlib
 
+from urllib import request
+from bs4 import BeautifulSoup
 
 
 class Downloader:
@@ -29,10 +30,38 @@ class Downloader:
             return "exams"
         else:
             return "semester"
+    
+    def get_inst(self, file_name):
+        pass
+    def get_year(self, file_name):
+        pass
+    def get_degree(self, file_name):
+        pass
+    def get_place(self, file_name):
+        pass
 
     
     def save_file(self, url, path):
         def download(download_url, download_path):
+            
+            with requests.get(download_url, stream=True) as r:
+                r.raise_for_status()
+                h = hashlib.sha1()
+
+                # loop till the end of the file
+                chunk = 0
+                for chunk in r.iter_content(chunk_size=1024):
+                    if chunk:
+                        h.update(chunk)
+
+
+
+                # return the hex representation of digest
+                print(h.hexdigest()) 
+                # with open(download_path, 'wb') as f:
+                #     for chunk in r.iter_content(chunk_size=8192):
+                #         if chunk:
+                #             f.write(chunk)
             with requests.get(download_url, stream=True) as r:
                 r.raise_for_status()
                 if os.path.isfile(download_path):
@@ -41,12 +70,12 @@ class Downloader:
                     for chunk in r.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
-
+                    
         try:
             download(url, path)
             return "download"
         except:
-            return "skip"
+            print("skip")
 
     def download(self):
         #urlopen(request, context=ssl.create_default_context(cafile=certifi.where()))
@@ -60,9 +89,7 @@ class Downloader:
         
         # Списки адресов на файлы
         url_files = [x['href'].replace('https', 'http') for x in xls_list]  # Сохранение списка адресов сайтов
-        progress_all = len(url_files)
 
-        count_file = 0
         # Сохранение файлов
         # print(self.base_file_dir)
         if not os.path.exists(self.base_file_dir):
@@ -88,17 +115,14 @@ class Downloader:
 
                     if not os.path.isdir(os.path.join(self.base_file_dir, subdir)):
                         os.makedirs(os.path.join(self.base_file_dir, subdir), exist_ok=False)
-                    result = self.save_file(url_file, path_to_file)
-                    count_file += 1  # Счетчик для отображения скаченных файлов в %
-
-                    print('{} : {} -- {}'.format(result, path_to_file, count_file / progress_all * 100))
-
-                else:
-                    count_file += 1  # Счетчик для отображения скаченных файлов в %
+                    
+                    self.save_file(url_file, path_to_file)
+                    
 
             except Exception as err:
                 traceback.print_exc()
                 with open(self.path_to_error_log, 'a+') as file:
+                    
                     file.write(
                         str(datetime.datetime.now()) + ': ' + url_file + ' message:' + str(err) + '\n', )
                 pass

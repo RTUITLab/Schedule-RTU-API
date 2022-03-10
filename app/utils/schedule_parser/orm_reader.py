@@ -33,6 +33,16 @@ class Reader:
 
             print("week_count ERROR! -> ", err)
 
+        self.inst = [
+            {"id": 1, "name": "Институт перспективных технологий и индустриального программирования", "short_name":"ИПТИП"},
+            {"id": 2, "name": "Институт технологий управления", "short_name":"ИТУ"},
+            {"id": 3, "name": "Институт информационных технологий", "short_name":"ИИТ"},
+            {"id": 4, "name": "Институт искусственного интеллекта", "short_name":"ИИИ"},
+            {"id": 5, "name": "Институт кибербезопасности и цифровых технологий", "short_name":"ИКБ"},
+            {"id": 6, "name": "Институт радиоэлектроники и информатики", "short_name":"ИРЭИ"},
+            {"id": 7, "name": "Институт тонких химических технологий им. М.В. Ломоносова", "short_name":"ИТХТ"},
+        ]
+
         self.places = [[1, 'В-78', 'Проспект Вернадского, д.78'],
                        [2, 'В-86', 'Проспект Вернадского, д.86'],
                        [3, 'С-20', 'Стромынка, д.20'],
@@ -134,7 +144,7 @@ class Reader:
             for file_name in files:
 
                 temp_file_name = file_name.lower()
-                if "стром" in temp_file_name or "кбисп" in temp_file_name or "икб" in temp_file_name:
+                if "стром" in temp_file_name or "кбисп" in temp_file_name or "икб" in temp_file_name or ("иту" in temp_file_name and "сем" in temp_file_name):
                     self.current_place = 3
                 elif "итхт" in temp_file_name:
                     self.current_place = 2
@@ -298,6 +308,9 @@ class Reader:
             id, time, call_num = el
             get_or_create(session=self.db, model=models.Call, id=id, call_num=call_num,
                           begin_time=time["begin_time"], end_time=time["end_time"])
+        for el in self.inst:
+            get_or_create(session=self.db, model=models.Institute, id=el['id'], name=el['name'],
+            short_name=el['short_name'])
 
         append_from_dict(self.degrees, self.db, models.Degree)
 

@@ -1,8 +1,4 @@
-import contextlib
-import sys
-import os.path
-import json
-
+import shutil
 from .orm_reader import Reader
 from .downloader import Downloader
 from sqlalchemy import MetaData
@@ -35,7 +31,7 @@ def parse_schedule(db):
         print("truncate")
 
         Download = Downloader(path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
-        # Download.download()
+        Download.download()
 
         print("downloaded")
         try:
@@ -44,6 +40,7 @@ def parse_schedule(db):
             print("Reader error -> ", err)
         print("start reading")
         reader.run('xls')
+        # shutil.rmtree('xls/')
         print("\nКонвертация успешно выполнена!\n\n")
 
     except FileNotFoundError as err:
