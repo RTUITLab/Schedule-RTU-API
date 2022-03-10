@@ -13,7 +13,7 @@ class Call(DataBase):
     lessons = relationship('Lesson', back_populates='call')
 
     def __repr__(self):
-        return '<Call %r>' % self.name
+        return '<Call %r>' % self.call_num
 
 
 class Period(DataBase):
@@ -45,7 +45,7 @@ class SpecificWeek(DataBase):
     lesson = relationship('Lesson', back_populates='specific_weeks')
 
     def __repr__(self):
-        return '<SpecificWeeks %r>' % self.week 
+        return '<SpecificWeeks %r>' % self.secific_week 
 
 
 class Subgroup(DataBase):
@@ -161,18 +161,18 @@ class Institute(DataBase):
 
 
 class FileHash(DataBase):
-    __tablename__ = "date_of_modification"
+    __tablename__ = "file_hash"
     id = Column(Integer, primary_key=True)
     institute_id = Column(Integer, ForeignKey('institute.id'), nullable=True)
     year = Column(Integer)
-    degree_id = Column(Integer, ForeignKey('degree.id'))
+    is_mag = Column(Boolean)
     place_id = Column(Integer, ForeignKey('place.id'), nullable=True)
     period_id = Column(Integer, ForeignKey('period.id'), nullable=False)
 
-    hash = Column(String(20), nullable=False)
+    hash = Column(String(40), nullable=True, default=None)
 
     def __repr__(self):
-        return '<DateOfModification %r>' % self.name
+        return '<FileHash %r>' % self.hash
 
 
 class Lesson(DataBase):

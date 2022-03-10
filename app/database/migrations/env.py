@@ -47,6 +47,7 @@ def run_migrations_offline():
         url=url,
         target_metadata=target_metadata,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True
     )
 
     with context.begin_transaction():
@@ -70,6 +71,7 @@ def run_migrations_online():
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
+            compare_type=True
         )
 
         with context.begin_transaction():
