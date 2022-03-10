@@ -124,3 +124,9 @@ def get_disciplines(db: Session, skip: int = 0, limit: int | None = None, name: 
 def get_simpe_model(db: Session, model, **kwargs):
     query = db.query(model).filter_by(**kwargs).all()
     return query
+
+
+def delete_simpe_model(db: Session, model, **kwargs):
+    _ = db.query(model).filter_by(**kwargs).delete()
+    db.commit()
+    return

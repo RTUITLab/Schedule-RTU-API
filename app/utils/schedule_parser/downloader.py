@@ -82,58 +82,6 @@ class Downloader:
         else:
             return 1
 
-    def save_file(self, url, file_name):
-        def download(download_url, file_name: str):
-
-            with requests.get(download_url, stream=True) as r:
-                r.raise_for_status()
-                h = hashlib.sha1()
-
-                # loop till the end of the file
-                chunk = 0
-                for chunk in r.iter_content(chunk_size=1024):
-                    if chunk:
-                        h.update(chunk)
-
-                period_id = self.get_period_id(file_name)
-                institute_id = self.get_inst(file_name)
-                place_id = self.get_place(file_name)
-                year = self.get_year(file_name)
-                is_mag = "МАГ" in file_name.upper()
-
-                hash = get_or_create(session=self.db, model=models.FileHash,
-                                     period_id=period_id, institute_id=institute_id, 
-                                     place_id=place_id, year=year, is_mag=is_mag)
-                if hash.hash == h.hexdigest():
-                    print("skip", file_name)
-                    return 
-                else:
-                    print(hash.hash, "!=", h.hexdigest())
-                    hash.hash = h.hexdigest()
-                    self.db.commit()
-                # return the hex representation of digest
-                
-                # with open(download_path, 'wb') as f:
-                #     for chunk in r.iter_content(chunk_size=8192):
-                #         if chunk:
-                #             f.write(chunk)
-                    with requests.get(download_url, stream=True) as r:
-                        subdir = self.get_period(file_name.upper())
-                        path_to_file = os.path.join(
-                            self.base_file_dir, subdir, file_name)
-                        r.raise_for_status()
-                        if os.path.isfile(path_to_file):
-                            os.remove(path_to_file)
-                        with open(path_to_file, 'wb') as f:
-                            for chunk in r.iter_content(chunk_size=1024):
-                                if chunk:
-                                    f.write(chunk)
-                print("download", file_name)
-
-        download(url, file_name)
-        return "download"
-
-
     def download(self):
         #urlopen(request, context=ssl.create_default_context(cafile=certifi.where()))
         response = request.urlopen(self.url, context=ssl.create_default_context(
@@ -158,6 +106,8 @@ class Downloader:
         else:
             shutil.rmtree(self.base_file_dir)
             os.makedirs(self.base_file_dir)
+        hashes = self.db.query(models.FileHash).all()
+        hashes = [h.name for h in hashes]
 
         for url_file in url_files:  # цикл по списку
             divided_path = os.path.split(url_file)
@@ -177,8 +127,44 @@ class Downloader:
                     if not os.path.isdir(os.path.join(self.base_file_dir, subdir)):
                         os.makedirs(os.path.join(
                             self.base_file_dir, subdir), exist_ok=False)
+                    
+                    h = hashlib.sha1()
 
-                    self.save_file(url_file, file_name)
+                    with requests.get(url_file, stream=True) as r:
+                        r.raise_for_status()
+                        # loop till the end of the file
+                        chunk = 0
+                        for chunk in r.iter_content(chunk_size=1024):
+                            if chunk:
+                                h.update(chunk)
+
+                    hash = get_or_create(session=self.db, model=models.FileHash,
+                                        name=file_name)
+                    if hash.hash == h.hexdigest():
+                        print("skip", file_name)
+
+                    else:
+                        print(hash.hash, "!=", h.hexdigest())
+                        hash.hash = h.hexdigest()
+                        self.db.commit()
+                    # return the hex representation of digest
+                    
+                    # with open(download_path, 'wb') as f:
+                    #     for chunk in r.iter_content(chunk_size=8192):
+                    #         if chunk:
+                    #             f.write(chunk)
+                        with requests.get(url_file, stream=True) as r:
+                            subdir = self.get_period(file_name.upper())
+                            path_to_file = os.path.join(
+                                self.base_file_dir, subdir, file_name)
+                            r.raise_for_status()
+                            if os.path.isfile(path_to_file):
+                                os.remove(path_to_file)
+                            with open(path_to_file, 'wb') as f:
+                                for chunk in r.iter_content(chunk_size=1024):
+                                    if chunk:
+                                        f.write(chunk)
+                        print("download", file_name)
 
             except Exception as err:
                 traceback.print_exc()

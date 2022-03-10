@@ -2,6 +2,21 @@ from email.headerregistry import Group
 from pydantic import BaseModel, validator, Field
 
 
+class FileHashBase(BaseModel):
+    name: str
+    hash: str
+
+    class Config:
+        orm_mode = True
+
+
+class FileHashOut(FileHashBase):
+    id: int
+    
+    class Config:
+        orm_mode = True
+
+
 class CallBase(BaseModel):
     call_num: int
     begin_time: str

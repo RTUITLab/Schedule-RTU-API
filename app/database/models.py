@@ -163,16 +163,12 @@ class Institute(DataBase):
 class FileHash(DataBase):
     __tablename__ = "file_hash"
     id = Column(Integer, primary_key=True)
-    institute_id = Column(Integer, ForeignKey('institute.id'), nullable=True)
-    year = Column(Integer)
-    is_mag = Column(Boolean)
-    place_id = Column(Integer, ForeignKey('place.id'), nullable=True)
-    period_id = Column(Integer, ForeignKey('period.id'), nullable=False)
+    name = Column(String(80), unique=True, nullable=False, index=True)
 
     hash = Column(String(40), nullable=True, default=None)
 
     def __repr__(self):
-        return '<FileHash %r>' % self.hash
+        return '<FileHash %r>' % self.name
 
 
 class Lesson(DataBase):
