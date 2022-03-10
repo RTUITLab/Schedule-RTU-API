@@ -40,7 +40,6 @@ def parse_schedule(db):
             print("Reader error -> ", err)
         print("start reading")
         reader.run('xls')
-        # shutil.rmtree('xls/')
         print("\nКонвертация успешно выполнена!\n\n")
 
     except FileNotFoundError as err:

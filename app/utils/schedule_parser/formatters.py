@@ -198,27 +198,28 @@ def format_name(temp_name: str, week: int, week_count: int):
     """
     
     temp_name = re.sub(r'(\. \. )+|(\.\.\.)+|…+', '', temp_name)
+    temp_name = re.sub(r'(\d)\.', r'\g<1>,', temp_name)
     # temp_name = re.sub(r'( ){3,}', ' ', temp_name)
-
-    temp_name = temp_name.strip()
-    
     # print(temp_name, "temp_name")
-    if len(temp_name) < 3:
-        return ""
     # print(temp_name)
     temp_name = temp_name.replace('кроме', 'кр. ')
     temp_name = temp_name.replace('II', '2')
     temp_name = temp_name.replace('I', '1')
+    temp_name = temp_name.strip()
+
+    if len(temp_name) < 3:
+        return ""
+
     temp_name2 = temp_name
     result = []
-    if(re.match(r'\d|кр', temp_name)):
+    if(re.match(r'\d|кр', temp_name) and not re.search(r'н\.* *\( *кр', temp_name)):
         result = []
-        match = re.search(r'((кр\.*)*(\nкр\.*)*(^кр\.*)*( кр\.* )* *\d,* *н*-*)*((?!кр )(?!кр\.)\D|\d *(?=п/г)|\d *(?=гр\.*)|\d *(?=подгр*\.*))*',temp_name)
+        match = re.search(r'(?:(?:кр\.*)*(?:\nкр\.*)*(?:^кр\.*)*(?: кр\.* )* *\d *,* *н*-*)*(?:(?!кр )(?!кр\.)\D|\d *(?=п/г)|\d *(?=гр\.*)|\d *(?=подгр*\.*)|\d(?=\+\d *гр\.*)|\d *(?=г))*',temp_name)
         while match[0]:
             # print(match[0].strip())
             result.append(match[0].strip())
             temp_name = temp_name[match.end(0):]
-            match = re.search(r'((кр\.*)*(\nкр\.*)*(^кр\.*)*( кр\.* )* *\d,* *н*-*)*((?!кр )(?!кр\.)\D|\d *(?=п/г)|\d *(?=гр\.*)|\d *(?=подгр*\.*))*', temp_name)
+            match = re.search(r'(?:(?:кр\.*)*(?:\nкр\.*)*(?:^кр\.*)*(?: кр\.* )* *\d *,* *н*-*)*(?:(?!кр )(?!кр\.)\D|\d *(?=п/г)|\d *(?=гр\.*)|\d *(?=подгр*\.*)|\d(?=\+\d *гр\.*)|\d *(?=г))*', temp_name)
         # print("------")
         # print(result)
 
@@ -231,20 +232,19 @@ def format_name(temp_name: str, week: int, week_count: int):
     result = [x.strip() for x in result if len(x.strip())]
     # print(result)
     for name_num in range(1, len(result)):
-
-        if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
+        if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+|\d-\d|\dн', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
             # Убрать ВСЕ лишнее
             clean_discipline_name = re.sub(r"п/гр|п/г|\(.*\d+.*\)|\(.*I+.*\)|,|\d+н| н |н\.|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|\d+(?!с)(?!С)|\+|(?<!\w)нед\.*(?!\w)|(?<=\d)нед\.*(?!\w)|подгр*\.*|;| кр |кр\.|^кр | гр\.| гр ",
                                            "", result[name_num-1]).strip()
             result[name_num] += " " + clean_discipline_name
 
     for name_num in range(0, len(result)-1):
-        if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
+        if re.search(r'\d+\s+\d+|\d+,\s*\d+|\d+\s*,\d+|\d-\d|\dн', result[name_num]) and not re.search(r'\w{5,}', result[name_num]):
             clean_discipline_name = re.sub(r"п/гр|п/г|\(.*\d+.*\)|\(.*I+.*\)|,|\d+н| н |н\.|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)|\d+(?!с)(?!С)|\+|(?<!\w)нед\.*(?!\w)|(?<=\d)нед\.*(?!\w)|подгр*\.*|;| кр |кр\.|^кр | гр\.| гр ",
                                            "", result[name_num+1]).strip()
-            if not re.search(r'\w{5,}', clean_discipline_name) and name_num+2 < len(result):
+            if not re.search(r'\w{5,}', clean_discipline_name) and name_num+1 < len(result):
                 clean_discipline_name = re.sub(
-                    r"\d+|п/г|\(|\)|,| н |н\.", "", result[name_num+2]).strip()
+                    r"\d+|п/г|\(|\)|,| н |н\.", "", result[name_num+1]).strip()
             result[name_num] += " " + clean_discipline_name
 
     for name_num in range(len(result)):
@@ -253,13 +253,13 @@ def format_name(temp_name: str, week: int, week_count: int):
                                        "", discipl).strip()
         if len(clean_discipline_name) < 3:
             print("Something wrong with", temp_name2, "! discipl ->",
-                  discipl, "|clean_discipline_name->", clean_discipline_name)
+                  discipl, "|clean_discipline_name->", clean_discipline_name, bool(re.match(r'\d|кр', temp_name)))
             return ""
         if len(clean_discipline_name) > 2 and clean_discipline_name[0] == "н" and (clean_discipline_name[1] == " " or clean_discipline_name[1].isupper()):
             clean_discipline_name = clean_discipline_name[1:]
 
         weeks = re.findall(
-            r"(?<!подг) *(?<!\+)\d+(?!с)(?!С)(?! *п/г)(?! *гр)(?! *\+)(?! *подг)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", discipl)
+            r"(?<!подг) *(?<!\+)\d+(?!с)(?!С)(?! *п/г)(?! *гр)(?! *\+)(?! *подг)(?! *г)|(?<=\d)-(?= *\d)|(?<=\d )-(?= *\d)", discipl)
         subs = set()
         subgroups = re.findall(r"(?:\d,*\+* *)+(?=подг*р*\.*| *Подгруппа| *подгруппа|гр*|п/гр*|п)|(?<=Подгруппа) *\d|(?<=подгруппа) *\d", discipl)
         for i in subgroups:
