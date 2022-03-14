@@ -9,7 +9,6 @@ from ...dependencies import get_settings
 
 
 def parse_schedule(db):
-    global Downloader
     try:
         engine = create_engine(get_settings().database_url,
                             encoding='utf-8', echo=True)
@@ -31,7 +30,7 @@ def parse_schedule(db):
         create_predefined(db=db)
 
         Download = Downloader(db=db, path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
-        Download.download()
+        # Download.download()
 
         print("downloaded")
         try:

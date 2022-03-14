@@ -75,7 +75,7 @@ class Downloader:
 
     def get_place(self, file_name: str):
         temp_file_name = file_name.lower()
-        if "стром" in temp_file_name or "кбисп" in temp_file_name or "икб" in temp_file_name or ("иту" in temp_file_name and "сем" in temp_file_name):
+        if "стром" in temp_file_name or "кбисп" in temp_file_name or "икб" in temp_file_name or ("иту" in temp_file_name and ("сем" in temp_file_name or "маг_оч" in temp_file_name)):
             return 3
         elif "итхт" in temp_file_name:
             return 2

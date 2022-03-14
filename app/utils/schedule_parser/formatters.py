@@ -182,13 +182,17 @@ def format_room_name(cell: str, notes_dict: dict, current_place: int):
             if room == "Д" or room == "Д." or "ДИСТ" in room or "ЛК Д" in room or not len(room):
                 all_rooms.append([room, None])
             elif current_place == 3 and check_room_for_78(room) or current_place == 3 and room[0] == "Е":
-                # print("78 in strom!", room)
+                print("78 in strom!", room)
                 all_rooms.append([room_fixer(room), 1])
+            # elif current_place == 1 and not check_room_for_78(room) and :
+            #     print("strom in 78!", room)
+            #     all_rooms.append([room_fixer(room), 3])
             elif current_place == 1:
                 all_rooms.append([room_fixer(room), 1])
             else:
                 all_rooms.append([room, current_place])
     # print(all_rooms, "<- all_rooms")
+    # print(cell, ' all_rooms -> ', all_rooms)
     return all_rooms
 
 

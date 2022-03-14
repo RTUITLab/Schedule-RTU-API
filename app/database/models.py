@@ -198,8 +198,8 @@ class Lesson(DataBase):
     groups = relationship("Group",
                     secondary=lesson_group,
                     back_populates="lessons")
-    specific_weeks = relationship("SpecificWeek", back_populates="lesson")
-    subgroups = relationship("Subgroup", back_populates="lesson")
+    specific_weeks = relationship("SpecificWeek", back_populates="lesson", cascade="all, delete")
+    subgroups = relationship("Subgroup", back_populates="lesson", cascade="all, delete")
     every_week = Column(Boolean, default=True)
 
     def __repr__(self):

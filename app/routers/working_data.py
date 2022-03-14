@@ -12,7 +12,7 @@ router = APIRouter(
 )
 
 # TODO password
-@router.get('/refresh/', summary="Refresh schedule",
+@router.post('/refresh/', summary="Refresh schedule",
             status_code=status.HTTP_200_OK)
 async def read_lessons(background_tasks: BackgroundTasks, db=Depends(get_db)):
     background_tasks.add_task(parse_schedule, db)

@@ -32,7 +32,7 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
         group = kwargs.pop("group")
     
     if "teacher" in kwargs:
-        group = kwargs.pop("teacher")
+        teacher = kwargs.pop("teacher")
 
     query = db.query(models.Lesson).filter_by(
         **kwargs)

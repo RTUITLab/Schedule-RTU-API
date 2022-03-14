@@ -91,7 +91,7 @@ class Reader:
             for file_name in files:
 
                 temp_file_name = file_name.lower()
-                if "стром" in temp_file_name or "кбисп" in temp_file_name or "икб" in temp_file_name or ("иту" in temp_file_name and "сем" in temp_file_name):
+                if "стром" in temp_file_name or "кбисп" in temp_file_name or "икб" in temp_file_name or ("иту" in temp_file_name and ("сем" in temp_file_name or "маг_оч" in temp_file_name)):
                     self.current_place = 3
                 elif "итхт" in temp_file_name:
                     self.current_place = 2
@@ -169,7 +169,9 @@ class Reader:
             less = ""
 
             # print(discipline_name[0])
-
+            room_id = None
+            if room:
+                room_id = room.id
             every_week = bool(weeks)
             discipline = get_or_create(
                 session=self.db, model=models.Discipline, name=discipline_name[0])
@@ -180,35 +182,41 @@ class Reader:
                                                                period_id=period,
                                                                lesson_type_id=lesson_type,
                                                                discipline_id=discipline.id,
-                                                               room_id=room,
+                                                               room_id=room_id,
                                                                day_of_week=day_num,
                                                                is_usual_place=is_usual_place,
                                                                every_week=every_week,
                                                                week=week)
+                
                 if teacher:
-                    query.join(models.Lesson.teachers.and_(
+                    query = query.join(models.Lesson.teachers.and_(
                         models.Teacher.id == teacher[0].id))
 
                 instance = query.first()
+
                 if instance:
                     lesson = instance
+                    # if "Линейная алгебра и аналитическая геометрия" in instance.discipline.name:
+                    #     print(group.name, instance.discipline.name, instance.day_of_week, instance.week, instance.call_id, instance.teachers)
+                    #     print(teacher)
                 else:
                     lesson = models.Lesson(call_id=call,
                                            period_id=period,
                                            lesson_type_id=lesson_type,
                                            discipline_id=discipline.id,
-                                           room_id=room,
+                                           room_id=room_id,
                                            day_of_week=day_num,
                                            is_usual_place=is_usual_place,
                                            every_week=every_week,
                                            week=week)
+                    # lesson.teachers.append(teacher[0])
 
             else:
                 lesson = models.Lesson(call_id=call,
                                        period_id=period,
                                        lesson_type_id=lesson_type,
                                        discipline_id=discipline.id,
-                                       room_id=room,
+                                       room_id=room_id,
                                        day_of_week=day_num,
                                        is_usual_place=is_usual_place,
                                        every_week=every_week,
@@ -251,6 +259,7 @@ class Reader:
                                           year=get_group_year(group_name),
                                           degree_id=get_group_degree(group_name))
 
+
                 for n_day, day_item in sorted(value.items()):
 
                     for n_lesson, lesson_item in sorted(day_item.items()):
@@ -278,7 +287,6 @@ class Reader:
                                 if dist['teacher']:
                                     teacher = [get_or_create(
                                         session=self.db, model=models.Teacher, name=t) for t in dist['teacher'] if t]
-                                    teacher = teacher
                                 else:
                                     teacher = None
                                 if dist['room']:
@@ -288,7 +296,6 @@ class Reader:
                                         is_usual_place = True
                                     else:
                                         is_usual_place = False
-                                    room = room.id
 
                                 else:
                                     room = None
@@ -296,7 +303,7 @@ class Reader:
                                 self.db.flush()
 
                                 # print(is_usual_place, room, room.place_id, self.current_place)
-
+                                
                                 data_append_to_lesson(group, self.current_period, teacher,
                                                       day_num,
                                                       call_num,
