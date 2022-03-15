@@ -24,7 +24,7 @@ async def get_many(db=Depends(get_db), queries: TeacherQueryParams = Depends(Tea
 async def get_one(id: int, db=Depends(get_db)):
     item = crud.get_simpe_model(db=db, id=id, model=models.Teacher)
     if item:
-        return item
+        return item[0]
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Teacher not found")

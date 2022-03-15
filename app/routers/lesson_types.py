@@ -23,7 +23,7 @@ async def get_many(db=Depends(get_db)):
 async def get_one(id: int, db=Depends(get_db)):
     lesson_type = crud.get_simpe_model(db=db, id=id, model=models.LessonType)
     if lesson_type:
-        return lesson_type
+        return lesson_type[0]
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Lesson type not found")

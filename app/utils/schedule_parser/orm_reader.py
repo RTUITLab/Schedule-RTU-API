@@ -470,6 +470,7 @@ class Reader:
             return week_range
 
         book = xlrd.open_workbook(xlsx_path)
+        # print(book)
         sheet = book.sheet_by_index(0)
         DOC_TYPE_EXAM = 2
         column_range = []

@@ -21,9 +21,9 @@ async def get_many(db=Depends(get_db)):
             response_model=schemas.RoomOut,
             status_code=status.HTTP_200_OK)
 async def get_one(id: int, db=Depends(get_db)):
-    period = crud.get_simpe_model(db=db, id=id, model=models.Room)
-    if period:
-        return period
+    room = crud.get_simpe_model(db=db, id=id, model=models.Room)
+    if room:
+        return room[0]
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Room not found")

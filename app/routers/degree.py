@@ -5,7 +5,7 @@ from ..database import crud, schemas, models
 from ..dependencies import get_db
 
 router = APIRouter(
-    prefix="/degree",
+    prefix="/degrees",
     tags=["Академические степени"]
 )
 
@@ -23,7 +23,7 @@ async def get_many(db=Depends(get_db)):
 async def get_one(id: int, db=Depends(get_db)):
     degree = crud.get_simpe_model(db=db, id=id, model=models.Degree)
     if degree:
-        return degree
+        return degree[0]
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Degree not found")

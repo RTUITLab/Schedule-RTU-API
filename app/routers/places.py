@@ -24,7 +24,7 @@ async def get_places(db=Depends(get_db)):
 async def get_places(id: int, db=Depends(get_db)):
     place = crud.get_simpe_model(db=db, id=id, model=models.Place)
     if place:
-        return place
+        return place[0]
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Place not found")

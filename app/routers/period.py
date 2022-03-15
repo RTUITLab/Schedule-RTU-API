@@ -23,7 +23,7 @@ async def get_many(db=Depends(get_db)):
 async def get_one(id: int, db=Depends(get_db)):
     period = crud.get_simpe_model(db=db, id=id, model=models.Period)
     if period:
-        return period
+        return period[0]
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Period not found")
