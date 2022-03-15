@@ -17,21 +17,21 @@ from .formatters import format_lesson_type, format_name, format_room_name, forma
 class Reader:
 
     def __init__(self, db: Session):
-        self.week_count = 16
+        self.weeks_count = 16
         self.db = db
         offset = dt.timedelta(hours=3)
         time_zone = dt.timezone(offset, name='МСК')
         self.today = datetime.now(tz=time_zone)
 
         try:
-            self.week_count = int(self.db.query(models.WorkingData).filter_by(
-                name="week_count").first().value)
+            self.weeks_count = int(self.db.query(models.WorkingData).filter_by(
+                name="weeks_count").first().value)
 
         except Exception as err:
-            self.week_count = int(get_or_create(session=self.db, model=models.WorkingData,
-                                                name="week_count", value="16")).value
+            self.weeks_count = int(get_or_create(session=self.db, model=models.WorkingData,
+                                                name="weeks_count", value="16")).value
 
-            print("week_count ERROR! -> ", err)
+            print("weeks_count ERROR! -> ", err)
 
 
         self.notes_dict = {
@@ -308,10 +308,11 @@ class Reader:
                                                       day_num,
                                                       call_num,
                                                       week, lesson_type, room, is_usual_place, dist['name'])
-            except:
+            except Exception as e:
                 self.db.rollback()
                 print("----------")
                 print("ROLLBACK ON SCHEDULE APPEND")
+                print("Reason: ", e)
                 print("----------")
 
     def read_one_group_for_semester(self, sheet, discipline_col_num, group_name_row_num, cell_range):
@@ -350,7 +351,7 @@ class Reader:
                     string_index, discipline_col_num).value)
                 # if lesson_num ==  9:
                 #     print(time, group_name, tmp_name, day_num)
-                tmp_name = format_name(tmp_name, week_num, self.week_count)
+                tmp_name = format_name(tmp_name, week_num, self.weeks_count)
 
                 if isinstance(tmp_name, list) and tmp_name:
 

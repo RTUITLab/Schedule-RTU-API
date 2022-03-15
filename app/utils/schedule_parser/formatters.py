@@ -196,7 +196,7 @@ def format_room_name(cell: str, notes_dict: dict, current_place: int):
     return all_rooms
 
 
-def format_name(temp_name: str, week: int, week_count: int):
+def format_name(temp_name: str, week: int, weeks_count: int):
     """
     Форматирование ячейки с названием дисциплины. Возвращает список найденных дисциплин с неделями, на которых онипроводятся.
     """
@@ -298,14 +298,14 @@ def format_name(temp_name: str, week: int, week_count: int):
                     print("BAD FORMAT -> ", discipl)
         if len(weeks):
             if re.search(r"(?<!\w)кр\.*(?!\w)|(?<!\w)кр\.*(?=\d)", discipl):
-                for i in range(week, week_count+1, 2):
+                for i in range(week, weeks_count+1, 2):
                     if str(i) not in weeks:
                         result_weeks.add(i)
             else:
                 for i in weeks:
                     result_weeks.add(int(i))
         elif flag:
-            # for i in range(week, week_count+1, 2):
+            # for i in range(week, weeks_count+1, 2):
             #     result_weeks.add(i)
             result_weeks = []
             # print(week)

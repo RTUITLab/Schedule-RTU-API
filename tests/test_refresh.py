@@ -11,14 +11,14 @@ from app.dependencies import get_db, get_settings
 from app.main import app
 from .testing_items import testing_items
 
-
-SQLALCHEMY_DATABASE_URL = "sqlite:///tests/sql_app.db"
-
+settings = get_settings()
+SQLALCHEMY_DATABASE_URL = settings.test_database_url
+print(SQLALCHEMY_DATABASE_URL)
 engine = create_engine(SQLALCHEMY_DATABASE_URL,
                        connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False,
                                    autoflush=False, bind=engine)
-settings = get_settings()
+
 DataBase.metadata.create_all(bind=engine)
 
 
@@ -29,14 +29,34 @@ def override_get_db():
     finally:
         db.close()
 
+
 app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app, base_url="http://localhost")
 
 test_message = {"message": "test message"}
 
+
+# def test_setting_working_data():
+
+
+
 @pytest.mark.asyncio
 async def test_refresh():
+    response = client.post(
+        "/working_data/", headers={"X-Auth-Token": "coneofsilence"}, json={
+            "name": "weeks_count",
+            "value": "17"
+        })
+    assert response.status_code == 401
+    response = client.post(
+        "/working_data/", headers={"X-Auth-Token": settings.app_secret}, json={
+            "name": "weeks_count",
+            "value": "17"
+        })
+    assert response.status_code == 200
+    assert {"id": 1, "name": "weeks_count", "value": "17"} == response.json()
+
     async with AsyncClient(app=app, base_url="http://localhost") as ac:
         response = await ac.post("/working_data/refresh/", headers={"X-Auth-Token": "coneofsilence"})
         assert response.status_code == 401
@@ -45,9 +65,9 @@ async def test_refresh():
         assert response.status_code == 200
 
     # async with AsyncClient(app=app, base_url="http://localhost") as ac:
-        
+
     print("await??!!")
-    
+
 
 def test_calls():
     response = client.get("/calls/")
@@ -58,6 +78,8 @@ def test_calls():
     assert response.status_code == 200
     assert testing_items["calls"][0] == response.json()
 
+
+DataBase.metadata.drop_all(bind=engine)
 # def test_disciplines():
 #     response = client.get("/disciplines/")
 #     assert response.status_code == 200

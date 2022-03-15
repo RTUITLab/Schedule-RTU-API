@@ -27,10 +27,10 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
             kwargs["week"] = week
     if "place_id" in kwargs:
         place_id = kwargs.pop("place_id")
-        
+
     if "group" in kwargs:
         group = kwargs.pop("group")
-    
+
     if "teacher" in kwargs:
         teacher = kwargs.pop("teacher")
 
@@ -50,7 +50,8 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
     #         models.SpecificWeek.lesson_id == models.Lesson.id)))
 
     if place_id:
-        query = query.join(models.Room).join(models.Place).filter(models.Place.id == place_id)
+        query = query.join(models.Room).join(
+            models.Place).filter(models.Place.id == place_id)
         # res = []
         # for less in query:
         #     print(less.room)
@@ -84,7 +85,8 @@ def get_groups(db: Session, skip: int = 0, limit: int | None = None, name: str |
         query = db.query(models.Group).filter_by(**kwargs).filter(
             models.Group.name.ilike(search)).offset(skip).limit(limit).all()
     else:
-        query = db.query(models.Group).filter_by(**kwargs).offset(skip).limit(limit).all()
+        query = db.query(models.Group).filter_by(
+            **kwargs).offset(skip).limit(limit).all()
     return query
 
 
@@ -100,14 +102,14 @@ def get_teachers(db: Session, skip: int = 0, limit: int | None = None, name: str
 
 def get_rooms(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None):
     # TODO need to format name
-   
+
     if name:
         search = "%{}%".format(name.upper())
         query = db.query(models.Room).filter(
             models.Room.name.ilike(search)).offset(skip).limit(limit).all()
     else:
         query = db.query(models.Room).offset(skip).limit(limit).all()
-    
+
     return query
 
 
@@ -130,3 +132,17 @@ def delete_simpe_model(db: Session, model, **kwargs):
     _ = db.query(model).filter_by(**kwargs).delete()
     db.commit()
     return
+
+
+def set_working_data(db: Session, data: schemas.WorkingDataBase):
+    try:
+        instance = db.query(models.WorkingData).filter_by(name=data.name).first()
+        instance.value = str(data.value)
+        db.commit()
+        return instance
+
+    except Exception as err:
+        instance = models.WorkingData(name=data.name, value=data.value)
+        db.add(instance)
+        db.commit()
+        return instance

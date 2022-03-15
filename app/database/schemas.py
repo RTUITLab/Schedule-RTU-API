@@ -2,6 +2,21 @@ from email.headerregistry import Group
 from pydantic import BaseModel, validator, Field
 
 
+class WorkingDataBase(BaseModel):
+    name: str
+    value: str
+
+    class Config:
+        orm_mode = True
+
+
+class WorkingDataOut(WorkingDataBase):
+    id: int
+    
+    class Config:
+        orm_mode = True
+
+
 class FileHashBase(BaseModel):
     name: str
     hash: str

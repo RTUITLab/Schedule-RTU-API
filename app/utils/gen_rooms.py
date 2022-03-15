@@ -63,7 +63,7 @@ def gen_rooms2(db: Session):
         None: 0
     }
     counter = 0
-    week_count = 17
+    weeks_count = 17
     with open('result.csv', 'w', encoding='utf-8', newline='') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=header, delimiter=";")
         writer.writeheader()
@@ -83,7 +83,7 @@ def gen_rooms2(db: Session):
                 sp = lesson.specific_weeks
                 if not sp:
                     sp = []
-                    for i in range(lesson.week, week_count+1, 2):
+                    for i in range(lesson.week, weeks_count+1, 2):
                         sp.append(i)
                 else:
                     sp = [x.secific_week for x in sp]

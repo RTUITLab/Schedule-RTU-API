@@ -1,5 +1,6 @@
 from importlib.metadata import requires
 from fastapi import APIRouter, Depends, Header, Response, status, BackgroundTasks
+from sqlalchemy.ext.declarative import declarative_base
 # from typing import List
 
 from ..database import crud, schemas
@@ -15,10 +16,9 @@ router = APIRouter(
 settings = get_settings()
 
 
-# TODO password
-@router.post('/refresh/', summary="Refresh schedule",
+@router.post('/refresh/', summary="Обновить расписание",
             status_code=status.HTTP_200_OK)
-async def read_lessons(background_tasks: BackgroundTasks, db=Depends(get_db), X_Auth_Token: str = Header(None)):
+async def refresh(background_tasks: BackgroundTasks, db=Depends(get_db), X_Auth_Token: str = Header(None)):
     if X_Auth_Token == settings.app_secret:
         background_tasks.add_task(parse_schedule, db)
         return {"detail": "Parsing started"}
@@ -26,13 +26,12 @@ async def read_lessons(background_tasks: BackgroundTasks, db=Depends(get_db), X_
         return Response("Wrong token", status_code=status.HTTP_401_UNAUTHORIZED)
     
 
-# TODO password
-@router.post('/refresh/', summary="Refresh schedule",
+@router.post('/', summary="Установить вспомогательные данные (weeks_count)", response_model=schemas.WorkingDataOut,
             status_code=status.HTTP_200_OK)
-async def read_lessons(background_tasks: BackgroundTasks, db=Depends(get_db), X_Auth_Token: str = Header(None)):
+async def set_weeks_count(working_data: schemas.WorkingDataBase, db=Depends(get_db), X_Auth_Token: str = Header(None)):
+    
     if X_Auth_Token == settings.app_secret:
-        background_tasks.add_task(parse_schedule, db)
-        return {"detail": "Parsing started"}
+        return crud.set_working_data(db=db, data=working_data)
     else:
         return Response("Wrong token", status_code=status.HTTP_401_UNAUTHORIZED)
 
