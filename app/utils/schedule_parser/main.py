@@ -10,20 +10,20 @@ from ...dependencies import get_settings
 
 def parse_schedule(db, test_mode=False):
     try:
-        engine = create_engine(get_settings().database_url,
-                            encoding='utf-8', echo=True)
+        # engine = create_engine(get_settings().database_url,
+        #                     encoding='utf-8', echo=True)
         
-        meta = MetaData()
+        # meta = MetaData()
 
-        connection = engine.connect()
-        connection.execute( '''TRUNCATE TABLE specific_week CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE lesson CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE discipline CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE "group" CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE room CASCADE''' )
-        connection.execute( '''TRUNCATE TABLE teacher CASCADE''' )
+        # connection = engine.connect()
+        # connection.execute( '''TRUNCATE TABLE specific_week CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE lesson CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE discipline CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE "group" CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE room CASCADE''' )
+        # connection.execute( '''TRUNCATE TABLE teacher CASCADE''' )
 
-        connection.close()
+        # connection.close()
     
         print("truncate")
         

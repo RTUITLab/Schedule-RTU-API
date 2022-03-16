@@ -10,6 +10,7 @@ from app.database.database import DataBase
 from app.dependencies import get_db, get_settings
 from app.main import app
 from .testing_items import testing_items
+from .lessons_for_tests import lessons
 
 
 settings = get_settings()
@@ -102,6 +103,15 @@ def test_degrees():
     response = client.get("/degrees/1/")
     assert response.status_code == 200
     assert testing_items["degrees"][0] == response.json()
+
+def test_lessons():
+    response = client.get("/lessons/")
+    assert response.status_code == 200
+    assert lessons == response.json()
+
+    response = client.get("/lessons/1/")
+    assert response.status_code == 200
+    assert lessons[0] == response.json()
 
 
 

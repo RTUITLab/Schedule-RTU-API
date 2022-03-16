@@ -168,7 +168,7 @@ async def get_lessons(db=Depends(get_db),
 async def get_lesson(id: int, db=Depends(get_db)):
     lesson = crud.get_lessons(db=db, id=id)
     if lesson:
-        return lesson
+        return lesson[0]
 
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Lesson not found")
