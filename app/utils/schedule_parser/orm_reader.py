@@ -174,7 +174,7 @@ class Reader:
             room_id = None
             if room:
                 room_id = room.id
-            every_week = bool(weeks)
+            every_week = not weeks
             discipline = get_or_create(
                 session=self.db, model=models.Discipline, name=discipline_name[0])
             self.db.flush()
@@ -255,11 +255,16 @@ class Reader:
                     print("Add schedule for ", group_name)
                     group_name = group_name[0]
 
+
                     group = get_or_create(session=self.db,
                                           model=models.Group,
                                           name=group_name,
                                           year=get_group_year(group_name),
                                           degree_id=get_group_degree(group_name))
+                    for lesson in group.lessons:
+                        self.db.delete(lesson)
+                    
+                    self.db.commit()
 
 
                 for n_day, day_item in sorted(value.items()):

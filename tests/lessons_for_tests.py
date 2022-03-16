@@ -52,7 +52,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 1,
@@ -111,7 +111,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 1,
@@ -170,7 +170,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -229,7 +229,7 @@ lessons = [
       15
     ],
     "subgroups": [],
-    "every_week": True
+    "every_week": False
   },
   {
     "day_of_week": 2,
@@ -280,7 +280,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -339,7 +339,7 @@ lessons = [
       15
     ],
     "subgroups": [],
-    "every_week": True
+    "every_week": False
   },
   {
     "day_of_week": 2,
@@ -390,7 +390,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -450,7 +450,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -510,7 +510,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -565,7 +565,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -620,7 +620,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -675,7 +675,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -730,7 +730,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -785,7 +785,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -840,7 +840,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -895,7 +895,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -957,7 +957,7 @@ lessons = [
     "subgroups": [
       1
     ],
-    "every_week": True
+    "every_week": False
   },
   {
     "day_of_week": 3,
@@ -1019,7 +1019,7 @@ lessons = [
     "subgroups": [
       2
     ],
-    "every_week": True
+    "every_week": False
   },
   {
     "day_of_week": 3,
@@ -1076,7 +1076,7 @@ lessons = [
     "subgroups": [
       1
     ],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -1138,7 +1138,7 @@ lessons = [
     "subgroups": [
       1
     ],
-    "every_week": True
+    "every_week": False
   },
   {
     "day_of_week": 3,
@@ -1200,7 +1200,7 @@ lessons = [
     "subgroups": [
       2
     ],
-    "every_week": True
+    "every_week": False
   },
   {
     "day_of_week": 3,
@@ -1257,7 +1257,7 @@ lessons = [
     "subgroups": [
       1
     ],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -1303,7 +1303,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -1349,7 +1349,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -1395,7 +1395,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -1441,7 +1441,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -1505,7 +1505,7 @@ lessons = [
       5
     ],
     "subgroups": [],
-    "every_week": True
+    "every_week": False
   },
   {
     "day_of_week": 4,
@@ -1569,7 +1569,7 @@ lessons = [
       6
     ],
     "subgroups": [],
-    "every_week": True
+    "every_week": False
   },
   {
     "day_of_week": 4,
@@ -1620,7 +1620,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -1671,7 +1671,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -1722,7 +1722,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -1773,7 +1773,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 5,
@@ -1828,7 +1828,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 5,
@@ -1883,7 +1883,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 5,
@@ -1938,7 +1938,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 5,
@@ -1993,7 +1993,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 5,
@@ -2048,7 +2048,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 5,
@@ -2103,7 +2103,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 5,
@@ -2160,7 +2160,7 @@ lessons = [
     "subgroups": [
       2
     ],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 5,
@@ -2217,7 +2217,7 @@ lessons = [
     "subgroups": [
       2
     ],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 1,
@@ -2272,7 +2272,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 1,
@@ -2327,7 +2327,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 1,
@@ -2382,7 +2382,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 1,
@@ -2437,7 +2437,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -2488,7 +2488,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -2539,7 +2539,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -2590,7 +2590,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -2641,7 +2641,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -2692,7 +2692,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -2743,7 +2743,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 2,
@@ -2794,7 +2794,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -2844,7 +2844,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -2894,7 +2894,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -2944,7 +2944,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -2994,7 +2994,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 3,
@@ -3049,7 +3049,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -3104,7 +3104,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 4,
@@ -3159,7 +3159,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 6,
@@ -3214,7 +3214,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 6,
@@ -3269,7 +3269,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 6,
@@ -3328,7 +3328,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 6,
@@ -3387,7 +3387,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 6,
@@ -3442,7 +3442,7 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   },
   {
     "day_of_week": 6,
@@ -3497,6 +3497,6 @@ lessons = [
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": False
+    "every_week": True
   }
 ]

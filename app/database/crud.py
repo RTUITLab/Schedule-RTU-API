@@ -25,6 +25,10 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
             week = 2
         if not "week" in kwargs:
             kwargs["week"] = week
+        elif week != kwargs["week"]:
+                return []
+
+
     if "place_id" in kwargs:
         place_id = kwargs.pop("place_id")
 
@@ -60,7 +64,7 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
         # query = res
 
     query = query.offset(skip).limit(limit).all()
-
+    
     if specific_week:
         res = []
         for less in query:

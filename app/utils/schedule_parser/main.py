@@ -1,32 +1,10 @@
-from sqlalchemy import MetaData
-from sqlalchemy import create_engine
-
 from .orm_reader import Reader
 from .downloader import Downloader
 from .predefined import create_predefined
 
-from ...dependencies import get_settings
-
 
 def parse_schedule(db, test_mode=False):
     try:
-        # engine = create_engine(get_settings().database_url,
-        #                     encoding='utf-8', echo=True)
-        
-        # meta = MetaData()
-
-        # connection = engine.connect()
-        # connection.execute( '''TRUNCATE TABLE specific_week CASCADE''' )
-        # connection.execute( '''TRUNCATE TABLE lesson CASCADE''' )
-        # connection.execute( '''TRUNCATE TABLE discipline CASCADE''' )
-        # connection.execute( '''TRUNCATE TABLE "group" CASCADE''' )
-        # connection.execute( '''TRUNCATE TABLE room CASCADE''' )
-        # connection.execute( '''TRUNCATE TABLE teacher CASCADE''' )
-
-        # connection.close()
-    
-        print("truncate")
-        
         create_predefined(db=db)
 
         if test_mode:
@@ -34,7 +12,7 @@ def parse_schedule(db, test_mode=False):
         else:
            downloader = Downloader(db=db, path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
 
-        # downloader.download()
+        downloader.download()
 
         print("downloaded")
         try:

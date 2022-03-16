@@ -104,6 +104,68 @@ def test_degrees():
     assert response.status_code == 200
     assert testing_items["degrees"][0] == response.json()
 
+
+def test_groups():
+    response = client.get("/groups/")
+    assert response.status_code == 200
+    assert testing_items["groups"] == response.json()
+
+    response = client.get("/groups/1/")
+    assert response.status_code == 200
+    assert testing_items["groups"][0] == response.json()
+
+
+def test_lesson_types():
+    response = client.get("/lesson_types/")
+    assert response.status_code == 200
+    assert testing_items["lesson_types"] == response.json()
+
+    response = client.get("/lesson_types/1/")
+    assert response.status_code == 200
+    assert testing_items["lesson_types"][0] == response.json()
+
+
+def test_periods():
+    response = client.get("/periods/")
+    assert response.status_code == 200
+    assert testing_items["periods"] == response.json()
+
+    response = client.get("/periods/1/")
+    assert response.status_code == 200
+    assert testing_items["periods"][0] == response.json()
+
+
+
+def test_places():
+    response = client.get("/places/")
+    assert response.status_code == 200
+    assert testing_items["places"] == response.json()
+
+    response = client.get("/places/1/")
+    assert response.status_code == 200
+    assert testing_items["places"][0] == response.json()
+
+
+def test_rooms():
+    response = client.get("/rooms/")
+    assert response.status_code == 200
+    assert testing_items["rooms"] == response.json()
+
+    response = client.get("/rooms/1/")
+    assert response.status_code == 200
+    assert testing_items["rooms"][0] == response.json()
+
+
+def test_teachers():
+    response = client.get("/teachers/")
+    assert response.status_code == 200
+    assert testing_items["teachers"] == response.json()
+
+    response = client.get("/teachers/1/")
+    assert response.status_code == 200
+    assert testing_items["teachers"][0] == response.json()
+
+
 def test_lessons():
     response = client.get("/lessons/")
     assert response.status_code == 200
@@ -112,6 +174,13 @@ def test_lessons():
     response = client.get("/lessons/1/")
     assert response.status_code == 200
     assert lessons[0] == response.json()
+
+    response = client.get("/lessons/?group_name=ИВБО-01-21&teacher_name=Милкина&room_name=1&discipline_name=Правоведение&specific_week=1&week=2&is_usual_place=false")
+    assert response.status_code == 200
+    assert not response.json()
+    response = client.get("/lessons/?group_name=ИВБО-01-21&teacher_name=Милкина&room_name=1&discipline_name=Правоведение&specific_week=2&is_usual_place=false")
+    assert response.status_code == 200
+    assert [lessons[0]] == response.json()
 
 
 
