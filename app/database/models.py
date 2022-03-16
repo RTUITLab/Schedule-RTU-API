@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, Table, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from .database import DataBase
@@ -40,9 +40,10 @@ class LessonType(DataBase):
 
 class SpecificWeek(DataBase):
     __tablename__ = "specific_week"
-    secific_week = Column(Integer, primary_key=True, autoincrement=False)
-    lesson_id = Column(Integer, ForeignKey('lesson.id'), primary_key=True)
+    secific_week = Column(Integer, primary_key=True, autoincrement=False, unique=False)
+    lesson_id = Column(Integer, ForeignKey('lesson.id'), primary_key=True, unique=False)
     lesson = relationship('Lesson', back_populates='specific_weeks')
+    
 
     def __repr__(self):
         return '<SpecificWeeks %r>' % self.secific_week 
@@ -50,9 +51,10 @@ class SpecificWeek(DataBase):
 
 class Subgroup(DataBase):
     __tablename__ = "subgroup"
-    subgroup = Column(Integer, primary_key=True, autoincrement=False)
-    lesson_id = Column(Integer, ForeignKey('lesson.id'), primary_key=True)
+    subgroup = Column(Integer, primary_key=True, autoincrement=False, unique=False)
+    lesson_id = Column(Integer, ForeignKey('lesson.id'), primary_key=True, unique=False)
     lesson = relationship('Lesson', back_populates='subgroups')
+
 
     def __repr__(self):
         return '<Subgroup %r>' % self.subgroup 

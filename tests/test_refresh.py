@@ -11,14 +11,20 @@ from app.dependencies import get_db, get_settings
 from app.main import app
 from .testing_items import testing_items
 
+
 settings = get_settings()
-SQLALCHEMY_DATABASE_URL = settings.test_database_url
-print(SQLALCHEMY_DATABASE_URL)
-engine = create_engine(SQLALCHEMY_DATABASE_URL,
-                       connect_args={"check_same_thread": False})
+if settings.debug:
+    SQLALCHEMY_DATABASE_URL = "sqlite:///tests/sql_app.db"
+    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+else:
+    SQLALCHEMY_DATABASE_URL = settings.test_database_url
+    engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
+
 TestingSessionLocal = sessionmaker(autocommit=False,
                                    autoflush=False, bind=engine)
 
+DataBase.metadata.drop_all(bind=engine)
 DataBase.metadata.create_all(bind=engine)
 
 
@@ -78,18 +84,26 @@ def test_calls():
     assert response.status_code == 200
     assert testing_items["calls"][0] == response.json()
 
+def test_disciplines():
+    response = client.get("/disciplines/")
+    assert response.status_code == 200
+    assert testing_items["disciplines"] == response.json()
 
-DataBase.metadata.drop_all(bind=engine)
-# def test_disciplines():
-#     response = client.get("/disciplines/")
-#     assert response.status_code == 200
-#     assert testing_items["disciplines"] == response.json()
+    response = client.get("/disciplines/1/")
+    assert response.status_code == 200
+    assert testing_items["disciplines"][0] == response.json()
 
-    # response = client.get("/disciplines/1/")
-    # assert response.status_code == 200
-    # assert testing_items["disciplines"][0] == response.json()
-    # assert response.status_code == 200
-    # assert testing_items["calls"][0] == response.json()
+
+def test_degrees():
+    response = client.get("/degrees/")
+    assert response.status_code == 200
+    assert testing_items["degrees"] == response.json()
+
+    response = client.get("/degrees/1/")
+    assert response.status_code == 200
+    assert testing_items["degrees"][0] == response.json()
+
+
 
 # def test_read_created_message():
 #     response = client.get("/messages/")

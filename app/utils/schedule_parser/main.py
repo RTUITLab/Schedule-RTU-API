@@ -34,7 +34,7 @@ def parse_schedule(db, test_mode=False):
         else:
            downloader = Downloader(db=db, path_to_error_log='logs/downloadErrorLog.csv', base_file_dir='xls/')
 
-        downloader.download()
+        # downloader.download()
 
         print("downloaded")
         try:

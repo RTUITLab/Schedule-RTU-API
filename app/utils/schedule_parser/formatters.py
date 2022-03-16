@@ -1,22 +1,20 @@
 import re
 
-from sqlalchemy import null
-
 
 def format_teacher_name(cell: str):
     # TODO add re.sub here
     """
-    Форматирование ячейки с преподаваиелями. Возвращает список найденных преподавателей.
+    Форматирование ячейки с преподавателями. Возвращает список найденных преподавателей.
     """
     
-    cell = str(cell).title()
+    cell = str(cell)
     cell = re.sub(r'( ){3,}', '  ', cell)
     cell.strip()
     if not len(cell):
         return [None]
     res = re.findall(r'[А-Я]*[а-я]+ [А-Я]\.*,* *[А-Я]{1,2}\.*(?!\S{2,})|[А-Я]+[а-я]+', cell)
     if len(res) > 1:
-        res = [re.sub(r',', '.', x.strip()) for x in res if len(x.strip())]
+        res = [re.sub(r',', '.', x.strip()).title() for x in res if len(x.strip())]
     # print(res)
     return res
 

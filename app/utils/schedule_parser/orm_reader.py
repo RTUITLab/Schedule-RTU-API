@@ -2,6 +2,7 @@ import re
 import os.path
 import datetime
 import traceback
+from venv import create
 import xlrd
 
 import datetime as dt
@@ -28,8 +29,9 @@ class Reader:
                 name="weeks_count").first().value)
 
         except Exception as err:
+            
             self.weeks_count = int(get_or_create(session=self.db, model=models.WorkingData,
-                                                name="weeks_count", value="16")).value
+                                                name="weeks_count", value="16").value)
 
             print("weeks_count ERROR! -> ", err)
 
@@ -177,6 +179,8 @@ class Reader:
                 session=self.db, model=models.Discipline, name=discipline_name[0])
             self.db.flush()
 
+            created = True
+
             if lesson_type == 1:
                 query = self.db.query(models.Lesson).filter_by(call_id=call,
                                                                period_id=period,
@@ -195,6 +199,7 @@ class Reader:
                 instance = query.first()
 
                 if instance:
+                    created = False
                     lesson = instance
                     # if "Линейная алгебра и аналитическая геометрия" in instance.discipline.name:
                     #     print(group.name, instance.discipline.name, instance.day_of_week, instance.week, instance.call_id, instance.teachers)
@@ -224,6 +229,8 @@ class Reader:
 
             self.db.add(lesson)
             self.db.flush()
+            if created:
+                add_weeks(weeks, lesson.id)
 
             for t in teacher:
                 lesson.teachers.append(t)
@@ -239,11 +246,6 @@ class Reader:
                     print("----------")
                     print("ROLLBACK ON SUBGROUP APPEND")
                     print("----------")
-
-            add_weeks(weeks, lesson.id)
-
-        
-
         stack = ""
 
         for group_name, value in sorted(timetable.items()):
