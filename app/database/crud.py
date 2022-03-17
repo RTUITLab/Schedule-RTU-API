@@ -1,8 +1,6 @@
 import sys
 
-from tkinter import N
 from sqlalchemy.orm import Session
-from sqlalchemy import or_, and_, func
 
 from . import models, schemas
 

@@ -21,9 +21,9 @@ def parse_schedule(db, test_mode=False):
             print("Reader error -> ", err)
         print("start reading")
         if test_mode:
-            reader.run('xls')
-        else:
             reader.run('tests/xls')
+        else:
+            reader.run('xls')
         print("\nКонвертация успешно выполнена!\n\n")
 
     except FileNotFoundError as err:

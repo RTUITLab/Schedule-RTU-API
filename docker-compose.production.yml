@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  old:
+    networks:
+      - net
+    environment:
+      TZ: 'Europe/Moscow'
+      SECRET_FOR_REFRESH: ${SECRET_FOR_REFRESH?Provide secret key for refreshing data SECRET_FOR_REFRESH}
+      CONNECTION_STRING: ${CONNECTION_STRING?Provide postgres connection string CONNECTION_STRING}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 100M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+  api:
+    networks:
+      - net
+    environment:
+      TZ: 'Europe/Moscow'
+      DATABASE_URL: ${DATABASE_URL?Provide postgres connection string DATABASE_URL}
+      TEST_DATABASE_URL: ${TEST_DATABASE_URL?Provide url for test database TEST_DATABASE_URL}
+      APP_SECRET: ${TEST_DATABASE_URL?Provide secret for access to protected roots APP_SECRET}
+      DEBUG: ${TEST_DATABASE_URL?Provide 1 for debug mode, 1 for production mode DEBUG}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 100M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+  refresh_invoker:
+    networks:
+      - net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.10'
+          memory: 30M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+  proxy:
+    networks:
+      - net
+    deploy:
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 100M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+networks:
+  net:
+    driver: overlay

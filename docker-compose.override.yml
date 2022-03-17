@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  api:
+    build: ./
+    ports:
+    - 8000:8000
+    environment:
+      SECRET_FOR_REFRESH: DebugSecret
+      DATABASE_URL: postgresql+psycopg2://postgres:Password123@debug_db:5432/schedule_api_debug_database
+      TEST_DATABASE_URL: sqlite:///tests/sql_app.db
+      APP_SECRET: 1
+      DEBUG: 1
+      ROOT_PATH: /api
+  old:
+    build: ./old
+    ports:
+    - 5000:5000
+    environment:
+      SECRET_FOR_REFRESH: DebugSecret
+      CONNECTION_STRING: sqlite:///test.db
+  refresh_invoker:
+    build: ./refresh_invoker
+  proxy:
+    build: ./proxy
+    ports:
+    - 80:80
+
+
+  debug_db:
+    image: postgres:13-alpine
+    environment:
+      POSTGRES_PASSWORD: Password123
+      POSTGRES_DB: schedule_api_debug_database
+configs:
+  my_config:
+    file: ./migration.sh
