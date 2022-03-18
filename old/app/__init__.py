@@ -64,9 +64,9 @@ try:
     print("Drop")
     connection = engine.connect()
     connection.execute( '''TRUNCATE TABLE alembic_version CASCADE''' )
-  if os.path.exists(self.base_file_dir):
-    shutil.rmtree(self.base_file_dir)
-    os.makedirs(self.base_file_dir)
+  # if os.path.exists("migrations/"):
+  #   shutil.rmtree("migrations/")
+  #   print("delete migrations")
 except Exception as e:
   print(e)
 

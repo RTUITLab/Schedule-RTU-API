@@ -10,4 +10,5 @@ COPY . /app
 EXPOSE 5000
 
 # ENTRYPOINT ["python"]
-CMD flask db init && flask db migrate && flask db upgrade && python waitress_run.py 
+RUN flask db init; exit 0
+CMD flask db migrate && flask db upgrade && python waitress_run.py 
