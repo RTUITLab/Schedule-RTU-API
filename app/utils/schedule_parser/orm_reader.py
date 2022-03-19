@@ -2,6 +2,7 @@ import re
 import os.path
 import datetime
 import traceback
+from unicodedata import name
 from venv import create
 import xlrd
 
@@ -523,6 +524,16 @@ class Reader:
                 print(group.group(0))
 
                 group_list.append(group.group(0))
+        
+        # Очистка старого расписания, если они есть
+        print(group_list)
+        for group_name in group_list:
+            instance = self.db.query(models.Group).filter_by(name=group_name).first()
+            if instance:
+                lessons = instance.lessons
+                for lesson in lessons:
+                    self.db.delete(lesson)
+        self.db.commit()
 
         for group_cell in group_name_row:  # Поиск названий групп
             group = str(group_cell.value)
@@ -547,9 +558,6 @@ class Reader:
                         column_range = get_column_range_for_type_eq_semester(
                             sheet, group_cell, group_name_row_num)
 
-                print(group.group(0))
-
-                group_list.append(group.group(0))
                 one_time_table = {}
 
                 if self.current_period == 3:
@@ -560,7 +568,7 @@ class Reader:
 
                 elif self.current_period == 2:
                     pass
-
+                    
                 else:
                     one_time_table = self.read_one_group_for_semester(
                         sheet, group_name_row.index(group_cell), group_name_row_num, column_range)  # По номеру столбца
