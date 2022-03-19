@@ -46,10 +46,10 @@ def parse_schedule(db, test_mode=False):
             print("Reader error -> ", err)
         print("start reading")
         if test_mode:
-            try:
-                print(os.listdir('tests/xls/semester'))
-            except:
-                print("there is no files")
+            # try:
+            #     print(os.listdir('tests/xls/semester'))
+            # except:
+            #     print("there is no files")
             reader.run('tests/xls')
         else:
             reader.run('xls')

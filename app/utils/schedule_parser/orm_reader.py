@@ -91,6 +91,7 @@ class Reader:
     def run(self, xlsx_dir):
 
         for path, dirs, files in os.walk(xlsx_dir):
+            print("path1", path)
             for file_name in files:
 
                 temp_file_name = file_name.lower()
@@ -102,11 +103,11 @@ class Reader:
                     self.current_place = 1
                 try:
                     if ("\\") in path:
-                        self.current_period = self.periods[path.split("\\")[1]]
+                        self.current_period = self.periods[path.split("\\")[-1]]
                     else:
-                        self.current_period = self.periods[path.split("/")[1]]
+                        self.current_period = self.periods[path.split("/")[-1]]
                 except Exception as e:
-                    print(e)
+                    print(e, "ex in current_period")
                     continue
                 # print("current_period -> ", self.current_period)
                 path_to_xlsx_file = os.path.join(path, file_name)
