@@ -14,12 +14,12 @@ from .lessons_for_tests import lessons
 
 
 settings = get_settings()
-if settings.debug:
-    SQLALCHEMY_DATABASE_URL = "sqlite:///tests/sql_app.db"
-    engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
-else:
-    SQLALCHEMY_DATABASE_URL = settings.test_database_url
-    engine = create_engine(SQLALCHEMY_DATABASE_URL)
+# if settings.debug:
+SQLALCHEMY_DATABASE_URL = "sqlite:///tests/sql_app.db"
+engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+# else:
+#     SQLALCHEMY_DATABASE_URL = settings.test_database_url
+#     engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 
 TestingSessionLocal = sessionmaker(autocommit=False,
@@ -65,15 +65,12 @@ async def test_refresh():
     assert {"id": 1, "name": "weeks_count", "value": "17"} == response.json()
 
     async with AsyncClient(app=app, base_url="http://localhost") as ac:
-        response = await ac.post("/working_data/refresh/", headers={"X-Auth-Token": "coneofsilence"})
+        response = await ac.post("/working_data/refresh/", headers={"X-Auth-Token": "coneofsilence", "X-Test": "True"})
         assert response.status_code == 401
-        print("404??!!")
-        response = await ac.post("/working_data/refresh/", headers={"X-Auth-Token": settings.app_secret})
+        response = await ac.post("/working_data/refresh/", headers={"X-Auth-Token": settings.app_secret, "X-Test": "True"})
         assert response.status_code == 200
 
     # async with AsyncClient(app=app, base_url="http://localhost") as ac:
-
-    print("await??!!")
 
 
 def test_calls():

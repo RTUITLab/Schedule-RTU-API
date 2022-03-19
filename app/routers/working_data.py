@@ -18,9 +18,12 @@ settings = get_settings()
 
 @router.post('/refresh/', summary="Обновить расписание",
             status_code=status.HTTP_200_OK)
-async def refresh(background_tasks: BackgroundTasks, db=Depends(get_db), X_Auth_Token: str = Header(None)):
+async def refresh(background_tasks: BackgroundTasks, db=Depends(get_db), X_Auth_Token: str = Header(None), X_Test: bool = Header(None)):
     if X_Auth_Token == settings.app_secret:
-        background_tasks.add_task(parse_schedule, db)
+        if X_Test:
+            background_tasks.add_task(parse_schedule, db, True)
+        else:
+            background_tasks.add_task(parse_schedule, db)
         return {"detail": "Parsing started"}
     else:
         return Response("Wrong token", status_code=status.HTTP_401_UNAUTHORIZED)
