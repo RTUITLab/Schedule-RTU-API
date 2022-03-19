@@ -24,9 +24,9 @@ services:
     environment:
       TZ: 'Europe/Moscow'
       DATABASE_URL: ${DATABASE_URL?Provide postgres connection string DATABASE_URL}
-      TEST_DATABASE_URL: ${TEST_DATABASE_URL?Provide url for test database TEST_DATABASE_URL}
-      APP_SECRET: ${TEST_DATABASE_URL?Provide secret for access to protected roots APP_SECRET}
-      DEBUG: ${TEST_DATABASE_URL?Provide 1 for debug mode, 1 for production mode DEBUG}
+      ROOT_PATH: ${ROOT_PATH?Provide path to backend beside  ROOT_PATH}
+      APP_SECRET: ${APP_SECRET?Provide path prefix to service from proxy APP_SECRET}
+
     deploy:
       resources:
         limits:

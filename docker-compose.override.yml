@@ -6,11 +6,8 @@ services:
     ports:
     - 8000:8000
     environment:
-      SECRET_FOR_REFRESH: DebugSecret
       DATABASE_URL: postgresql+psycopg2://postgres:Password123@debug_db:5432/schedule_api_debug_database
-      TEST_DATABASE_URL: sqlite:///tests/sql_app.db
       APP_SECRET: 1
-      DEBUG: 1
       ROOT_PATH: /api
   old:
     build: ./old

@@ -14,6 +14,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: 'sqlite:///./sql_app.db'
+      APP_SECRET: 'test_secret'
+      ROOT_PATH: '/api'
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.10

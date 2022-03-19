@@ -11,9 +11,8 @@ Requirements:
 Clone or download this repo and create .env with database URI that should be used for the connection to database. 
 ```
 DATABASE_URL=dialect+driver://username:password@host:port/database
-TEST_DATABASE_URL=dialect+driver://username:password@host:port/database
-APP_SECRET= # token for access to protected roots
-DEBUG=1 # 1 for develop, 0 for production 
+ROOT_PATH=# path prefix to service from proxy
+APP_SECRET=# token for access to protected roots
 
 ```
 

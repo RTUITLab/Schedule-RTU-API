@@ -154,3 +154,4 @@ stack.yml
 *.csv
 *.json
 test.py
+.github/workflows/ci_cd.yml
