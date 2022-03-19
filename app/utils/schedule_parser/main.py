@@ -29,7 +29,9 @@ def parse_schedule(db, test_mode=False):
         create_predefined(db=db)
         if test_mode:
             base_file_dir = 'tests/files/'
+            print("test_mode")
         else:
+            print("not test_mode")
             base_file_dir = 'xls/'
 
         downloader = Downloader(
