@@ -154,3 +154,5 @@ stack.yml
 *.csv
 *.json
 test.py
+
+env.prod.ps1
