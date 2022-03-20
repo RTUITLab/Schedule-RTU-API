@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   api:
-    image: rtuitlab/schedule-rtu-api
-  refresh_invoker:
-    image: rtuitlab/schedule-rtu-refresh-invoker
+    image: ghcr.io/rtuitlab/schedule-rtu-api
+  refresh-invoker:
+    image: ghcr.io/rtuitlab/schedule-rtu-refresh-invoker
   proxy:
-    image: rtuitlab/schedule-rtu-proxy
+    image: ghcr.io/rtuitlab/schedule-rtu-proxy
   old:
-    image: rtuitlab/schedule-rtu-old-api
+    image: ghcr.io/rtuitlab/schedule-rtu-old-api

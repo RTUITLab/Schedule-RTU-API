@@ -16,7 +16,7 @@ services:
     environment:
       SECRET_FOR_REFRESH: DebugSecret
       CONNECTION_STRING: postgresql+psycopg2://postgres:Password123@debug_db:5432/schedule_api_debug_database
-  refresh_invoker:
+  refresh-invoker:
     build: ./refresh_invoker
   proxy:
     build: ./proxy
