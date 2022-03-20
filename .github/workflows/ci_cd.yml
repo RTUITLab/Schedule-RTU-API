@@ -63,6 +63,22 @@ jobs:
           docker push $IMAGE_NAME_API:latest
           docker push $IMAGE_NAME_API:${{ github.run_number }}
 
+  deploy-api:
+    needs: [ build-api ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update service
+        uses: appleboy/ssh-action@master
+        env:
+          IMAGE: ${{ env.IMAGE_NAME_API }}:${{ github.run_number }}
+          SERVICE: ${{ env.SERVICE_NAME_API }}
+        with:
+          host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
+          username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
+          key: ${{ secrets.RTUITLAB_MANAGER_VM_SSH_KEY }}
+          envs: IMAGE,SERVICE
+          script: docker service update --image $IMAGE $SERVICE --with-registry-auth
+
   build-old:
     needs: [ test ]
     runs-on: ubuntu-latest
@@ -82,6 +98,22 @@ jobs:
           docker tag $IMAGE_NAME_OLD $IMAGE_NAME_OLD:${{ github.run_number }}
           docker push $IMAGE_NAME_OLD:latest
           docker push $IMAGE_NAME_OLD:${{ github.run_number }}
+
+  deploy-old:
+    needs: [ build-old ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update service
+        uses: appleboy/ssh-action@master
+        env:
+          IMAGE: ${{ env.IMAGE_NAME_OLD }}:${{ github.run_number }}
+          SERVICE: ${{ env.SERVICE_NAME_OLD }}
+        with:
+          host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
+          username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
+          key: ${{ secrets.RTUITLAB_MANAGER_VM_SSH_KEY }}
+          envs: IMAGE,SERVICE
+          script: docker service update --image $IMAGE $SERVICE --with-registry-auth
 
   build-proxy:
     needs: [ test ]
@@ -103,6 +135,22 @@ jobs:
           docker push $IMAGE_NAME_PROXY:latest
           docker push $IMAGE_NAME_PROXY:${{ github.run_number }}
 
+  deploy-proxy:
+    needs: [ build-proxy ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update service
+        uses: appleboy/ssh-action@master
+        env:
+          IMAGE: ${{ env.IMAGE_NAME_PROXY }}:${{ github.run_number }}
+          SERVICE: ${{ env.SERVICE_NAME_PROXY }}
+        with:
+          host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
+          username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
+          key: ${{ secrets.RTUITLAB_MANAGER_VM_SSH_KEY }}
+          envs: IMAGE,SERVICE
+          script: docker service update --image $IMAGE $SERVICE --with-registry-auth
+
   build-refresh-invoker:
     needs: [ test ]
     runs-on: ubuntu-latest
@@ -123,54 +171,6 @@ jobs:
           docker push $IMAGE_NAME_REFRESH_INVOKER:latest
           docker push $IMAGE_NAME_REFRESH_INVOKER:${{ github.run_number }}
 
-  deploy-api:
-    needs: [ build-api ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Update service
-        uses: appleboy/ssh-action@master
-        env:
-          IMAGE: $IMAGE_NAME_API:${{ github.run_number }}
-          SERVICE: $SERVICE_NAME_API
-        with:
-          host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
-          username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
-          key: ${{ secrets.RTUITLAB_MANAGER_VM_SSH_KEY }}
-          envs: IMAGE,SERVICE
-          script: docker service update --image $IMAGE $SERVICE --with-registry-auth
-
-  deploy-old:
-    needs: [ build-old ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Update service
-        uses: appleboy/ssh-action@master
-        env:
-          IMAGE: $IMAGE_NAME_OLD:${{ github.run_number }}
-          SERVICE: $SERVICE_NAME_OLD
-        with:
-          host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
-          username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
-          key: ${{ secrets.RTUITLAB_MANAGER_VM_SSH_KEY }}
-          envs: IMAGE,SERVICE
-          script: docker service update --image $IMAGE $SERVICE --with-registry-auth
-
-  deploy-proxy:
-    needs: [ build-proxy ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Update service
-        uses: appleboy/ssh-action@master
-        env:
-          IMAGE: $IMAGE_NAME_PROXY:${{ github.run_number }}
-          SERVICE: $SERVICE_NAME_PROXY
-        with:
-          host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
-          username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
-          key: ${{ secrets.RTUITLAB_MANAGER_VM_SSH_KEY }}
-          envs: IMAGE,SERVICE
-          script: docker service update --image $IMAGE $SERVICE --with-registry-auth
-
   deploy-refresh-invoker:
     needs: [ build-refresh-invoker ]
     runs-on: ubuntu-latest
@@ -178,8 +178,8 @@ jobs:
       - name: Update service
         uses: appleboy/ssh-action@master
         env:
-          IMAGE: $IMAGE_NAME_REFRESH_INVOKER:${{ github.run_number }}
-          SERVICE: $SERVICE_NAME_REFRESH_INVOKER
+          IMAGE: ${{ env.IMAGE_NAME_REFRESH_INVOKER }}:${{ github.run_number }}
+          SERVICE: ${{ env.SERVICE_NAME_REFRESH_INVOKER }}
         with:
           host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
           username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
