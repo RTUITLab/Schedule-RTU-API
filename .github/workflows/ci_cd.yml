@@ -3,10 +3,24 @@ name: Build docker image and update service on RTUITLab virtual machine
 on:
   push:
     branches:
-      - $default-branch
-    paths-ignore:
-      - 'README.md'
+      - master
+    tags:
+      - test
 
+env:
+  # Ask DevOps about SERVICE_NAME value
+  SERVICE_NAME_API: schedule-rtu_api
+  SERVICE_NAME_OLD: schedule-rtu_old
+  SERVICE_NAME_PROXY: schedule-rtu_proxy
+  SERVICE_NAME_REFRESH_INVOKER: schedule-rtu_refresh-invoker
+  # Name of github package. Recommendations:
+  #   ghcr.io/rtuitlab/ - must have
+  #   YOUR-STACK-NAME/ - not to store your package in root of RTUITLab organization packages
+  #   YOUR-SERVICE-NAME - to recognize your package
+  IMAGE_NAME_API: ghcr.io/rtuitlab/schedule-rtu/api
+  IMAGE_NAME_OLD: ghcr.io/rtuitlab/schedule-rtu/old
+  IMAGE_NAME_PROXY: ghcr.io/rtuitlab/schedule-rtu/proxy
+  IMAGE_NAME_REFRESH_INVOKER: ghcr.io/rtuitlab/schedule-rtu/refresh-invoker
 
 jobs:
   test:
@@ -28,36 +42,144 @@ jobs:
       - name: Test with pytest
         run: |
           pytest -s --asyncio-mode=strict
-          
-  build:
-    needs: [ tests ]
-    runs-on: ubuntu-latest
 
+  build-api:
+    needs: [ test ]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-    
+
       - name: Build image
-        run: docker build . --file Dockerfile --tag $IMAGE_NAME
+        run: docker build --file Dockerfile --tag $IMAGE_NAME_API ./
 
       - name: Log in to registry
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Push image
         run: |
-          docker tag $IMAGE_NAME $IMAGE_NAME:latest
-          docker tag $IMAGE_NAME $IMAGE_NAME:${{ github.run_number }}
-          docker push $IMAGE_NAME:latest
-          docker push $IMAGE_NAME:${{ github.run_number }}
-  deploy:
-    needs: [build]
+          docker tag $IMAGE_NAME_API $IMAGE_NAME_API:latest
+          docker tag $IMAGE_NAME_API $IMAGE_NAME_API:${{ github.run_number }}
+          docker push $IMAGE_NAME_API:latest
+          docker push $IMAGE_NAME_API:${{ github.run_number }}
+
+  build-old:
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build --file old/Dockerfile --tag $IMAGE_NAME_OLD old/
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          docker tag $IMAGE_NAME_OLD $IMAGE_NAME_OLD:latest
+          docker tag $IMAGE_NAME_OLD $IMAGE_NAME_OLD:${{ github.run_number }}
+          docker push $IMAGE_NAME_OLD:latest
+          docker push $IMAGE_NAME_OLD:${{ github.run_number }}
+
+  build-proxy:
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build --file proxy/Dockerfile --tag $IMAGE_NAME_PROXY proxy/
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          docker tag $IMAGE_NAME_PROXY $IMAGE_NAME_PROXY:latest
+          docker tag $IMAGE_NAME_PROXY $IMAGE_NAME_PROXY:${{ github.run_number }}
+          docker push $IMAGE_NAME_PROXY:latest
+          docker push $IMAGE_NAME_PROXY:${{ github.run_number }}
+
+  build-refresh-invoker:
+    needs: [ test ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Build image
+        run: docker build --file refresh_invoker/Dockerfile --tag $IMAGE_NAME_REFRESH_INVOKER refresh_invoker/
+
+      - name: Log in to registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Push image
+        run: |
+          docker tag $IMAGE_NAME_REFRESH_INVOKER $IMAGE_NAME_REFRESH_INVOKER:latest
+          docker tag $IMAGE_NAME_REFRESH_INVOKER $IMAGE_NAME_REFRESH_INVOKER:${{ github.run_number }}
+          docker push $IMAGE_NAME_REFRESH_INVOKER:latest
+          docker push $IMAGE_NAME_REFRESH_INVOKER:${{ github.run_number }}
+
+  deploy-api:
+    needs: [ build-api ]
     runs-on: ubuntu-latest
     steps:
       - name: Update service
         uses: appleboy/ssh-action@master
         env:
-          IMAGE: ${{ env.IMAGE_NAME }}:${{ github.run_number }}
-          SERVICE: ${{ env.SERVICE_NAME }}
+          IMAGE: $IMAGE_NAME_API:${{ github.run_number }}
+          SERVICE: $SERVICE_NAME_API
+        with:
+          host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
+          username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
+          key: ${{ secrets.RTUITLAB_MANAGER_VM_SSH_KEY }}
+          envs: IMAGE,SERVICE
+          script: docker service update --image $IMAGE $SERVICE --with-registry-auth
+
+  deploy-old:
+    needs: [ build-old ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update service
+        uses: appleboy/ssh-action@master
+        env:
+          IMAGE: $IMAGE_NAME_OLD:${{ github.run_number }}
+          SERVICE: $SERVICE_NAME_OLD
+        with:
+          host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
+          username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
+          key: ${{ secrets.RTUITLAB_MANAGER_VM_SSH_KEY }}
+          envs: IMAGE,SERVICE
+          script: docker service update --image $IMAGE $SERVICE --with-registry-auth
+
+  deploy-proxy:
+    needs: [ build-proxy ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update service
+        uses: appleboy/ssh-action@master
+        env:
+          IMAGE: $IMAGE_NAME_PROXY:${{ github.run_number }}
+          SERVICE: $SERVICE_NAME_PROXY
+        with:
+          host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
+          username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
+          key: ${{ secrets.RTUITLAB_MANAGER_VM_SSH_KEY }}
+          envs: IMAGE,SERVICE
+          script: docker service update --image $IMAGE $SERVICE --with-registry-auth
+
+  deploy-refresh-invoker:
+    needs: [ build-refresh-invoker ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update service
+        uses: appleboy/ssh-action@master
+        env:
+          IMAGE: $IMAGE_NAME_REFRESH_INVOKER:${{ github.run_number }}
+          SERVICE: $SERVICE_NAME_REFRESH_INVOKER
         with:
           host: ${{ secrets.RTUITLAB_MANAGER_VM_HOST }}
           username: ${{ secrets.RTUITLAB_MANAGER_VM_USERNAME }}
