@@ -15,7 +15,7 @@ router = APIRouter(
 settings = get_settings()
 
 
-@router.get('/', summary="Посмотреть сохраненные хэши файлов",
+@router.get('', summary="Посмотреть сохраненные хэши файлов",
             response_model=List[schemas.FileHashOut],
             status_code=status.HTTP_200_OK)
 async def read_hashes(db=Depends(get_db), X_Auth_Token: str = Header(None)):
@@ -25,7 +25,7 @@ async def read_hashes(db=Depends(get_db), X_Auth_Token: str = Header(None)):
         return Response("Wrong token", status_code=status.HTTP_401_UNAUTHORIZED)
 
 
-@router.delete('/', summary="Почистить хэши файлов для ручного обновления всех файлов",
+@router.delete('', summary="Почистить хэши файлов для ручного обновления всех файлов",
                status_code=status.HTTP_204_NO_CONTENT)
 async def delete_hashes(db=Depends(get_db), X_Auth_Token: str = Header(None)):
     if X_Auth_Token == settings.app_secret:
@@ -36,7 +36,7 @@ async def delete_hashes(db=Depends(get_db), X_Auth_Token: str = Header(None)):
 
 
 # TODO 404?
-@router.delete('/{id}/', summary="Почистить хэши файлов для ручного обновления выбранного файла",
+@router.delete('/{id}', summary="Почистить хэши файлов для ручного обновления выбранного файла",
                status_code=status.HTTP_204_NO_CONTENT)
 async def read_hash(id: int, db=Depends(get_db), X_Auth_Token: str = Header(None)):
     if X_Auth_Token == settings.app_secret:

@@ -142,7 +142,7 @@ class Reader:
                     if ("\\") in path:
                         self.current_period = self.periods[path.split("\\")[1]]
                     else:
-                        self.current_period = self.periods[path.split("/")[1]]
+                        self.current_period = self.periods[path.split("")[1]]
                 except Exception as e:
                     print(e)
                     continue

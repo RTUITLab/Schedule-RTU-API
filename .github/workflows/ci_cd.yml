@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - test
 
 env:
   # Ask DevOps about SERVICE_NAME value

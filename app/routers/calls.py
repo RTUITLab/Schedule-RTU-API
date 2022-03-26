@@ -10,14 +10,14 @@ router = APIRouter(
 )
 
 
-@router.get('/', summary="Получение списка звонков",
+@router.get('', summary="Получение списка звонков",
             response_model=List[schemas.CallOut],
             status_code=status.HTTP_200_OK)
 async def get_many(db=Depends(get_db)):
     return crud.get_simpe_model(db=db, model=models.Call)
 
 
-@router.get('/{id}/', summary="Получение звонка по id",
+@router.get('/{id}', summary="Получение звонка по id",
             response_model=schemas.CallOut,
             status_code=status.HTTP_200_OK)
 async def get_one(id: int, db=Depends(get_db)):

@@ -535,7 +535,7 @@ def get_week_schedule_by_week_num(group, week):
 # --- GROUPS ---
 
 
-@app.route('/api/schedule/groups/', methods=["GET"])
+@app.route('/api/schedule/groups', methods=["GET"])
 def get_groups():
     """Returns full group schedule
       ---
@@ -570,7 +570,7 @@ def get_groups():
     return res
 
 
-@app.route('/api/schedule/lessons/', methods=["GET"])
+@app.route('/api/schedule/lessons', methods=["GET"])
 def get_lessons():
     """Returns full group schedule
       ---
@@ -622,7 +622,7 @@ def get_lessons():
       return res
     return Response(status=404)
 
-# @app.route('/api/lesson/<int:id>/', methods=["GET"])
+# @app.route('/api/lesson/<int:id>', methods=["GET"])
 # def get_lesson_by_id(id):
 #     """Returns group schedule by week number
 #       ---
@@ -651,7 +651,7 @@ def get_lessons():
 # # --- TEACHERS ---
 
 
-# @app.route('/api/schedule/teachers/<string:group>/', methods=["GET"])
+# @app.route('/api/schedule/teachers/<string:group>', methods=["GET"])
 # def get_teacher_shedule(teacher):
 #     """Returns full teacher schedule
 #       ---
@@ -683,7 +683,7 @@ def get_lessons():
 #     return res
 
 
-# @app.route('/api/schedule/groups/<string:group>/<int:week>/', methods=["GET"])
+# @app.route('/api/schedule/groups/<string:group>/<int:week>', methods=["GET"])
 # def get_teacher_shedule_by_week(teacher, week):
 #     """Returns teacher schedule by week number
 #       ---
@@ -721,7 +721,7 @@ def get_lessons():
 # # --- ROOMS ---
 
 
-# @app.route('/api/schedule/rooms/<string:room>/<int:week>/', methods=["GET"])
+# @app.route('/api/schedule/rooms/<string:room>/<int:week>', methods=["GET"])
 # def get_room_shedule_by_week(room, week):
 #     """Returns room schedule by week number
 #       ---
@@ -762,7 +762,7 @@ def get_lessons():
 #     return res
 
 
-# @app.route('/api/schedule/rooms/<string:room>/', methods=["GET"])
+# @app.route('/api/schedule/rooms/<string:room>', methods=["GET"])
 # def get_room_shedule(room):
 #     """Returns room schedule by week number
 #       ---
@@ -800,7 +800,7 @@ def get_lessons():
 #     return res
 
 
-# @app.route('/api/schedule/rooms/', methods=["GET"])
+# @app.route('/api/schedule/rooms', methods=["GET"])
 # def get_rooms():
 #     """Returns full group schedule
 #       ---
@@ -837,7 +837,7 @@ def get_lessons():
 # # --- OTHER ---
 
 
-@app.route('/api/schedule/current_week/', methods=["GET"])
+@app.route('/api/schedule/current_week', methods=["GET"])
 def get_current_week():
     """Returns current week
       ---
@@ -863,7 +863,7 @@ def get_current_week():
     return res
 
 
-@app.route('/refresh/', methods=["POST"])
+@app.route('/refresh', methods=["POST"])
 def refresh():
     """Refresh shedule
     ---
@@ -882,7 +882,7 @@ def refresh():
     return make_response({"status": 'ok'})
 
 
-@app.route('/api/schedule/set_weeks_count/', methods=["POST"])
+@app.route('/api/schedule/set_weeks_count', methods=["POST"])
 def set_weeks_count():
     """Refresh shedule
     ---
@@ -935,7 +935,7 @@ def set_weeks_count():
         return make_response({"status": 'need_password'}, 401)
 
 
-@app.route('/api/schedule/secret_refresh/', methods=["POST"])
+@app.route('/api/schedule/secret_refresh', methods=["POST"])
 def secret_refresh():
     """Refresh shedule
     ---

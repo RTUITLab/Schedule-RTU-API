@@ -51,13 +51,13 @@ test_message = {"message": "test message"}
 @pytest.mark.asyncio
 async def test_refresh():
     response = client.post(
-        "/working_data/", headers={"X-Auth-Token": "coneofsilence"}, json={
+        "/working_data", headers={"X-Auth-Token": "coneofsilence"}, json={
             "name": "weeks_count",
             "value": "17"
         })
     assert response.status_code == 401
     response = client.post(
-        "/working_data/", headers={"X-Auth-Token": settings.app_secret}, json={
+        "/working_data", headers={"X-Auth-Token": settings.app_secret}, json={
             "name": "weeks_count",
             "value": "17"
         })
@@ -65,110 +65,110 @@ async def test_refresh():
     assert {"id": 1, "name": "weeks_count", "value": "17"} == response.json()
 
     async with AsyncClient(app=app, base_url="http://localhost") as ac:
-        response = await ac.post("/working_data/refresh/", headers={"X-Auth-Token": "coneofsilence", "X-Test": "True"})
+        response = await ac.post("/working_data/refresh", headers={"X-Auth-Token": "coneofsilence", "X-Test": "True"})
         assert response.status_code == 401
-        response = await ac.post("/working_data/refresh/", headers={"X-Auth-Token": settings.app_secret, "X-Test": "True"})
+        response = await ac.post("/working_data/refresh", headers={"X-Auth-Token": settings.app_secret, "X-Test": "True"})
         assert response.status_code == 200
 
     # async with AsyncClient(app=app, base_url="http://localhost") as ac:
 
 
 def test_calls():
-    response = client.get("/calls/")
+    response = client.get("/calls")
     assert response.status_code == 200
     assert testing_items["calls"] == response.json()
 
-    response = client.get("/calls/1/")
+    response = client.get("/calls/1")
     assert response.status_code == 200
     assert testing_items["calls"][0] == response.json()
 
 def test_disciplines():
-    response = client.get("/disciplines/")
+    response = client.get("/disciplines")
     assert response.status_code == 200
     assert testing_items["disciplines"] == response.json()
 
-    response = client.get("/disciplines/1/")
+    response = client.get("/disciplines/1")
     assert response.status_code == 200
     assert testing_items["disciplines"][0] == response.json()
 
 
 def test_degrees():
-    response = client.get("/degrees/")
+    response = client.get("/degrees")
     assert response.status_code == 200
     assert testing_items["degrees"] == response.json()
 
-    response = client.get("/degrees/1/")
+    response = client.get("/degrees/1")
     assert response.status_code == 200
     assert testing_items["degrees"][0] == response.json()
 
 
 def test_groups():
-    response = client.get("/groups/")
+    response = client.get("/groups")
     assert response.status_code == 200
     assert testing_items["groups"] == response.json()
 
-    response = client.get("/groups/1/")
+    response = client.get("/groups/1")
     assert response.status_code == 200
     assert testing_items["groups"][0] == response.json()
 
 
 def test_lesson_types():
-    response = client.get("/lesson_types/")
+    response = client.get("/lesson_types")
     assert response.status_code == 200
     assert testing_items["lesson_types"] == response.json()
 
-    response = client.get("/lesson_types/1/")
+    response = client.get("/lesson_types/1")
     assert response.status_code == 200
     assert testing_items["lesson_types"][0] == response.json()
 
 
 def test_periods():
-    response = client.get("/periods/")
+    response = client.get("/periods")
     assert response.status_code == 200
     assert testing_items["periods"] == response.json()
 
-    response = client.get("/periods/1/")
+    response = client.get("/periods/1")
     assert response.status_code == 200
     assert testing_items["periods"][0] == response.json()
 
 
 
 def test_places():
-    response = client.get("/places/")
+    response = client.get("/places")
     assert response.status_code == 200
     assert testing_items["places"] == response.json()
 
-    response = client.get("/places/1/")
+    response = client.get("/places/1")
     assert response.status_code == 200
     assert testing_items["places"][0] == response.json()
 
 
 def test_rooms():
-    response = client.get("/rooms/")
+    response = client.get("/rooms")
     assert response.status_code == 200
     assert testing_items["rooms"] == response.json()
 
-    response = client.get("/rooms/1/")
+    response = client.get("/rooms/1")
     assert response.status_code == 200
     assert testing_items["rooms"][0] == response.json()
 
 
 def test_teachers():
-    response = client.get("/teachers/")
+    response = client.get("/teachers")
     assert response.status_code == 200
     assert testing_items["teachers"] == response.json()
 
-    response = client.get("/teachers/1/")
+    response = client.get("/teachers/1")
     assert response.status_code == 200
     assert testing_items["teachers"][0] == response.json()
 
 
 def test_lessons():
-    response = client.get("/lessons/")
+    response = client.get("/lessons")
     assert response.status_code == 200
     assert lessons == response.json()
 
-    response = client.get("/lessons/1/")
+    response = client.get("/lessons/1")
     assert response.status_code == 200
     assert lessons[0] == response.json()
 
@@ -182,21 +182,21 @@ def test_lessons():
 
 
 # def test_read_created_message():
-#     response = client.get("/messages/")
+#     response = client.get("/messages")
 #     assert response.status_code == 200
 #     assert response.json()[-1]["message"] == test_message["message"]
 
 
 # def test_delete_message():
-#     response = client.get("/messages/")
+#     response = client.get("/messages")
 #     assert response.status_code == 200
 
 #     id = response.json()[0]["id"]
-#     response = client.delete(f"/messages/{id}/")
+#     response = client.delete(f"/messages/{id}")
 #     assert response.status_code == 204
 
 
 # def test_read_messages_after_delete():
-#     response = client.get("/messages/")
+#     response = client.get("/messages")
 #     assert response.status_code == 200
 #     assert len(response.json()) == 0

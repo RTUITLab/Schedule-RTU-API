@@ -11,14 +11,14 @@ router = APIRouter(
 )
 
 
-@router.get('/', summary="Получение списка преподавателей",
+@router.get('', summary="Получение списка преподавателей",
             response_model=List[schemas.TeacherOut],
             status_code=status.HTTP_200_OK)
 async def get_many(db=Depends(get_db), queries: TeacherQueryParams = Depends(TeacherQueryParams)):
     return crud.get_teachers(db=db, name=queries.name)
 
 
-@router.get('/{id}/', summary="Получение преподавателя по id",
+@router.get('/{id}', summary="Получение преподавателя по id",
             response_model=schemas.TeacherOut,
             status_code=status.HTTP_200_OK)
 async def get_one(id: int, db=Depends(get_db)):

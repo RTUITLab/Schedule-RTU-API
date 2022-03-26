@@ -10,14 +10,14 @@ router = APIRouter(
 )
 
 
-@router.get('/', summary="Получение списка типов занятий",
+@router.get('', summary="Получение списка типов занятий",
             response_model=List[schemas.LessonTypeOut],
             status_code=status.HTTP_200_OK)
 async def get_many(db=Depends(get_db)):
     return crud.get_simpe_model(db=db, model=models.LessonType)
 
 
-@router.get('/{id}/', summary="Получение типа занятий по id",
+@router.get('/{id}', summary="Получение типа занятий по id",
             response_model=schemas.LessonTypeOut,
             status_code=status.HTTP_200_OK)
 async def get_one(id: int, db=Depends(get_db)):

@@ -70,7 +70,7 @@ lesson_example = {
 }
 
 
-@router.get('/', summary="Получение списка пар (расписания)",
+@router.get('', summary="Получение списка пар (расписания)",
             response_model=List[schemas.LessonOut],
             description='Одним запросом межет быть возвращено не более 600 пар. Для того, чтобы получить большее \
                         количество используйте несколько запросов с параметрами skip и limit. При работе с OpenAPI и попытке\
@@ -152,7 +152,7 @@ async def get_lessons(db=Depends(get_db),
                             place_id=place_id)
 
 
-@router.get('/{id}/', summary="Получение пары по id",
+@router.get('/{id}', summary="Получение пары по id",
             response_model=schemas.LessonOut,
             responses={404: {"detail": "Lesson not found"},
                        200: {
@@ -174,7 +174,7 @@ async def get_lesson(id: int, db=Depends(get_db)):
                         detail="Lesson not found")
 
 
-# @router.delete('/{id}/', status_code=204, summary="Delete message by id")
+# @router.delete('/{id}', status_code=204, summary="Delete message by id")
 # async def delete_message_by_id(id: int, db=Depends(get_db)):
 #     return crud.delete_message_by_id(db=db, id=id)
 

@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 
-@router.get('/', summary="Получение списка кампусов",
+@router.get('', summary="Получение списка кампусов",
             response_model=List[schemas.PlaceOut],
             status_code=status.HTTP_200_OK)
 async def get_places(db=Depends(get_db)):
@@ -18,7 +18,7 @@ async def get_places(db=Depends(get_db)):
     return crud.get_simpe_model(db=db, model=models.Place)
 
 
-@router.get('/{id}/', summary="Получение кампуса по id",
+@router.get('/{id}', summary="Получение кампуса по id",
             response_model=schemas.PlaceOut,
             status_code=status.HTTP_200_OK)
 async def get_places(id: int, db=Depends(get_db)):

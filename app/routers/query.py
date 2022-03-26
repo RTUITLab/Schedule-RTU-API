@@ -21,13 +21,13 @@ class LessonQueryParams:
             None, description="Номера дней недели идут по порядку: 1 - понедельник, 2 - вторник и т.д."),
 
         period_id: int | None = Query(
-            None, description="id периода, не изменяется, id интересующего периода можно посмотреть в '/periods/'"),
+            None, description="id периода, не изменяется, id интересующего периода можно посмотреть в '/periods"),
         lesson_type_id: int | None = Query(
-            None, description="id типа урока, не изменяется, id интересующего типа урока можно посмотреть в '/lesson_types/'"),
+            None, description="id типа урока, не изменяется, id интересующего типа урока можно посмотреть в '/lesson_types'"),
         call_id: int | None = Query(
-            None, description="id звонка (номеров пар), не изменяется, id интересующего звонка можно посмотреть в '/calls/'"),
+            None, description="id звонка (номера пары), не изменяется, id интересующего звонка можно посмотреть в '/calls'"),
         place_id: int | None = Query(
-            None, description="id кампуса, не изменяется, id интересующего кампуса можно посмотреть в '/places/'"),
+            None, description="id кампуса, не изменяется, id интересующего кампуса можно посмотреть в '/places'"),
         is_usual_place: bool = Query(
             None, description="Пара проводиться в кампусе, который является основным местом проведения занятий для этой группы"),
 
@@ -76,7 +76,7 @@ class GroupQueryParams:
         year: int | None = Query(
             None, description="Курс группы (1-4)"),
         degree_id: int | None = Query(
-            None, description="id академической степени группы, не изменяется, id интересующей степени можно посмотреть в '/degrees/'")):
+            None, description="id академической степени группы, не изменяется, id интересующей степени можно посмотреть в '/degrees'")):
         self.name = name
         self.year = year
         self.degree_id = degree_id
@@ -88,6 +88,6 @@ class RoomsQueryParams:
         name: str | None = Query(
             None, description="Название аудитории"),
         place_id: int | None = Query(
-            None, description="id кампуса, не изменяется, id интересующего кампуса можно посмотреть в '/places/'")):
+            None, description="id кампуса, не изменяется, id интересующего кампуса можно посмотреть в '/places'")):
         self.name = name
         self.place_id = place_id
