@@ -172,10 +172,10 @@ def test_lessons():
     assert response.status_code == 200
     assert lessons[0] == response.json()
 
-    response = client.get("/lessons/?group_name=ИВБО-01-21&teacher_name=Милкина&room_name=1&discipline_name=Правоведение&specific_week=1&week=2&is_usual_place=false")
+    response = client.get("/lessons/?group_name=ИВБО-01-21&teacher_name=Милкина&discipline_name=Правоведение&specific_week=1&week=2&is_usual_place=false")
     assert response.status_code == 200
     assert not response.json()
-    response = client.get("/lessons/?group_name=ИВБО-01-21&teacher_name=Милкина&room_name=1&discipline_name=Правоведение&specific_week=2&is_usual_place=false")
+    response = client.get("/lessons/?group_name=ИВБО-01-21&teacher_name=Милкина&discipline_name=Правоведение&specific_week=2&is_usual_place=false")
     assert response.status_code == 200
     assert [lessons[0]] == response.json()
 
