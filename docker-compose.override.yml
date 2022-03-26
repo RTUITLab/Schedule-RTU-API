@@ -4,17 +4,24 @@ services:
   api:
     build: ./
     ports:
+    - 8000:8000
+    environment:
+      DATABASE_URL: sqlite:///test.db
+      APP_SECRET: 1
+      ROOT_PATH: /api
+  old:
+    build: ./old
+    ports:
     - 5000:5000
     environment:
       SECRET_FOR_REFRESH: DebugSecret
       CONNECTION_STRING: postgresql+psycopg2://postgres:Password123@debug_db:5432/schedule_api_debug_database
-    # entrypoint: bash -c 'flask db init && flask db migrate -m "Initial migration." && flask db upgrade'
-  refresh_invoker:
+  refresh-invoker:
     build: ./refresh_invoker
   proxy:
     build: ./proxy
     ports:
-    - 5001:5001
+    - 80:80
 
 
   debug_db:

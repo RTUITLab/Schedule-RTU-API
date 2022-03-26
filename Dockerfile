@@ -1,13 +1,18 @@
-FROM tiangolo/meinheld-gunicorn-flask:python3.7
+FROM python:3.10.2-slim
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+# install dependencies
+RUN pip install --upgrade pip
+RUN apt-get update \
+    && apt-get -y install libpq-dev gcc
 
 WORKDIR /app
-RUN pip install --upgrade pip
-COPY requirements.txt requirements.txt
+
+COPY requirements.txt ./
+
 RUN pip install -r requirements.txt
 
-COPY . /app
+COPY . .
 
-EXPOSE 5000
-
-# ENTRYPOINT ["python"]
-CMD flask db init && flask db migrate && flask db upgrade && python waitress_run.py 
+CMD bash -c "python migrate.py && gunicorn app.main:app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000"

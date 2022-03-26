@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  api:
+  old:
     networks:
       - net
     environment:
@@ -18,7 +18,25 @@ services:
       options:
         max-size: "200k"
         max-file: "10"
-  refresh_invoker:
+  api:
+    networks:
+      - net
+    environment:
+      TZ: 'Europe/Moscow'
+      DATABASE_URL: ${DATABASE_URL?Provide postgres connection string DATABASE_URL}
+      ROOT_PATH: ${ROOT_PATH?Provide path to backend beside  ROOT_PATH}
+      APP_SECRET: ${APP_SECRET?Provide path prefix to service from proxy APP_SECRET}
+    deploy:
+      resources:
+        limits:
+          cpus: '0.30'
+          memory: 100M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+  refresh-invoker:
     networks:
       - net
     deploy:
@@ -37,14 +55,13 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.30'
-          memory: 100M
+          cpus: '0.20'
+          memory: 70M
     logging:
       driver: "json-file"
       options:
         max-size: "200k"
         max-file: "10"
-
 networks:
   net:
     driver: overlay
