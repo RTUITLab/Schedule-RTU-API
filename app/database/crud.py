@@ -66,7 +66,7 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
     if specific_week:
         res = []
         for less in query:
-            if specific_week in less.specific_weeks or less.every_week:
+            if specific_week in [i.secific_week for i in less.specific_weeks] or less.every_week:
                 res.append(less)
         query = res
     if not limit:

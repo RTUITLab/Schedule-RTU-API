@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  postgresql:
+    restart: always
+
+    image: postgres:11.11
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data/
+    ports:
+      - 5435:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=schedule
+
+volumes:
+  postgres_volume:
