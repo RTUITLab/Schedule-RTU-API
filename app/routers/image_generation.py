@@ -4,6 +4,32 @@ import imgkit
 import jinja2
 from starlette.responses import StreamingResponse
 
+def fill_day(day, extra_lesson=False):
+    week_sign = {
+        0: 'I',
+        1: 'II',
+    }
+    if extra_lesson:
+        range_start = 12
+        range_end = 14
+
+    else:
+        range_start = 0
+        range_end = 12
+
+    for i in range(range_start, range_end):
+        day.append({'id': i,
+                    'body': {
+                        'lesson_num': f'{i // 2 + 1}',
+                        'week': week_sign.get(i % 2),
+                        'subject': '',
+                        'type': '',
+                        'teacher': '',
+                        'classroom': '',
+                        'font': '',
+                    }
+                    })
+        
 @app.get("/photo/")
 async def photo(teacher : str='',group: str =''):
     try:
