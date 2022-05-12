@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="styles.css">
+    <title>Title</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <span class="request">{{request}}</span>
+        <div class="schedule">
+            <span><b>1-я пара:</b> 09:00 — 10:30</span>
+            <span><b>2-я пара:</b> 10:40 — 12:10</span>
+            <span><b>3-я пара:</b> 12:40 — 14:10</span>
+            <span><b>4-я пара:</b> 14:20 — 15:50</span>
+            <span><b>5-я пара:</b> 16:20 — 17:50</span>
+            <span><b>6-я пара:</b> 18:00 — 19:30</span>
+        </div>
+    </div>
+    <div class="content">
+        <div class="day">
+            <div class="day_header">
+                <span class="day-name">Понедельник</span>
+            </div>
+            <table class="schedule-table monday">
+                <tbody>
+                {%for lesson in monday%}
+                    {% if lesson.body.week == "I" %}
+                        <tr class="row">
+                            <th class="table_id" scope="row" rowspan="2">{{lesson.body.lesson_num}}</th>
+                            <td class="table_week">{{lesson.body.week}}</td>
+                            <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                            <td class="table_type">{{lesson.body.type}}</td>
+                            <td class="table_teacher">{{lesson.body.teacher}}</td>
+                            <td class="table_room">{{lesson.body.classroom}}</td>
+                        </tr>
+                        {%else%}
+                            <tr class="row row_even">
+                                <td class="table_week">{{lesson.body.week}}</td>
+                                <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                                <td class="table_type">{{lesson.body.type}}</td>
+                                <td class="table_teacher">{{lesson.body.teacher}}</td>
+                                <td class="table_room">{{lesson.body.classroom}}</td>
+                            </tr>
+                        {%endif%}
+                {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <div class="day">
+            <div class="day_header">
+                <span class="day-name">Четверг</span>
+            </div>
+            <table class="schedule-table thursday">
+                <tbody>
+                {%for lesson in thursday%}
+                    {% if lesson.body.week == "I" %}
+                        <tr class="row">
+                            <th class="table_id" scope="row" rowspan="2">{{lesson.body.lesson_num}}</th>
+                            <td class="table_week">{{lesson.body.week}}</td>
+                            <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                            <td class="table_type">{{lesson.body.type}}</td>
+                            <td class="table_teacher">{{lesson.body.teacher}}</td>
+                            <td class="table_room">{{lesson.body.classroom}}</td>
+                        </tr>
+                        {%else%}
+                            <tr class="row row_even">
+                                <td class="table_week">{{lesson.body.week}}</td>
+                                <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                                <td class="table_type">{{lesson.body.type}}</td>
+                                <td class="table_teacher">{{lesson.body.teacher}}</td>
+                                <td class="table_room">{{lesson.body.classroom}}</td>
+                            </tr>
+                        {%endif%}
+                {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <div class="day">
+            <div class="day_header">
+                <span class="day-name">Вторник</span>
+            </div>
+            <table class="schedule-table tuesday">
+                               <tbody>
+                {%for lesson in tuesday%}
+                    {% if lesson.body.week == "I" %}
+                        <tr class="row">
+                            <th class="table_id" scope="row" rowspan="2">{{lesson.body.lesson_num}}</th>
+                            <td class="table_week">{{lesson.body.week}}</td>
+                            <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                            <td class="table_type">{{lesson.body.type}}</td>
+                            <td class="table_teacher">{{lesson.body.teacher}}</td>
+                            <td class="table_room">{{lesson.body.classroom}}</td>
+                        </tr>
+                        {%else%}
+                            <tr class="row row_even">
+                                <td class="table_week">{{lesson.body.week}}</td>
+                                <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                                <td class="table_type">{{lesson.body.type}}</td>
+                                <td class="table_teacher">{{lesson.body.teacher}}</td>
+                                <td class="table_room">{{lesson.body.classroom}}</td>
+                            </tr>
+                        {%endif%}
+                {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <div class="day">
+            <div class="day_header">
+                <span class="day-name">Пятница</span>
+            </div>
+            <table class="schedule-table friday">
+                <tbody>
+                {%for lesson in friday%}
+                    {% if lesson.body.week == "I" %}
+                        <tr class="row">
+                            <th class="table_id" scope="row" rowspan="2">{{lesson.body.lesson_num}}</th>
+                            <td class="table_week">{{lesson.body.week}}</td>
+                            <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                            <td class="table_type">{{lesson.body.type}}</td>
+                            <td class="table_teacher">{{lesson.body.teacher}}</td>
+                            <td class="table_room">{{lesson.body.classroom}}</td>
+                        </tr>
+                        {%else%}
+                            <tr class="row row_even">
+                                <td class="table_week">{{lesson.body.week}}</td>
+                                <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                                <td class="table_type">{{lesson.body.type}}</td>
+                                <td class="table_teacher">{{lesson.body.teacher}}</td>
+                                <td class="table_room">{{lesson.body.classroom}}</td>
+                            </tr>
+                        {%endif%}
+                {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <div class="day">
+            <div class="day_header">
+                <span class="day-name">Среда</span>
+            </div>
+            <table class="schedule-table wednesday">
+                <tbody>
+                {%for lesson in wednesday%}
+                    {% if lesson.body.week == "I" %}
+                        <tr class="row">
+                            <th class="table_id" scope="row" rowspan="2">{{lesson.body.lesson_num}}</th>
+                            <td class="table_week">{{lesson.body.week}}</td>
+                            <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                            <td class="table_type">{{lesson.body.type}}</td>
+                            <td class="table_teacher">{{lesson.body.teacher}}</td>
+                            <td class="table_room">{{lesson.body.classroom}}</td>
+                        </tr>
+                        {%else%}
+                            <tr class="row row_even">
+                                <td class="table_week">{{lesson.body.week}}</td>
+                                <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                                <td class="table_type">{{lesson.body.type}}</td>
+                                <td class="table_teacher">{{lesson.body.teacher}}</td>
+                                <td class="table_room">{{lesson.body.classroom}}</td>
+                            </tr>
+                        {%endif%}
+                {%endfor%}
+                </tbody>
+            </table>
+        </div>
+        <div class="day">
+            <div class="day_header">
+                <span class="day-name">Суббота</span>
+            </div>
+            <table class="schedule-table saturday">
+                <tbody>
+                {%for lesson in saturday%}
+                    {% if lesson.body.week == "I" %}
+                        <tr class="row">
+                            <th class="table_id" scope="row" rowspan="2">{{lesson.body.lesson_num}}</th>
+                            <td class="table_week">{{lesson.body.week}}</td>
+                            <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                            <td class="table_type">{{lesson.body.type}}</td>
+                            <td class="table_teacher">{{lesson.body.teacher}}</td>
+                            <td class="table_room">{{lesson.body.classroom}}</td>
+                        </tr>
+                        {%else%}
+                            <tr class="row row_even">
+                                <td class="table_week">{{lesson.body.week}}</td>
+                                <td class="table_subject {{lesson.body.font}}">{{lesson.body.subject}}</td>
+                                <td class="table_type">{{lesson.body.type}}</td>
+                                <td class="table_teacher">{{lesson.body.teacher}}</td>
+                                <td class="table_room">{{lesson.body.classroom}}</td>
+                            </tr>
+                        {%endif%}
+                {%endfor%}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

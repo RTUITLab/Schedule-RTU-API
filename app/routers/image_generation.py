@@ -10,9 +10,9 @@ async def photo(teacher : str='',group: str =''):
         response = requests.get(
             f'https://schedule-rtu.rtuitlab.dev/api/lessons?teacher_name={teacher}&group_name={group}')
     except:
-        return Response(content='something went wrong')
+        return Response(content='something went wrong',status_code=500)
     if response.status_code != 200:
-        return Response(content='wrong param')
+        return Response(content='wrong param',status_code=400)
 
     answer = response.json()
     week = {

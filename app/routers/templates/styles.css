@@ -1,0 +1,140 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Helvetica, sans-serif;
+}
+
+/*----------HEADER--------------*/
+
+.container {
+    margin: 0 auto;
+    height: 4235px;
+    width: 2060px;
+}
+
+.header {
+    background: rgb(166,207,243);
+    background: linear-gradient(306deg, rgba(166,207,243,1) 0%, rgba(169,145,225,1) 100%);
+    padding: 30px 50px;
+    display: flex;
+    -webkit-flex-direction: row;
+    -webkit-justify-content: space-between;
+    color: #fff;
+}
+
+.request {
+    margin: auto 0;
+    font-size: 56px;
+    line-height: 155%;
+    font-weight: bold;
+}
+
+.schedule {
+    font-size: 28px;
+    width: 760px;
+    display: flex;
+    -webkit-flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -webkit-justify-content: space-between;
+    -webkit-align-items: center;
+    margin-left: auto;
+}
+
+
+/*----------SCHEDULE------------*/
+
+.content {
+    padding: 50px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.day {
+    margin-bottom: 50px;
+}
+
+
+.day_header {
+    width: 955px;
+    height: 75px;
+    display: table;
+    background: rgb(166,207,243);
+    background: linear-gradient(306deg, rgba(166,207,243,1) 0%, rgba(169,145,225,1) 100%);
+}
+
+.day-name {
+    font-size: 40px;
+    font-weight: bold;
+    color: #fff;
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.schedule-table {
+    height: 900px;
+    width: 955px;
+    border: solid 1px #000;
+    border-collapse: collapse;
+    padding: 0;
+    font-size: 20px;
+}
+
+/*-------------TIMETABLE---------------*/
+
+td, th {
+    border: solid 1px #000;
+}
+
+.table_id {
+    width: 35px;
+    font-weight: bold;
+}
+
+.table_week {
+    width: 45px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table_subject {
+    padding: 5px;
+    width: 500px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table_type {
+    width: 50px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.table_teacher {
+    width: 155px;
+    vertical-align: middle;
+    text-align: center;
+        font-size: 18px;
+}
+
+.table_room {
+    width: 110px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.row {
+    height: 100px; /*Если можно динамически изменять шрифт, в парах по подгруппам поставить размер шрифта 16px, здесь - 75px;*/
+    vertical-align: middle;
+    text-align: center;
+}
+
+.row_even {
+    background-color: #A7B9ED20;
+}
+
+.subgroups {
+    font-size: 14px;
+}
