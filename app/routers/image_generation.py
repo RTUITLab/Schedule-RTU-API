@@ -34,7 +34,7 @@ def fill_day(day, extra_lesson=False):
 async def photo(teacher : str='',group: str =''):
     try:
         response = requests.get(
-            f'https://schedule-rtu.rtuitlab.dev/api/lessons?teacher_name={teacher}&group_name={group}')
+            f'http://localhost:8000/api/lessons?teacher_name={teacher}&group_name={group}')
     except:
         return Response(content='something went wrong',status_code=500)
     if response.status_code != 200:
