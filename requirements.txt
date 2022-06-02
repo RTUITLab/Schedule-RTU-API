@@ -55,5 +55,5 @@ uvicorn==0.17.4
 watchgod==0.8
 websockets==10.2
 xlrd==1.2.0
-imgkit
-Jinja2
+imgkit==1.2.2
+Jinja2==3.1.2
