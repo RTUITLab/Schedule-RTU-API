@@ -1,13 +1,11 @@
 import imgkit
 import jinja2
-import requests
 
 from io import BytesIO
 from starlette.responses import StreamingResponse
 from fastapi import APIRouter
 from fastapi import Response, Depends
 
-from app.routers import query
 from app.routers.query import LessonQueryParams
 from app.utils.get_lessons import get_lessons_list
 from app.dependencies import get_db
@@ -116,6 +114,7 @@ async def photo(queries: LessonQueryParams = Depends(LessonQueryParams), db=Depe
     img = imgkit.from_string(jinja_template, False, options={
         'width': 2060,
         'height': img_height,
+        "enable-local-file-access": "",
     }, css='app/templates/styles.css')
     byte_img = BytesIO(img)
 
