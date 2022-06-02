@@ -1,8 +1,22 @@
-from io import BytesIO
-
 import imgkit
 import jinja2
+import requests
+
+from io import BytesIO
 from starlette.responses import StreamingResponse
+from fastapi import APIRouter
+from fastapi import Response, Depends
+
+from app.routers import query
+from app.routers.query import LessonQueryParams
+from app.utils.get_lessons import get_lessons_list
+from app.dependencies import get_db
+
+router = APIRouter(
+    prefix="/image",
+    tags=["Фото"]
+)
+
 
 def fill_day(day, extra_lesson=False):
     week_sign = {
@@ -29,18 +43,14 @@ def fill_day(day, extra_lesson=False):
                         'font': '',
                     }
                     })
-        
-@app.get("/photo/")
-async def photo(teacher : str='',group: str =''):
-    try:
-        response = requests.get(
-            f'http://localhost:8000/api/lessons?teacher_name={teacher}&group_name={group}')
-    except:
-        return Response(content='something went wrong',status_code=500)
-    if response.status_code != 200:
-        return Response(content='wrong param',status_code=400)
 
-    answer = response.json()
+
+@router.get("/schedule/")
+async def photo(queries: LessonQueryParams = Depends(LessonQueryParams), db=Depends(get_db)):
+    answer = get_lessons_list(queries=queries, db=db)
+    if not answer:
+        return Response(content='empty search', status_code=500)
+
     week = {
         1: [],
         2: [],
@@ -55,45 +65,45 @@ async def photo(teacher : str='',group: str =''):
         fill_day(v)
 
     for lesson in answer:
-        day = week.get(lesson.get('day_of_week'))
-        id = lesson.get("call").get("call_num") * 2 - 1 - lesson.get('week') % 2
-        elem = next((x for x in day if x.get("id") == id), None)
+        day = week.get(lesson.day_of_week)
+        id = lesson.call.call_num * 2 - 1 - lesson.week % 2
+        elem = next((x for x in day if x['id'] == id), None)
 
         if not elem:
 
             fill_day(day, extra_lesson=True)
 
-            if lesson.get('day_of_week') <= 3:
-                fill_day(week.get(lesson.get('day_of_week') + 3), extra_lesson=True)
+            if lesson.day_of_week <= 3:
+                fill_day(week.get(lesson.day_of_week + 3), extra_lesson=True)
             else:
-                fill_day(week.get(lesson.get('day_of_week') - 3), extra_lesson=True)
+                fill_day(week.get(lesson.day_of_week - 3), extra_lesson=True)
 
-            elem = next((x for x in day if x["id"] == id), None)
+            elem = next((x for x in day if x['id'] == id), None)
             img_height += 200
 
         elem['body'][
-            'subject'] += f'{", ".join([str(specific_week) for specific_week in lesson.get("specific_weeks")])} {lesson.get("discipline").get("name")} <br>'
+            'subject'] += f'{", ".join([str(specific_week) for specific_week in lesson.specific_weeks])} {lesson.discipline.name} <br>'
 
         if len(elem['body']['subject']) > 100:
             elem['body']['font'] = 'subgroups'
 
-        if lesson.get("lesson_type"):
-            elem['body']['type'] += f'{lesson.get("lesson_type").get("short_name")}<br>'
+        if lesson.lesson_type:
+            elem['body']['type'] += f'{lesson.lesson_type.short_name}<br>'
         else:
             elem['body']['type'] = ''
 
         elem['body'][
-            'teacher'] += f'{", ".join([teacher_elem.get("name") for teacher_elem in lesson.get("teachers")])}<br>'
+            'teacher'] += f'{", ".join([teacher_elem.name for teacher_elem in lesson.teachers])}<br>'
 
-        if lesson.get("room"):
-            elem['body']['classroom'] += f'{lesson.get("room").get("name")}<br>'
+        if lesson.room:
+            elem['body']['classroom'] += f'{lesson.room.name}<br>'
         else:
             elem['body']['classroom'] = ''
 
-    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader('templates'))
+    jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader('app/templates'))
 
     payload = {
-        'request': f'Расписание преподавателя<br>{teacher}' if teacher else f'Расписание группы<br>{group}',
+        'request': f'Расписание преподавателя<br>{queries.teacher_name}' if queries.teacher_name else f'Расписание группы<br>{queries.group_name}',
         'monday': week.get(1),
         'tuesday': week.get(2),
         'wednesday': week.get(3),
@@ -106,7 +116,7 @@ async def photo(teacher : str='',group: str =''):
     img = imgkit.from_string(jinja_template, False, options={
         'width': 2060,
         'height': img_height,
-    }, css='./templates/styles.css')
+    }, css='app/templates/styles.css')
     byte_img = BytesIO(img)
 
     return StreamingResponse(byte_img, media_type="image/png")
