@@ -78,9 +78,8 @@ async def photo(queries: LessonQueryParams = Depends(LessonQueryParams), db=Depe
 
             elem = next((x for x in day if x['id'] == id), None)
             img_height += 200
-
         elem['body'][
-            'subject'] += f'{", ".join([str(specific_week) for specific_week in lesson.specific_weeks])} {lesson.discipline.name} <br>'
+            'subject'] += f'{", ".join([str(specific_week.secific_week) for specific_week in lesson.specific_weeks])} {lesson.discipline.name} <br>'
 
         if len(elem['body']['subject']) > 100:
             elem['body']['font'] = 'subgroups'
