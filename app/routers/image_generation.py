@@ -43,7 +43,7 @@ def fill_day(day, extra_lesson=False):
                     })
 
 
-@router.get("/schedule/")
+@router.get("")
 async def photo(queries: LessonQueryParams = Depends(LessonQueryParams), db=Depends(get_db)):
     answer = get_lessons_list(queries=queries, db=db)
     if not answer:

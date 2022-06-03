@@ -88,7 +88,7 @@ lesson_example = {
                                },
                        }})
 async def get_lessons(queries: LessonQueryParams = Depends(LessonQueryParams), db=Depends(get_db)):
-    return get_lessons_list(queries=queries, db=db) or []
+    return get_lessons_list(queries=queries, db=db)
 
 
 @router.get('/{id}', summary="Получение пары по id",
