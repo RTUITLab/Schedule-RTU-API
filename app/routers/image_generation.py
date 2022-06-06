@@ -100,7 +100,7 @@ async def photo(queries: LessonQueryParams = Depends(LessonQueryParams), db=Depe
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader('app/templates'))
 
     payload = {
-        'request': f'Расписание преподавателя<br>{queries.teacher_name}' if queries.teacher_name else f'Расписание группы<br>{queries.group_name}',
+        'request': f'Расписание преподавателя<br>{queries.teacher_name.upper()}' if queries.teacher_name else f'Расписание группы<br>{queries.group_name.upper()}',
         'monday': week.get(1),
         'tuesday': week.get(2),
         'wednesday': week.get(3),
