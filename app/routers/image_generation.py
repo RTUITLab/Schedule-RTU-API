@@ -78,9 +78,8 @@ async def photo(queries: LessonQueryParams = Depends(LessonQueryParams), db=Depe
 
             elem = next((x for x in day if x['id'] == id), None)
             img_height += 200
-
         elem['body'][
-            'subject'] += f'{", ".join([str(specific_week) for specific_week in lesson.specific_weeks])} {lesson.discipline.name} <br>'
+            'subject'] += f'{", ".join([str(specific_week.secific_week) for specific_week in lesson.specific_weeks])} {lesson.discipline.name} <br>'
 
         if len(elem['body']['subject']) > 100:
             elem['body']['font'] = 'subgroups'
@@ -101,7 +100,7 @@ async def photo(queries: LessonQueryParams = Depends(LessonQueryParams), db=Depe
     jinja_env = jinja2.Environment(loader=jinja2.FileSystemLoader('app/templates'))
 
     payload = {
-        'request': f'Расписание преподавателя<br>{queries.teacher_name}' if queries.teacher_name else f'Расписание группы<br>{queries.group_name}',
+        'request': f'Расписание преподавателя<br>{queries.teacher_name.upper()}' if queries.teacher_name else f'Расписание группы<br>{queries.group_name.upper()}',
         'monday': week.get(1),
         'tuesday': week.get(2),
         'wednesday': week.get(3),
