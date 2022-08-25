@@ -3,8 +3,8 @@ from pydantic import BaseSettings
 
 class Settings(BaseSettings):
 
-    database_url: str
-    app_secret: str
+    database_url: str = 'postgresql://postgres:ujhrb1331@localhost:5433/postgres'
+    app_secret: str = '123'
     root_path: str = ''
 
     class Config:

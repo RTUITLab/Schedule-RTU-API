@@ -85,6 +85,7 @@ def test_calls():
 def test_disciplines():
     response = client.get("/disciplines")
     assert response.status_code == 200
+    print(response.json())
     assert testing_items["disciplines"] == response.json()
 
     response = client.get("/disciplines/1")
