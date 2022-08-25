@@ -4,7 +4,6 @@ from fastapi import APIRouter, Depends, Header, status, Response
 
 from ..database import crud, schemas, models
 from ..dependencies import get_db, get_settings
-from ..utils.schedule_parser.main import parse_schedule
 
 
 router = APIRouter(

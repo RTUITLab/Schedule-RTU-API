@@ -6,6 +6,7 @@ from .query import GroupQueryParams
 from ..database import crud, schemas, models
 from ..dependencies import get_db
 
+
 router = APIRouter(
     prefix="/groups",
     tags=["Группа"]

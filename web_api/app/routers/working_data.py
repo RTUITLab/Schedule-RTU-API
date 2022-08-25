@@ -1,6 +1,4 @@
-from importlib.metadata import requires
 from fastapi import APIRouter, Depends, Header, Response, status, BackgroundTasks
-from sqlalchemy.ext.declarative import declarative_base
 # from typing import List
 
 from ..database import crud, schemas

@@ -3,10 +3,11 @@ from typing import List
 
 from app.utils.gen_rooms import gen_rooms2
 
-from ..database import crud, schemas, models
+from ..database import crud, schemas
 from ..dependencies import get_db
 from .query import LessonQueryParams
 from app.utils.get_lessons import get_lessons_list
+
 
 router = APIRouter(
     prefix="/lessons",

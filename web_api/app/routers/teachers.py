@@ -5,11 +5,11 @@ from ..database import crud, schemas, models
 from ..dependencies import get_db
 from .query import TeacherQueryParams
 
+
 router = APIRouter(
     prefix="/teachers",
     tags=["Преподаватели"]
 )
-
 
 @router.get('', summary="Получение списка преподавателей",
             response_model=List[schemas.TeacherOut],

@@ -4,11 +4,11 @@ from typing import List
 from ..database import crud, schemas, models
 from ..dependencies import get_db
 
+
 router = APIRouter(
     prefix="/rooms",
     tags=["Аудитории"]
 )
-
 
 @router.get('', summary="Получение списка аудитоий",
             response_model=List[schemas.RoomOut],

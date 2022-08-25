@@ -10,11 +10,11 @@ from app.routers.query import LessonQueryParams
 from app.utils.get_lessons import get_lessons_list
 from app.dependencies import get_db
 
+
 router = APIRouter(
     prefix="/image",
     tags=["Фото"]
 )
-
 
 def fill_day(day, extra_lesson=False):
     week_sign = {

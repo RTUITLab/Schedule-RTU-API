@@ -5,8 +5,6 @@ from importlib import resources
 from fastapi import FastAPI, Request, Response, Depends
 from fastapi.middleware.cors import CORSMiddleware
 
-from migrate import automigrate
-
 from app.database.database import SessionLocal
 from app.dependencies import get_settings, get_db
 

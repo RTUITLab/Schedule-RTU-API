@@ -2,8 +2,6 @@ import re
 import os.path
 import datetime
 import traceback
-from unicodedata import name
-from venv import create
 import xlrd
 
 import datetime as dt

@@ -1,7 +1,7 @@
 import csv
 
 from sqlalchemy.orm import Session
-from ..database import models, schemas
+from ..database import models
 
 
 def gen_rooms(db: Session):

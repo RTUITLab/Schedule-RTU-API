@@ -1,4 +1,4 @@
-from fastapi import Depends, status, HTTPException
+from fastapi import status, HTTPException
 
 from app.database import crud, models
 from app.routers.query import LessonQueryParams
