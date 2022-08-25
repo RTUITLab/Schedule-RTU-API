@@ -155,4 +155,6 @@ stack.yml
 *.json
 test.py
 
+.vscode
+
 env.prod.ps1
