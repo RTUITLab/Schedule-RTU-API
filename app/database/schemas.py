@@ -1,5 +1,5 @@
-from email.headerregistry import Group
-from pydantic import BaseModel, validator, Field
+from pydantic import BaseModel, validator
+from typing import Optional, List
 
 
 class WorkingDataBase(BaseModel):
@@ -112,7 +112,7 @@ class RoomBase(BaseModel):
 class RoomOut(RoomBase):
     id: int
     name: str
-    place: PlaceOut | None = None
+    place: Optional[PlaceOut] = None
 
     class Config:
         orm_mode = True
@@ -177,13 +177,13 @@ class LessonOut(LessonBase):
     id: int
     call: CallOut
     period: PeriodOut
-    teachers: list[TeacherOut] 
-    lesson_type: LessonTypeOut | None = None
+    teachers: List[TeacherOut] 
+    lesson_type: Optional[LessonTypeOut] = None
     discipline: DisciplineOut
-    room: RoomOut | None = None
-    groups: list[GroupOut]
-    specific_weeks: list[SpecificWeek]
-    subgroups: list[Subgroup]
+    room: Optional[RoomOut] = None
+    groups: List[GroupOut]
+    specific_weeks: List[SpecificWeek]
+    subgroups: List[Subgroup]
     every_week: bool
 
     class Config:

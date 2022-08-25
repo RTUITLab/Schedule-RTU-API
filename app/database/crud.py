@@ -1,11 +1,10 @@
-import sys
-
 from sqlalchemy.orm import Session
 
 from . import models, schemas
+from typing import Optional
 
 
-def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
+def get_lessons(db: Session, skip: int = 0, limit: Optional[int] = None, **kwargs):
     kwargs = {
         k: v
         for k, v in kwargs.items()
@@ -76,7 +75,7 @@ def get_lessons(db: Session, skip: int = 0, limit: int | None = None, **kwargs):
     return query
 
 
-def get_groups(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None, **kwargs):
+def get_groups(db: Session, skip: int = 0, limit: Optional[int] = None, name: Optional[str] = None, **kwargs):
     kwargs = {
         k: v
         for k, v in kwargs.items()
@@ -92,7 +91,7 @@ def get_groups(db: Session, skip: int = 0, limit: int | None = None, name: str |
     return query
 
 
-def get_teachers(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None):
+def get_teachers(db: Session, skip: int = 0, limit: Optional[int] = None, name: Optional[str] = None):
     if name:
         search = "%{}%".format(name)
         query = db.query(models.Teacher).filter(
@@ -102,7 +101,7 @@ def get_teachers(db: Session, skip: int = 0, limit: int | None = None, name: str
     return query
 
 
-def get_rooms(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None):
+def get_rooms(db: Session, skip: int = 0, limit: Optional[int] = None, name: Optional[str] = None):
     # TODO need to format name
 
     if name:
@@ -115,7 +114,7 @@ def get_rooms(db: Session, skip: int = 0, limit: int | None = None, name: str | 
     return query
 
 
-def get_disciplines(db: Session, skip: int = 0, limit: int | None = None, name: str | None = None):
+def get_disciplines(db: Session, skip: int = 0, limit: Optional[int] = None, name: Optional[str] = None):
     if name:
         search = "%{}%".format(name)
         query = db.query(models.Discipline).filter(
