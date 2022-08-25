@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   api:
-    build: ./
+    build: ./web_api
     ports:
     - 8000:8000
     environment:

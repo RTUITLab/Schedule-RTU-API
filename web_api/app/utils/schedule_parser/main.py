@@ -40,7 +40,7 @@ def parse_schedule(db, test_mode=False):
             downloader.download()
         
 
-        print("downloaded")
+        print("Files are ready")
         print()
         try:
             reader = Reader(db)

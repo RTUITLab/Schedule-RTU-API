@@ -25,7 +25,9 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
+          cd web_api
           pip install -r requirements.txt
       - name: Test with pytest
         run: |
+          cd web_api
           pytest -s --asyncio-mode=strict

@@ -1,9 +1,7 @@
-from fastapi import Depends
 from fastapi.testclient import TestClient
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.database import models
 from httpx import AsyncClient
 
 from app.database.database import DataBase
