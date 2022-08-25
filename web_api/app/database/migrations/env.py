@@ -5,7 +5,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from app.database.database import DataBase, SQLALCHEMY_DATABASE_URL
+from app.database.database import Base, SQLALCHEMY_DATABASE_URL
 from app.database import models
 
 # this is the Alembic Config object, which provides
@@ -21,7 +21,7 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = DataBase.metadata
+target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

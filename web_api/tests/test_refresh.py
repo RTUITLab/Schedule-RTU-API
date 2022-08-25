@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from httpx import AsyncClient
 
-from app.database.database import DataBase
+from app.database.database import Base
 from app.dependencies import get_db, get_settings
 from app.main import app
 from .testing_items import testing_items
@@ -23,8 +23,8 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread
 TestingSessionLocal = sessionmaker(autocommit=False,
                                    autoflush=False, bind=engine)
 
-DataBase.metadata.drop_all(bind=engine)
-DataBase.metadata.create_all(bind=engine)
+Base.metadata.drop_all(bind=engine)
+Base.metadata.create_all(bind=engine)
 
 
 def override_get_db():
