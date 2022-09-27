@@ -118,7 +118,7 @@ class Reader:
                 try:
                     book = xlrd.open_workbook(path_to_xlsx_file)
                     for sheet_id in range(book.nsheets):
-                        self.read(path_to_xlsx_file, sheet_id=sheet_id - 1)
+                        self.read(path_to_xlsx_file, sheet_id=sheet_id)
                         # TODO move truncate here
                         self.db.commit()
                 except Exception as err:
@@ -481,9 +481,9 @@ class Reader:
         # Индекс строки с названиями групп
         group_name_row_num = 1
         try:
-            sheet = book.sheet_by_index(sheet_id - 1)
+            sheet = book.sheet_by_index(sheet_id)
         except:
-            print('xlsx_path skipped on list ', sheet_id - 1)
+            print('xlsx_path skipped on list ', sheet_id)
             return []
         column_range = []
 
