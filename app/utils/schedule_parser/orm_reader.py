@@ -350,10 +350,10 @@ class Reader:
                 # Перебор одного дня (1-6 пара)
                 if "lesson_{}".format(lesson_num) not in one_day:
                     one_day["lesson_{}".format(lesson_num)] = {}
-
                 # Получение данных об одной паре
                 tmp_name = str(sheet.cell(
                     string_index, discipline_col_num).value)
+
                 # if lesson_num ==  9:
                 #     print(time, group_name, tmp_name, day_num)
                 tmp_name = format_name(tmp_name, week_num, self.weeks_count)
@@ -369,7 +369,6 @@ class Reader:
                         string_index, discipline_col_num + 2).value)
                     room = format_room_name(sheet.cell(
                         string_index, discipline_col_num + 3).value, self.notes_dict, self.current_place)
-
                     # TODO need to fix
                     max_len = max(len(tmp_name), len(room), len(lesson_type))
 
@@ -384,7 +383,10 @@ class Reader:
                         lesson_tuple = [
                             (tmp_name[0], [t for t in teacher], room[0], lesson_type[0])]
                     else:
+                        if not teacher:
+                            teacher = [''] * max_len
                         teacher = cycle([[t] for t in teacher])
+
                         lesson_tuple = list(
                             zip(tmp_name, teacher, room, lesson_type))
 
@@ -581,7 +583,6 @@ class Reader:
                 for key in one_time_table.keys():
                     # Добавление в общий словарь
                     timetable[key] = one_time_table[key]
-
         self.write_to_db(timetable)
         book.release_resources()
         del book
