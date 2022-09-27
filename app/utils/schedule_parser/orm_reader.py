@@ -375,9 +375,11 @@ class Reader:
                     if len(tmp_name) < max_len:
                         tmp_name = cycle(tmp_name)
                     if len(room) < max_len:
-                        room = cycle(room)
+                        if not room:
+                            room = [''] * max_len
                     if len(lesson_type) < max_len:
-                        lesson_type = cycle(lesson_type)
+                        if not lesson_type:
+                            lesson_type = [''] * max_len
 
                     if len(teacher) > max_len and max_len == 1:
                         lesson_tuple = [
