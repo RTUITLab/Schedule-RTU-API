@@ -124,6 +124,10 @@ def format_room_name(cell: str, notes_dict: dict, current_place: int):
     string = string.replace('\n', ' ')
     string = string.replace('ЛАБ', '')
     string = string.replace('ПР', '')
+    string = string.replace('КОМП.', '').strip()
+    string = string.replace('АУД.', '').strip()
+    string = string.replace('ФИЗ.', '').strip()
+    string = string.replace('ДИСТАНЦИОННО', '').strip()
     if current_place == 2 and "ЕСЬ" in string:
         return [None]
     if not len(string):
@@ -191,6 +195,10 @@ def format_room_name(cell: str, notes_dict: dict, current_place: int):
                 all_rooms.append([room, current_place])
     # print(all_rooms, "<- all_rooms")
     # print(cell, ' all_rooms -> ', all_rooms)
+    for room in all_rooms:
+        if room and '' in room:
+            all_rooms.remove(room)
+
     return all_rooms
 
 
