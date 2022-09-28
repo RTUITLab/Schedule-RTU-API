@@ -141,7 +141,7 @@ testing_items = {
     [
         {
             "name": "ИВБО-01-21",
-            "year": 1,
+            "year": 2,
             "id": 1,
             "degree": {
                 "name": "Бакалавриат",
@@ -150,7 +150,7 @@ testing_items = {
         },
         {
             "name": "ИВБО-13-21",
-            "year": 1,
+            "year": 2,
             "id": 2,
             "degree": {
                 "name": "Бакалавриат",
