@@ -34,12 +34,12 @@ def parse_schedule(db, test_mode=False):
             print("not test_mode")
             base_file_dir = 'xls/'
 
-        downloader = Downloader(
-            db=db, path_to_error_log='logs/downloadErrorLog.csv', base_file_dir=base_file_dir)
-        downloader.download()
+            downloader = Downloader(
+                db=db, path_to_error_log='logs/downloadErrorLog.csv', base_file_dir=base_file_dir)
+            downloader.download()
 
-        print("downloaded")
-        print()
+            print("downloaded")
+            print()
         try:
             reader = Reader(db)
         except Exception as err:
