@@ -315,7 +315,7 @@ def format_name(temp_name: str, week: int, weeks_count: int):
             #     result_weeks.add(i)
             result_weeks = []
             # print(week)
-        result[name_num] = [clean_discipline_name, result_weeks, list(subs)]
+        result[name_num] = [clean_discipline_name, result_weeks, sorted(list(subs))]
         # print(discipl, "| result[name_num] -> ", result[name_num])
 
     return result

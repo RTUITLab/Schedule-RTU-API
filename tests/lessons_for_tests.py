@@ -479,7 +479,7 @@ iabo_01_19_lessons = [
             }
         ],
         "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
-        "subgroups": [2, 1],
+        "subgroups": [1, 2],
         "every_week": False,
     },
     {
@@ -513,7 +513,7 @@ iabo_01_19_lessons = [
             }
         ],
         "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
-        "subgroups": [2, 1],
+        "subgroups": [1, 2],
         "every_week": False,
     },
     {
