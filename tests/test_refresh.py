@@ -10,7 +10,7 @@ from app.database.database import DataBase
 from app.dependencies import get_db, get_settings
 from app.main import app
 from .testing_items import testing_items
-from .lessons_for_tests import lessons, iabo_01_19_lessons
+from .lessons_for_tests import lessons
 
 settings = get_settings()
 # if settings.debug:
@@ -180,7 +180,7 @@ def test_lessons():
     response = client.get("/lessons?group_name=ИАБО-01-19")
 
     assert response.status_code == 200
-    assert iabo_01_19_lessons == response.json()
+    assert lessons[1] == response.json()
 
     response = client.get(
         "/lessons?group_name=ИВБО-01-21&teacher_name=Милкина&discipline_name=Правоведение&specific_week=2&is_usual_place=false")
