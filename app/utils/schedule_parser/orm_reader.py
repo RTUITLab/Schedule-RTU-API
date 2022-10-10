@@ -277,12 +277,12 @@ class Reader:
                                 lesson_type = None
 
                                 if dist['type']:
-                                    if "пр" in dist['type'].lower():
+                                    if "пр" in dist['type'].lower() or "п" in dist['type'].lower():
                                         lesson_type = self.lesson_types["пр"]
-                                    elif "лк" in dist['type'].lower() or "лек" in dist['type'].lower():
-                                        lesson_type = self.lesson_types["лк"]
-                                    elif "лаб" in dist['type'].lower() or "лр" in dist['type'].lower():
+                                    elif "лаб" in dist['type'].lower() or "лр" in dist['type'].lower() or "лб" in dist['type'].lower():
                                         lesson_type = self.lesson_types["лр"]
+                                    elif "лк" in dist['type'].lower() or "лек" in dist['type'].lower() or "л" in dist['type'].lower():
+                                        lesson_type = self.lesson_types["лк"]
                                     elif "срс" in dist['type'].lower() or "с/р" in dist['type'].lower():
                                         lesson_type = self.lesson_types["срс"]
 
@@ -383,7 +383,10 @@ class Reader:
 
                     if len(teacher) > max_len and max_len == 1:
                         lesson_tuple = [
-                            (tmp_name[0], [t for t in teacher], room[0], lesson_type[0])]
+                            (tmp_name[0],
+                             [t for t in teacher],
+                             room[0],
+                             lesson_type[0])]
                     else:
                         if not teacher:
                             teacher = [''] * max_len

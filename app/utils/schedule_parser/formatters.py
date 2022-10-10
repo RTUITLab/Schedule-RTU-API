@@ -264,8 +264,8 @@ def format_name(temp_name: str, week: int, weeks_count: int):
         if len(clean_discipline_name) < 3:
             print("Something wrong with", temp_name2, "! discipl ->",
                   discipl, "|clean_discipline_name->", clean_discipline_name, bool(re.match(r'\d|кр', temp_name)))
-            return ""
-        if len(clean_discipline_name) > 2 and clean_discipline_name[0] == "н" and (clean_discipline_name[1] == " " or clean_discipline_name[1].isupper()):
+            del result[name_num]
+            continue
             clean_discipline_name = clean_discipline_name[1:]
 
         weeks = re.findall(

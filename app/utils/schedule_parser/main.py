@@ -55,6 +55,8 @@ def parse_schedule(db, test_mode=False):
             reader.run('xls')
         print("\nКонвертация успешно выполнена!\n\n")
         try:
+            if test_mode:
+                return
             if os.path.exists(base_file_dir):
                 shutil.rmtree(base_file_dir)
         except Exception as e:
