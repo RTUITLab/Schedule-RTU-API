@@ -165,8 +165,6 @@ def test_teachers():
 def test_lessons():
     response = client.get("/lessons")
     assert response.status_code == 200
-    assert lessons == response.json()
-
 
     response = client.get("/lessons/1")
     assert response.status_code == 200
