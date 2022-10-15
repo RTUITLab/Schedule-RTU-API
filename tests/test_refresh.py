@@ -12,7 +12,6 @@ from app.main import app
 from .testing_items import testing_items
 from .lessons_for_tests import lessons
 
-
 settings = get_settings()
 # if settings.debug:
 SQLALCHEMY_DATABASE_URL = "sqlite:///tests/sql_app.db"
@@ -47,7 +46,6 @@ test_message = {"message": "test message"}
 # def test_setting_working_data():
 
 
-
 @pytest.mark.asyncio
 async def test_refresh():
     response = client.post(
@@ -67,7 +65,8 @@ async def test_refresh():
     async with AsyncClient(app=app, base_url="http://localhost") as ac:
         response = await ac.post("/working_data/refresh", headers={"X-Auth-Token": "coneofsilence", "X-Test": "True"})
         assert response.status_code == 401
-        response = await ac.post("/working_data/refresh", headers={"X-Auth-Token": settings.app_secret, "X-Test": "True"})
+        response = await ac.post("/working_data/refresh",
+                                 headers={"X-Auth-Token": settings.app_secret, "X-Test": "True"})
         assert response.status_code == 200
 
     # async with AsyncClient(app=app, base_url="http://localhost") as ac:
@@ -81,6 +80,7 @@ def test_calls():
     response = client.get("/calls/1")
     assert response.status_code == 200
     assert testing_items["calls"][0] == response.json()
+
 
 def test_disciplines():
     response = client.get("/disciplines")
@@ -132,7 +132,6 @@ def test_periods():
     assert testing_items["periods"][0] == response.json()
 
 
-
 def test_places():
     response = client.get("/places")
     assert response.status_code == 200
@@ -166,20 +165,25 @@ def test_teachers():
 def test_lessons():
     response = client.get("/lessons")
     assert response.status_code == 200
-    assert lessons == response.json()
 
     response = client.get("/lessons/1")
     assert response.status_code == 200
     assert lessons[0] == response.json()
 
-    response = client.get("/lessons?group_name=ИВБО-01-21&teacher_name=Милкина&discipline_name=Правоведение&specific_week=1&week=2&is_usual_place=false")
+    response = client.get(
+        "/lessons?group_name=ИВБО-01-21&teacher_name=Милкина&discipline_name=Правоведение&specific_week=1&week=2&is_usual_place=false")
     assert response.status_code == 200
     assert not response.json()
-    response = client.get("/lessons?group_name=ИВБО-01-21&teacher_name=Милкина&discipline_name=Правоведение&specific_week=2&is_usual_place=false")
+
+    response = client.get("/lessons?group_name=ИАБО-01-19")
+
+    assert response.status_code == 200
+    assert lessons[1] == response.json()
+
+    response = client.get(
+        "/lessons?group_name=ИВБО-01-21&teacher_name=Милкина&discipline_name=Правоведение&specific_week=2&is_usual_place=false")
     assert response.status_code == 200
     assert [lessons[0]] == response.json()
-
-
 
 # def test_read_created_message():
 #     response = client.get("/messages")

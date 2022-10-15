@@ -28,18 +28,18 @@ def parse_schedule(db, test_mode=False):
 
         create_predefined(db=db)
         if test_mode:
-            base_file_dir = 'tests/files/'
+            base_file_dir = 'tests/xls/'
             print("test_mode")
         else:
             print("not test_mode")
             base_file_dir = 'xls/'
 
-        downloader = Downloader(
-            db=db, path_to_error_log='logs/downloadErrorLog.csv', base_file_dir=base_file_dir)
-        downloader.download()
+            downloader = Downloader(
+                db=db, path_to_error_log='logs/downloadErrorLog.csv', base_file_dir=base_file_dir)
+            downloader.download()
 
-        print("downloaded")
-        print()
+            print("downloaded")
+            print()
         try:
             reader = Reader(db)
         except Exception as err:
@@ -55,6 +55,8 @@ def parse_schedule(db, test_mode=False):
             reader.run('xls')
         print("\nКонвертация успешно выполнена!\n\n")
         try:
+            if test_mode:
+                return
             if os.path.exists(base_file_dir):
                 shutil.rmtree(base_file_dir)
         except Exception as e:

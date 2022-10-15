@@ -1,3502 +1,1425 @@
-lessons = [
-  {
+iabo_01_19_lessons = [
+    {
+        "day_of_week": 1,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 67,
+        "call": {"call_num": 1, "begin_time": "9:00", "end_time": "10:30", "id": 1},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [],
+        "lesson_type": None,
+        "discipline": {"name": "Военная", "id": 16},
+        "room": None,
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 2,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 68,
+        "call": {"call_num": 1, "begin_time": "9:00", "end_time": "10:30", "id": 1},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Макаров В.А.", "id": 31}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {
+            "name": "Проектирование и разработка автоматизированных систем реального времени",
+            "id": 17,
+        },
+        "room": {
+            "name": "А-214",
+            "id": 19,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 2,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 69,
+        "call": {"call_num": 1, "begin_time": "9:00", "end_time": "10:30", "id": 1},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Петухов А.М.", "id": 32}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {
+            "name": "Программирование промышленных систем автоматизации",
+            "id": 18,
+        },
+        "room": {
+            "name": "А-214",
+            "id": 19,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 2,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 70,
+        "call": {"call_num": 2, "begin_time": "10:40", "end_time": "12:10", "id": 2},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Петухов А.М.", "id": 32}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Программирование промышленных систем автоматизации",
+            "id": 18,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 2,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 71,
+        "call": {"call_num": 2, "begin_time": "10:40", "end_time": "12:10", "id": 2},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Петухов А.М.", "id": 32}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Программирование промышленных систем автоматизации",
+            "id": 18,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 2,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 72,
+        "call": {"call_num": 3, "begin_time": "12:40", "end_time": "14:10", "id": 3},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Володина А.М.", "id": 30}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Проектирование и разработка автоматизированных систем реального времени",
+            "id": 17,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 2,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 73,
+        "call": {"call_num": 3, "begin_time": "12:40", "end_time": "14:10", "id": 3},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Володина А.М.", "id": 30}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Проектирование и разработка автоматизированных систем реального времени",
+            "id": 17,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 2,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 74,
+        "call": {"call_num": 4, "begin_time": "14:20", "end_time": "15:50", "id": 4},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Петухов А.М.", "id": 32}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Программирование промышленных систем автоматизации",
+            "id": 18,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [1],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 2,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 75,
+        "call": {"call_num": 4, "begin_time": "14:20", "end_time": "15:50", "id": 4},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Огорельцев Р.М.", "id": 33}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Программирование промышленных систем автоматизации",
+            "id": 18,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 2,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 76,
+        "call": {"call_num": 5, "begin_time": "16:20", "end_time": "17:50", "id": 5},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Петухов А.М.", "id": 32}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Программирование промышленных систем автоматизации",
+            "id": 18,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [1],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 2,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 77,
+        "call": {"call_num": 5, "begin_time": "16:20", "end_time": "17:50", "id": 5},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Огорельцев Р.М.", "id": 33}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Программирование промышленных систем автоматизации",
+            "id": 18,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 2,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 78,
+        "call": {"call_num": 6, "begin_time": "18:00", "end_time": "19:30", "id": 6},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Мильчакова Н.Е.", "id": 34}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {"name": "Дизайн интерфейсов систем управления", "id": 19},
+        "room": {
+            "name": "А-15",
+            "id": 22,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 2,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 79,
+        "call": {"call_num": 6, "begin_time": "18:00", "end_time": "19:30", "id": 6},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Чижиков В.И.", "id": 35}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {"name": "Моделирование автоматизированных систем", "id": 20},
+        "room": {
+            "name": "А-10",
+            "id": 23,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 3,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 80,
+        "call": {"call_num": 1, "begin_time": "9:00", "end_time": "10:30", "id": 1},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Петухов А.М.", "id": 32}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Проектирование и разработка автоматизированных систем реального времени",
+            "id": 17,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [1, 2],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 3,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 81,
+        "call": {"call_num": 2, "begin_time": "10:40", "end_time": "12:10", "id": 2},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Петухов А.М.", "id": 32}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Проектирование и разработка автоматизированных систем реального времени",
+            "id": 17,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [1, 2],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 3,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 82,
+        "call": {"call_num": 2, "begin_time": "10:40", "end_time": "12:10", "id": 2},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Белова К.И.", "id": 36}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {"name": "Дизайн интерфейсов систем управления", "id": 19},
+        "room": {
+            "name": "И-204-Б",
+            "id": 24,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 3,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 83,
+        "call": {"call_num": 3, "begin_time": "12:40", "end_time": "14:10", "id": 3},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Юрченков И.А.", "id": 37}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Технологии и инструментарий анализа больших данных",
+            "id": 21,
+        },
+        "room": {
+            "name": "Г-426",
+            "id": 25,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 3,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 84,
+        "call": {"call_num": 3, "begin_time": "12:40", "end_time": "14:10", "id": 3},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Юрченков И.А.", "id": 37}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Технологии и инструментарий анализа больших данных",
+            "id": 21,
+        },
+        "room": {
+            "name": "Г-426",
+            "id": 25,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 3,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 85,
+        "call": {"call_num": 4, "begin_time": "14:20", "end_time": "15:50", "id": 4},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Серебрянкин В.А.", "id": 38}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {"name": "Моделирование автоматизированных систем", "id": 20},
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [3, 5, 7, 9, 11, 13, 15, 17],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 3,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 86,
+        "call": {"call_num": 4, "begin_time": "14:20", "end_time": "15:50", "id": 4},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Серебрянкин В.А.", "id": 38}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {"name": "Моделирование автоматизированных систем", "id": 20},
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 4,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 87,
+        "call": {"call_num": 1, "begin_time": "9:00", "end_time": "10:30", "id": 1},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Руднева Л.Ю.", "id": 39}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {
+            "name": "Автоматизация технологических процессов и производств",
+            "id": 22,
+        },
+        "room": {
+            "name": "А-177-1",
+            "id": 11,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [1, 3, 5, 7, 9, 11, 13, 15],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 4,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 88,
+        "call": {"call_num": 1, "begin_time": "9:00", "end_time": "10:30", "id": 1},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Руднева Л.Ю.", "id": 39}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {
+            "name": "Автоматизация технологических процессов и производств",
+            "id": 22,
+        },
+        "room": {
+            "name": "А-177-1",
+            "id": 11,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 4,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 89,
+        "call": {"call_num": 2, "begin_time": "10:40", "end_time": "12:10", "id": 2},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Руднева Л.Ю.", "id": 39}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Автоматизация технологических процессов и производств",
+            "id": 22,
+        },
+        "room": {
+            "name": "А-177-1",
+            "id": 11,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [1, 3, 5, 7, 9, 11, 13, 15],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 4,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 90,
+        "call": {"call_num": 2, "begin_time": "10:40", "end_time": "12:10", "id": 2},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Берберова М.А.", "id": 40}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Надежность и диагностика автоматизированных систем",
+            "id": 23,
+        },
+        "room": {
+            "name": "А-177",
+            "id": 26,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 4,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 91,
+        "call": {"call_num": 3, "begin_time": "12:40", "end_time": "14:10", "id": 3},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Берберова М.А.", "id": 40}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {
+            "name": "Надежность и диагностика автоматизированных систем",
+            "id": 23,
+        },
+        "room": {
+            "name": "А-177",
+            "id": 26,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [1, 3, 5, 7, 9, 11, 13, 15],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 4,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 92,
+        "call": {"call_num": 3, "begin_time": "12:40", "end_time": "14:10", "id": 3},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Берберова М.А.", "id": 40}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {
+            "name": "Надежность и диагностика автоматизированных систем",
+            "id": 23,
+        },
+        "room": {
+            "name": "А-177",
+            "id": 26,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 4,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 93,
+        "call": {"call_num": 4, "begin_time": "14:20", "end_time": "15:50", "id": 4},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Корнеев М.С.", "id": 41}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Автоматизация технологических процессов и производств",
+            "id": 22,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [1, 5, 9, 13],
+        "subgroups": [1],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 4,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 94,
+        "call": {"call_num": 4, "begin_time": "14:20", "end_time": "15:50", "id": 4},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Баев И.Б.", "id": 42}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Автоматизация технологических процессов и производств",
+            "id": 22,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [2, 6, 10, 14],
+        "subgroups": [2],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 4,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 95,
+        "call": {"call_num": 5, "begin_time": "16:20", "end_time": "17:50", "id": 5},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Корнеев М.С.", "id": 41}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Автоматизация технологических процессов и производств",
+            "id": 22,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [1, 5, 9, 13],
+        "subgroups": [1],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 4,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 96,
+        "call": {"call_num": 5, "begin_time": "16:20", "end_time": "17:50", "id": 5},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Баев И.Б.", "id": 42}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Автоматизация технологических процессов и производств",
+            "id": 22,
+        },
+        "room": {
+            "name": "В-108-1",
+            "id": 20,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [2, 6, 10, 14],
+        "subgroups": [2],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 5,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 97,
+        "call": {"call_num": 3, "begin_time": "12:40", "end_time": "14:10", "id": 3},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Курнасов Е.В.", "id": 43}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {
+            "name": "Технические средства автоматизации и управления",
+            "id": 24,
+        },
+        "room": {
+            "name": "А-17",
+            "id": 27,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [1, 3, 5, 7, 9, 11, 13, 15],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 5,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 98,
+        "call": {"call_num": 3, "begin_time": "12:40", "end_time": "14:10", "id": 3},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Митин М.П.", "id": 9}],
+        "lesson_type": {"short_name": "лк", "name": "Лекция", "id": 1},
+        "discipline": {
+            "name": "Технологии и инструментарий анализа больших данных",
+            "id": 21,
+        },
+        "room": {
+            "name": "А-17",
+            "id": 27,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+            {
+                "name": "ИАБО-02-19",
+                "year": 3,
+                "id": 4,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            },
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 5,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 99,
+        "call": {"call_num": 4, "begin_time": "14:20", "end_time": "15:50", "id": 4},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Курнасов Е.В.", "id": 43}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Технические средства автоматизации и управления",
+            "id": 24,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [1, 3, 5, 7, 9, 11, 13, 15],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 5,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 100,
+        "call": {"call_num": 4, "begin_time": "14:20", "end_time": "15:50", "id": 4},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Курнасов Е.В.", "id": 43}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Технические средства автоматизации и управления",
+            "id": 24,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 5,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 101,
+        "call": {"call_num": 5, "begin_time": "16:20", "end_time": "17:50", "id": 5},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Юрченков И.А.", "id": 37}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Технологии и инструментарий анализа больших данных",
+            "id": 21,
+        },
+        "room": {
+            "name": "Г-413",
+            "id": 28,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [1, 3, 5],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 5,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 102,
+        "call": {"call_num": 5, "begin_time": "16:20", "end_time": "17:50", "id": 5},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Юрченков И.А.", "id": 37}],
+        "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+        "discipline": {
+            "name": "Технологии и инструментарий анализа больших данных",
+            "id": 21,
+        },
+        "room": {
+            "name": "Г-413",
+            "id": 28,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [2, 4, 6],
+        "subgroups": [],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 6,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 103,
+        "call": {"call_num": 1, "begin_time": "9:00", "end_time": "10:30", "id": 1},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Огорельцев Р.М.", "id": 33}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Технические средства автоматизации и управления",
+            "id": 24,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [1, 3, 5, 7, 9, 11, 13, 15],
+        "subgroups": [1],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 6,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 104,
+        "call": {"call_num": 1, "begin_time": "9:00", "end_time": "10:30", "id": 1},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Дергунов А.А.", "id": 44}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Технические средства автоматизации и управления",
+            "id": 24,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+    {
+        "day_of_week": 6,
+        "week": 1,
+        "is_usual_place": True,
+        "id": 105,
+        "call": {"call_num": 2, "begin_time": "10:40", "end_time": "12:10", "id": 2},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Огорельцев Р.М.", "id": 33}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Технические средства автоматизации и управления",
+            "id": 24,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [1, 3, 5, 7, 9, 11, 13, 15],
+        "subgroups": [1],
+        "every_week": False,
+    },
+    {
+        "day_of_week": 6,
+        "week": 2,
+        "is_usual_place": True,
+        "id": 106,
+        "call": {"call_num": 2, "begin_time": "10:40", "end_time": "12:10", "id": 2},
+        "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+        "teachers": [{"name": "Дергунов А.А.", "id": 44}],
+        "lesson_type": {"short_name": "лр", "name": "Лабораторная работа", "id": 3},
+        "discipline": {
+            "name": "Технические средства автоматизации и управления",
+            "id": 24,
+        },
+        "room": {
+            "name": "Г-307",
+            "id": 21,
+            "place": {
+                "id": 1,
+                "short_name": "В-78",
+                "name": "Проспект Вернадского, д.78",
+            },
+        },
+        "groups": [
+            {
+                "name": "ИАБО-01-19",
+                "year": 3,
+                "id": 3,
+                "degree": {"name": "Бакалавриат", "id": 1},
+            }
+        ],
+        "specific_weeks": [],
+        "subgroups": [],
+        "every_week": True,
+    },
+]
+first_lesson = {
     "day_of_week": 1,
     "week": 2,
     "is_usual_place": False,
     "id": 1,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Милкина Е.В.",
-        "id": 1
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Правоведение",
-      "id": 1
-    },
+    "call": {"call_num": 2, "begin_time": "10:40", "end_time": "12:10", "id": 2},
+    "period": {"short_name": "semester", "name": "Учебный семестр", "id": 1},
+    "teachers": [{"name": "Милкина Е.В.", "id": 1}],
+    "lesson_type": {"short_name": "пр", "name": "Практическое занятие", "id": 2},
+    "discipline": {"name": "Правоведение", "id": 1},
     "room": {
-      "name": "А-401",
-      "id": 1,
-      "place": {
-        "id": 4,
-        "short_name": "МП-1",
-        "name": "Малая Пироговская, д.1"
-      }
+        "name": "А-401",
+        "id": 1,
+        "place": {"id": 4, "short_name": "МП-1", "name": "Малая Пироговская, д.1"},
     },
     "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
+        {
+            "name": "ИВБО-01-21",
+            "year": 1,
+            "id": 1,
+            "degree": {"name": "Бакалавриат", "id": 1},
         }
-      }
     ],
     "specific_weeks": [],
     "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 1,
-    "week": 1,
-    "is_usual_place": False,
-    "id": 2,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Верещагина Т.А.",
-        "id": 2
-      },
-      {
-        "name": "Ефремов А.В.",
-        "id": 3
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Начертательная геометрия инженерная и компьютерная графика",
-      "id": 2
-    },
-    "room": {
-      "name": "А-337",
-      "id": 2,
-      "place": {
-        "id": 4,
-        "short_name": "МП-1",
-        "name": "Малая Пироговская, д.1"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 1,
-    "week": 2,
-    "is_usual_place": False,
-    "id": 3,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Верещагина Т.А.",
-        "id": 2
-      },
-      {
-        "name": "Ефремов А.В.",
-        "id": 3
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Начертательная геометрия инженерная и компьютерная графика",
-      "id": 2
-    },
-    "room": {
-      "name": "А-337",
-      "id": 2,
-      "place": {
-        "id": 4,
-        "short_name": "МП-1",
-        "name": "Малая Пироговская, д.1"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 4,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Горшунова Т.А.",
-        "id": 4
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Линейная алгебра и аналитическая геометрия",
-      "id": 3
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [
-      3,
-      5,
-      7,
-      9,
-      11,
-      13,
-      15
-    ],
-    "subgroups": [],
-    "every_week": False
-  },
-  {
-    "day_of_week": 2,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 5,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Горшунова Т.А.",
-        "id": 4
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Линейная алгебра и аналитическая геометрия",
-      "id": 3
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 6,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Сафронов А.А.",
-        "id": 5
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Физика",
-      "id": 4
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [
-      3,
-      5,
-      7,
-      9,
-      11,
-      13,
-      15
-    ],
-    "subgroups": [],
-    "every_week": False
-  },
-  {
-    "day_of_week": 2,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 7,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Сафронов А.А.",
-        "id": 5
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Физика",
-      "id": 4
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 8,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Воронцов А.А.",
-        "id": 6
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Математическая логика и теория алгоритмов",
-      "id": 5
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      },
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 9,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Воронцов А.А.",
-        "id": 6
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Математическая логика и теория алгоритмов",
-      "id": 5
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      },
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 10,
-    "call": {
-      "call_num": 5,
-      "begin_time": "16:20",
-      "end_time": "17:50",
-      "id": 5
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Мусихин А.Г.",
-        "id": 7
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Ознакомительная практика",
-      "id": 6
-    },
-    "room": {
-      "name": "Г-112",
-      "id": 4,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 11,
-    "call": {
-      "call_num": 5,
-      "begin_time": "16:20",
-      "end_time": "17:50",
-      "id": 5
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Мусихин А.Г.",
-        "id": 7
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Ознакомительная практика",
-      "id": 6
-    },
-    "room": {
-      "name": "Г-112",
-      "id": 4,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 12,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Аксененкова И.М.",
-        "id": 8
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Математический анализ",
-      "id": 7
-    },
-    "room": {
-      "name": "А-403",
-      "id": 5,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 13,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Аксененкова И.М.",
-        "id": 8
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Математический анализ",
-      "id": 7
-    },
-    "room": {
-      "name": "А-403",
-      "id": 5,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 14,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Горшунова Т.А.",
-        "id": 4
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Линейная алгебра и аналитическая геометрия",
-      "id": 3
-    },
-    "room": {
-      "name": "А-403",
-      "id": 5,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 15,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Горшунова Т.А.",
-        "id": 4
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Линейная алгебра и аналитическая геометрия",
-      "id": 3
-    },
-    "room": {
-      "name": "А-403",
-      "id": 5,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 16,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Митин М.П.",
-        "id": 9
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Математическая логика и теория алгоритмов",
-      "id": 5
-    },
-    "room": {
-      "name": "А-150",
-      "id": 6,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 17,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Козис Е.В.",
-        "id": 10
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лр",
-      "name": "Лабораторная работа",
-      "id": 3
-    },
-    "discipline": {
-      "name": "Физика",
-      "id": 4
-    },
-    "room": {
-      "name": "В-331",
-      "id": 7,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [
-      2,
-      6,
-      10,
-      14
-    ],
-    "subgroups": [
-      1
-    ],
-    "every_week": False
-  },
-  {
-    "day_of_week": 3,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 18,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Попов А.М.",
-        "id": 11
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лр",
-      "name": "Лабораторная работа",
-      "id": 3
-    },
-    "discipline": {
-      "name": "Физика",
-      "id": 4
-    },
-    "room": {
-      "name": "В-331",
-      "id": 7,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [
-      2,
-      6,
-      10,
-      14
-    ],
-    "subgroups": [
-      2
-    ],
-    "every_week": False
-  },
-  {
-    "day_of_week": 3,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 19,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Чугаева К.М.",
-        "id": 12
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Иностранный язык",
-      "id": 8
-    },
-    "room": {
-      "name": "И-305",
-      "id": 8,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [
-      1
-    ],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 20,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Козис Е.В.",
-        "id": 10
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лр",
-      "name": "Лабораторная работа",
-      "id": 3
-    },
-    "discipline": {
-      "name": "Физика",
-      "id": 4
-    },
-    "room": {
-      "name": "В-331",
-      "id": 7,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [
-      2,
-      6,
-      10,
-      14
-    ],
-    "subgroups": [
-      1
-    ],
-    "every_week": False
-  },
-  {
-    "day_of_week": 3,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 21,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Попов А.М.",
-        "id": 11
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лр",
-      "name": "Лабораторная работа",
-      "id": 3
-    },
-    "discipline": {
-      "name": "Физика",
-      "id": 4
-    },
-    "room": {
-      "name": "В-331",
-      "id": 7,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [
-      2,
-      6,
-      10,
-      14
-    ],
-    "subgroups": [
-      2
-    ],
-    "every_week": False
-  },
-  {
-    "day_of_week": 3,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 22,
-    "call": {
-      "call_num": 5,
-      "begin_time": "16:20",
-      "end_time": "17:50",
-      "id": 5
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Чугаева К.М.",
-        "id": 12
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Иностранный язык",
-      "id": 8
-    },
-    "room": {
-      "name": "И-305",
-      "id": 8,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [
-      1
-    ],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 23,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [],
-    "lesson_type": None,
-    "discipline": {
-      "name": "Ознакомительная практика",
-      "id": 6
-    },
-    "room": {
-      "name": "КАФ",
-      "id": 9,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 24,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [],
-    "lesson_type": None,
-    "discipline": {
-      "name": "Ознакомительная практика",
-      "id": 6
-    },
-    "room": {
-      "name": "КАФ",
-      "id": 9,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 25,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Физическая культура и спорт",
-      "id": 9
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 26,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Физическая культура и спорт",
-      "id": 9
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 27,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Беглов И.А.",
-        "id": 13
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Начертательная геометрия инженерная и компьютерная графика",
-      "id": 2
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      },
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [
-      1,
-      3,
-      5
-    ],
-    "subgroups": [],
-    "every_week": False
-  },
-  {
-    "day_of_week": 4,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 28,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Беглов И.А.",
-        "id": 13
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Начертательная геометрия инженерная и компьютерная графика",
-      "id": 2
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      },
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [
-      2,
-      4,
-      6
-    ],
-    "subgroups": [],
-    "every_week": False
-  },
-  {
-    "day_of_week": 4,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 29,
-    "call": {
-      "call_num": 5,
-      "begin_time": "16:20",
-      "end_time": "17:50",
-      "id": 5
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Ингтем Ж.Г.",
-        "id": 14
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Объектно-ориентированное программирование",
-      "id": 10
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 30,
-    "call": {
-      "call_num": 5,
-      "begin_time": "16:20",
-      "end_time": "17:50",
-      "id": 5
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Слепухин Ю.А.",
-        "id": 15
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Правоведение",
-      "id": 1
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 31,
-    "call": {
-      "call_num": 6,
-      "begin_time": "18:00",
-      "end_time": "19:30",
-      "id": 6
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Николаева С.В.",
-        "id": 16
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Математический анализ",
-      "id": 7
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 32,
-    "call": {
-      "call_num": 6,
-      "begin_time": "18:00",
-      "end_time": "19:30",
-      "id": 6
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Николаева С.В.",
-        "id": 16
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Математический анализ",
-      "id": 7
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 5,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 33,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Данилович Е.С.",
-        "id": 17
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Объектно-ориентированное программирование",
-      "id": 10
-    },
-    "room": {
-      "name": "Г-109-Б",
-      "id": 10,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 5,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 34,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Данилович Е.С.",
-        "id": 17
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Объектно-ориентированное программирование",
-      "id": 10
-    },
-    "room": {
-      "name": "Г-109-Б",
-      "id": 10,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 5,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 35,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Данилович Е.С.",
-        "id": 17
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Объектно-ориентированное программирование",
-      "id": 10
-    },
-    "room": {
-      "name": "Г-109-Б",
-      "id": 10,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 5,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 36,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Данилович Е.С.",
-        "id": 17
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Объектно-ориентированное программирование",
-      "id": 10
-    },
-    "room": {
-      "name": "Г-109-Б",
-      "id": 10,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 5,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 37,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Урюпина Д.С.",
-        "id": 18
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Физика",
-      "id": 4
-    },
-    "room": {
-      "name": "А-177-1",
-      "id": 11,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 5,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 38,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Урюпина Д.С.",
-        "id": 18
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Физика",
-      "id": 4
-    },
-    "room": {
-      "name": "А-177-1",
-      "id": 11,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 5,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 39,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Прокопчук А.Р.",
-        "id": 19
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Иностранный язык",
-      "id": 8
-    },
-    "room": {
-      "name": "И-312",
-      "id": 12,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [
-      2
-    ],
-    "every_week": True
-  },
-  {
-    "day_of_week": 5,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 40,
-    "call": {
-      "call_num": 5,
-      "begin_time": "16:20",
-      "end_time": "17:50",
-      "id": 5
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Прокопчук А.Р.",
-        "id": 19
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Иностранный язык",
-      "id": 8
-    },
-    "room": {
-      "name": "И-312",
-      "id": 12,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-01-21",
-        "year": 1,
-        "id": 1,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [
-      2
-    ],
-    "every_week": True
-  },
-  {
-    "day_of_week": 1,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 41,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Пономарев А.Н.",
-        "id": 20
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Схемотехника устройств компьютерных систем",
-      "id": 11
-    },
-    "room": {
-      "name": "Г-112",
-      "id": 4,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 1,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 42,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Люлява Д.В.",
-        "id": 21
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лр",
-      "name": "Лабораторная работа",
-      "id": 3
-    },
-    "discipline": {
-      "name": "Схемотехника устройств компьютерных систем",
-      "id": 11
-    },
-    "room": {
-      "name": "Г-111-Б",
-      "id": 13,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 1,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 43,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Люлява Д.В.",
-        "id": 21
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лр",
-      "name": "Лабораторная работа",
-      "id": 3
-    },
-    "discipline": {
-      "name": "Схемотехника устройств компьютерных систем",
-      "id": 11
-    },
-    "room": {
-      "name": "Г-111-Б",
-      "id": 13,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 1,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 44,
-    "call": {
-      "call_num": 5,
-      "begin_time": "16:20",
-      "end_time": "17:50",
-      "id": 5
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Семенов Р.Э.",
-        "id": 22
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Разработка предметно-ориентированных языков программирования",
-      "id": 12
-    },
-    "room": {
-      "name": "Г-109-А",
-      "id": 14,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 45,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Смирнов Н.А.",
-        "id": 23
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Схемотехника устройств компьютерных систем",
-      "id": 11
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 46,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Смирнов Н.А.",
-        "id": 23
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Схемотехника устройств компьютерных систем",
-      "id": 11
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 47,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Богомольная Г.В.",
-        "id": 24
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Проектирование баз данных",
-      "id": 13
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 48,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Богомольная Г.В.",
-        "id": 24
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Проектирование баз данных",
-      "id": 13
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 49,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Воронков С.О.",
-        "id": 25
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Разработка предметно-ориентированных языков программирования",
-      "id": 12
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 50,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Ахмедова Х.Г.",
-        "id": 26
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Анализ и концептуальное моделирование систем",
-      "id": 14
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 2,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 51,
-    "call": {
-      "call_num": 5,
-      "begin_time": "16:20",
-      "end_time": "17:50",
-      "id": 5
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Советов П.Н.",
-        "id": 27
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лк",
-      "name": "Лекция",
-      "id": 1
-    },
-    "discipline": {
-      "name": "Программирование на языке Питон",
-      "id": 15
-    },
-    "room": {
-      "name": "Д",
-      "id": 3,
-      "place": None
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 52,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Программирование на языке Питон",
-      "id": 15
-    },
-    "room": {
-      "name": "И-202-А",
-      "id": 15,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 53,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Программирование на языке Питон",
-      "id": 15
-    },
-    "room": {
-      "name": "И-202-А",
-      "id": 15,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 54,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Программирование на языке Питон",
-      "id": 15
-    },
-    "room": {
-      "name": "И-202-А",
-      "id": 15,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 55,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Программирование на языке Питон",
-      "id": 15
-    },
-    "room": {
-      "name": "И-202-А",
-      "id": 15,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 3,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 56,
-    "call": {
-      "call_num": 5,
-      "begin_time": "16:20",
-      "end_time": "17:50",
-      "id": 5
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Митин М.П.",
-        "id": 9
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Математическая логика и теория алгоритмов",
-      "id": 5
-    },
-    "room": {
-      "name": "А-150",
-      "id": 6,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 1,
-    "is_usual_place": False,
-    "id": 57,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Ефремов А.В.",
-        "id": 3
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Начертательная геометрия инженерная и компьютерная графика",
-      "id": 2
-    },
-    "room": {
-      "name": "А-302",
-      "id": 16,
-      "place": {
-        "id": 4,
-        "short_name": "МП-1",
-        "name": "Малая Пироговская, д.1"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 4,
-    "week": 2,
-    "is_usual_place": False,
-    "id": 58,
-    "call": {
-      "call_num": 1,
-      "begin_time": "9:00",
-      "end_time": "10:30",
-      "id": 1
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Ефремов А.В.",
-        "id": 3
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Начертательная геометрия инженерная и компьютерная графика",
-      "id": 2
-    },
-    "room": {
-      "name": "А-302",
-      "id": 16,
-      "place": {
-        "id": 4,
-        "short_name": "МП-1",
-        "name": "Малая Пироговская, д.1"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 6,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 59,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Макущенко М.А.",
-        "id": 28
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Анализ и концептуальное моделирование систем",
-      "id": 14
-    },
-    "room": {
-      "name": "А-423",
-      "id": 17,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 6,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 60,
-    "call": {
-      "call_num": 2,
-      "begin_time": "10:40",
-      "end_time": "12:10",
-      "id": 2
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Макущенко М.А.",
-        "id": 28
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Анализ и концептуальное моделирование систем",
-      "id": 14
-    },
-    "room": {
-      "name": "А-423",
-      "id": 17,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 6,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 61,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Киселев Д.С.",
-        "id": 29
-      },
-      {
-        "name": "Володина А.М.",
-        "id": 30
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Проектирование баз данных",
-      "id": 13
-    },
-    "room": {
-      "name": "А-421",
-      "id": 18,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 6,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 62,
-    "call": {
-      "call_num": 3,
-      "begin_time": "12:40",
-      "end_time": "14:10",
-      "id": 3
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Киселев Д.С.",
-        "id": 29
-      },
-      {
-        "name": "Володина А.М.",
-        "id": 30
-      }
-    ],
-    "lesson_type": {
-      "short_name": "пр",
-      "name": "Практическое занятие",
-      "id": 2
-    },
-    "discipline": {
-      "name": "Проектирование баз данных",
-      "id": 13
-    },
-    "room": {
-      "name": "А-421",
-      "id": 18,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 6,
-    "week": 1,
-    "is_usual_place": True,
-    "id": 63,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Воронков С.О.",
-        "id": 25
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лр",
-      "name": "Лабораторная работа",
-      "id": 3
-    },
-    "discipline": {
-      "name": "Разработка предметно-ориентированных языков программирования",
-      "id": 12
-    },
-    "room": {
-      "name": "Г-111-Б",
-      "id": 13,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  },
-  {
-    "day_of_week": 6,
-    "week": 2,
-    "is_usual_place": True,
-    "id": 64,
-    "call": {
-      "call_num": 4,
-      "begin_time": "14:20",
-      "end_time": "15:50",
-      "id": 4
-    },
-    "period": {
-      "short_name": "semester",
-      "name": "Учебный семестр",
-      "id": 1
-    },
-    "teachers": [
-      {
-        "name": "Воронков С.О.",
-        "id": 25
-      }
-    ],
-    "lesson_type": {
-      "short_name": "лр",
-      "name": "Лабораторная работа",
-      "id": 3
-    },
-    "discipline": {
-      "name": "Разработка предметно-ориентированных языков программирования",
-      "id": 12
-    },
-    "room": {
-      "name": "Г-111-Б",
-      "id": 13,
-      "place": {
-        "id": 1,
-        "short_name": "В-78",
-        "name": "Проспект Вернадского, д.78"
-      }
-    },
-    "groups": [
-      {
-        "name": "ИВБО-13-21",
-        "year": 1,
-        "id": 2,
-        "degree": {
-          "name": "Бакалавриат",
-          "id": 1
-        }
-      }
-    ],
-    "specific_weeks": [],
-    "subgroups": [],
-    "every_week": True
-  }
-]
+    "every_week": True,
+}
+
+lessons = [first_lesson, iabo_01_19_lessons]
