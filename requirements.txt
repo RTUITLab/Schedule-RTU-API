@@ -19,10 +19,10 @@ gunicorn==20.1.0
 h11==0.12.0
 httpcore==0.14.7
 httptools==0.3.0
-httpx==0.22.0
+httpx==0.23.0
 idna==3.3
 iniconfig==1.1.1
-Mako==1.1.6
+Mako==1.2.2
 MarkupSafe==2.0.1
 outcome==1.1.0
 packaging==21.3
